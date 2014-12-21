@@ -1,9 +1,6 @@
 function Simulation(){
     var running = false;
-    var counter = 0;
-
-    var canvas = document.getElementById('canvas');
-    var context2D = canvas.getContext('2d');
+    var stepcounter = 0;
 
     this.startSimulation = function(){
         console.log("start simulation");
@@ -23,14 +20,45 @@ function Simulation(){
     function simulationStep(){
         draw();
 
-        counter++;
+        // processing
+        eprobot.newStep();
 
+        stepcounter++;
         if (running) setTimeout(simulationStep, SETTINGS.SLEEPTIME);
     }
 
     function draw(){
         //context2D.fillStyle = "rgb(255, 255, 255)";
         context2D.clearRect(0, 0, canvas.width, canvas.height);
-        context2D.fillText(counter,10,50);
+
+        for (var x=0;x<SETTINGS.WORLD_WIDTH;x++){
+            for (var y=0;y<SETTINGS.WORLD_HEIGHT;y++){
+                var t = world.getTerrain(x,y);
+                if (t.getSlot()==null){
+
+                }else{
+                    if (t.getSlot()==1){
+                        context2D.fillStyle = "rgb(255, 0, 0)";
+                    }
+                    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                }
+            }
+        }
+
     }
+
+    this.getWorld = function(){
+        return world;
+    }
+
+    // init
+
+    var canvas = document.getElementById('canvas');
+    var context2D = canvas.getContext('2d');
+
+    var x_step = canvas.width / SETTINGS.WORLD_WIDTH;
+    var y_step = canvas.height / SETTINGS.WORLD_HEIGHT;
+
+    var world = new World(SETTINGS.WORLD_WIDTH, SETTINGS.WORLD_HEIGHT);
+    var eprobot = new Eprobot(this, 5, 5);
 }
