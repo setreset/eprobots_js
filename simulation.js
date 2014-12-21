@@ -1,6 +1,4 @@
 function Simulation(){
-    var running = false;
-    var stepcounter = 0;
 
     this.startSimulation = function(){
         console.log("start simulation");
@@ -38,6 +36,8 @@ function Simulation(){
 
                 }else{
                     if (t.getSlot()==1){
+                        context2D.fillStyle = "rgb(0, 255, 0)";
+                    }else if (t.getSlot()==2){
                         context2D.fillStyle = "rgb(255, 0, 0)";
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
@@ -52,6 +52,8 @@ function Simulation(){
     }
 
     // init
+    var running = false;
+    var stepcounter = 0;
 
     var canvas = document.getElementById('canvas');
     var context2D = canvas.getContext('2d');
@@ -59,6 +61,8 @@ function Simulation(){
     var x_step = canvas.width / SETTINGS.WORLD_WIDTH;
     var y_step = canvas.height / SETTINGS.WORLD_HEIGHT;
 
-    var world = new World(SETTINGS.WORLD_WIDTH, SETTINGS.WORLD_HEIGHT);
+    var world = new World(this);
     var eprobot = new Eprobot(this, 5, 5);
+    this.eprobots = [];
+    world.setEnergy();
 }

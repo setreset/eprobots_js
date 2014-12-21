@@ -16,7 +16,7 @@ function Eprobot(s, x_pos, y_pos){
             if (obj_on_candidate_field == null){
                 // alte position loeschen
                 s.getWorld().getTerrain(x_pos, y_pos).setSlot(null);
-                t.setSlot(1);
+                t.setSlot(2);
                 x_pos=x_cand;
                 y_pos=y_cand;
             }
@@ -24,5 +24,5 @@ function Eprobot(s, x_pos, y_pos){
     }
 
     // init
-    s.getWorld().getTerrain(x_pos, y_pos).setSlot(1);
+    s.getWorld().getTerrain(x_pos, y_pos).setSlot(2);
 }
