@@ -9,6 +9,11 @@ var DIRECTIONS = [
     {x:-1,y:1}   // bottom left
 ];
 
+var LIFEFORMS = {
+    ENERGY: 1,
+    EPROBOT: 2
+}
+
 // liefert ganzzahlen von 0 bis max-1
 function tools_random(max){
     return Math.floor(Math.random()*max);

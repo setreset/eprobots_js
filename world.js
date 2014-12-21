@@ -4,8 +4,8 @@ function World(s){
         return worldarr[x][y];
     }
 
-    this.setEnergy = function(){
-        var energydiff = SETTINGS.OBJECT_COUNT - (s.eprobots.length + energy_count);
+    this.seedEnergy = function(){
+        var energydiff = SETTINGS.OBJECT_COUNT - (s.getEprobots().length + energy_count);
 
         for(var i=0;i<energydiff;i++){
             // zufaellige stelle
@@ -18,6 +18,32 @@ function World(s){
                 energy_count++;
             }
         }
+    }
+
+    this.getFreeSpace = function(x,y) {
+        var pointarr = [];
+        for (var i=0;i<DIRECTIONS.length;i++){
+            var movechoice = DIRECTIONS[i];
+            var x_cand = borderjump_x(x + movechoice.x);
+            var y_cand = borderjump_y(y + movechoice.y);
+            if (this.getTerrain(x_cand,y_cand).getSlot() == null){
+                pointarr.push({x: x_cand,y: y_cand});
+            }
+        }
+
+        if (pointarr.length == 0){
+            return null;
+        }else{ // zufaelligen punkt auswaehlen und zurueckgeben
+            return pointarr[tools_random(pointarr.length)];
+        }
+    }
+
+    this.getEnergyCount = function(){
+        return energy_count;
+    }
+
+    this.setEnergyCount = function(new_e){
+        energy_count = new_e;
     }
 
     // init

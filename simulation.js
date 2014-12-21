@@ -15,13 +15,34 @@ function Simulation(){
         return running;
     }
 
+    this.getEprobots = function(){
+        return eprobots;
+    }
+
     function simulationStep(){
+        world.seedEnergy();
         draw();
 
+        var eprobots_next = [];
         // processing
-        eprobot.newStep();
+        for (var i=0;i<eprobots.length;i++){
+            var eprobot = eprobots[i];
+            if (eprobot.getAge() >= SETTINGS.LIFETIME){
+                // aus map entfernen
+                var e_pos = eprobot.getPos();
+                world.getTerrain(e_pos.x, e_pos.y).setSlot(null);
+            }else{
+                var forked_ep = eprobot.newStep();
+                eprobots_next.push(eprobot);
+                if (forked_ep != null){
+                    eprobots_next.push(forked_ep);
+                }
+            }
+        }
 
+        eprobots = eprobots_next;
         stepcounter++;
+
         if (running) setTimeout(simulationStep, SETTINGS.SLEEPTIME);
     }
 
@@ -35,9 +56,9 @@ function Simulation(){
                 if (t.getSlot()==null){
 
                 }else{
-                    if (t.getSlot()==1){
+                    if (t.getSlot()==LIFEFORMS.ENERGY){
                         context2D.fillStyle = "rgb(0, 255, 0)";
-                    }else if (t.getSlot()==2){
+                    }else if (t.getSlot()==LIFEFORMS.EPROBOT){
                         context2D.fillStyle = "rgb(255, 0, 0)";
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
@@ -62,7 +83,9 @@ function Simulation(){
     var y_step = canvas.height / SETTINGS.WORLD_HEIGHT;
 
     var world = new World(this);
-    var eprobot = new Eprobot(this, 5, 5);
-    this.eprobots = [];
-    world.setEnergy();
+
+    var eprobots = [];
+    eprobots.push(new Eprobot(this, 5, 5));
+    eprobots.push(new Eprobot(this, 10, 10));
+    //world.seedEnergy();
 }
