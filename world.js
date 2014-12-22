@@ -12,10 +12,24 @@ function World(s){
             var x = tools_random(SETTINGS.WORLD_WIDTH);
             var y = tools_random(SETTINGS.WORLD_HEIGHT);
             // ist sie frei?
-            if (this.getTerrain(x,y).getSlot() == null){
-                // neues energyobject
-                new Energy(s, x, y);
-                energy_count++;
+            var t = this.getTerrain(x,y);
+            if (t.getSlot() == null){
+                var can_grow = true;
+
+                if (SETTINGS.ENERGY_BLOCK_TIME != null){
+                    if (t.getLastEnergy() != null){
+                        // true wenn genug zeit verstrichen, false wenn nicht
+                        can_grow = (s.getStepCounter()-t.getLastEnergy()) >= SETTINGS.ENERGY_BLOCK_TIME;
+                    }
+                }
+
+                if (can_grow){
+                    // neues energyobject
+                    new Energy(s, x, y);
+                    energy_count++;
+                }else{
+                    //console.log("no no no");
+                }
             }
         }
     }
@@ -60,6 +74,7 @@ function World(s){
 
 function Terrain(){
     var slot = null;
+    var last_energy_step = null;
 
     this.getSlot = function(){
         return slot;
@@ -67,5 +82,14 @@ function Terrain(){
 
     this.setSlot = function(val){
         slot = val;
+    }
+
+    this.setLastEnergy = function(val){
+        //console.log("set:"+val);
+        last_energy_step = val;
+    }
+
+    this.getLastEnergy = function(){
+        return last_energy_step;
     }
 }

@@ -72,6 +72,10 @@ function Simulation(){
         return world;
     }
 
+    this.getStepCounter = function(){
+        return stepcounter;
+    }
+
     // init
     var running = false;
     var stepcounter = 0;

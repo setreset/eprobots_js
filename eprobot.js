@@ -18,11 +18,15 @@ function Eprobot(s, x_pos, y_pos){
                 // alte position loeschen
                 s.getWorld().getTerrain(x_pos, y_pos).setSlot(null);
                 t.setSlot(LIFEFORMS.EPROBOT);
-                x_pos=x_cand;
-                y_pos=y_cand;
+                x_pos = x_cand;
+                y_pos = y_cand;
 
                 if (obj_on_candidate_field == LIFEFORMS.ENERGY){
-                    //console.log("eat energy");
+                    if (SETTINGS.ENERGY_BLOCK_TIME != null){
+                        t.setLastEnergy(s.getStepCounter());
+                    }
+
+                    // "eat energy"
                     s.getWorld().setEnergyCount(s.getWorld().getEnergyCount()-1);
                     // neuer eprobot
                     forked_ep = this.fork();
