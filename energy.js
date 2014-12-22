@@ -1,4 +1,10 @@
 function Energy(s, x_pos, y_pos){
+
+    this.getId = function(){
+        return LIFEFORMS.ENERGY;
+    }
+
     // init
-    s.getWorld().getTerrain(x_pos, y_pos).setSlot(LIFEFORMS.ENERGY);
+    var t = s.getWorld().getTerrain(x_pos, y_pos);
+    t.setSlotObject(this);
 }

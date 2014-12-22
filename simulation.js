@@ -30,7 +30,9 @@ function Simulation(){
             if (eprobot.getAge() >= SETTINGS.LIFETIME){
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
-                world.getTerrain(e_pos.x, e_pos.y).setSlot(null);
+
+                var t = world.getTerrain(e_pos.x, e_pos.y);
+                t.setSlotObject(null);
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
@@ -53,13 +55,14 @@ function Simulation(){
         for (var x=0;x<SETTINGS.WORLD_WIDTH;x++){
             for (var y=0;y<SETTINGS.WORLD_HEIGHT;y++){
                 var t = world.getTerrain(x,y);
-                if (t.getSlot()==null){
+                if (t.getSlotObject()==null){
 
                 }else{
-                    if (t.getSlot()==LIFEFORMS.ENERGY){
+                    if (t.getSlotObject().getId()==LIFEFORMS.ENERGY){
                         context2D.fillStyle = "rgb(0, 255, 0)";
-                    }else if (t.getSlot()==LIFEFORMS.EPROBOT){
-                        context2D.fillStyle = "rgb(255, 0, 0)";
+                    }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
+                        var c_fac = Math.round(255/SETTINGS.LIFETIME)* t.getSlotObject().getAge();
+                        context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                 }

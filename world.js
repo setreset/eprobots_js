@@ -13,7 +13,7 @@ function World(s){
             var y = tools_random(SETTINGS.WORLD_HEIGHT);
             // ist sie frei?
             var t = this.getTerrain(x,y);
-            if (t.getSlot() == null){
+            if (t.getSlotObject() == null){
                 var can_grow = true;
 
                 if (SETTINGS.ENERGY_BLOCK_TIME != null){
@@ -40,7 +40,7 @@ function World(s){
             var movechoice = DIRECTIONS[i];
             var x_cand = borderjump_x(x + movechoice.x);
             var y_cand = borderjump_y(y + movechoice.y);
-            if (this.getTerrain(x_cand,y_cand).getSlot() == null){
+            if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
                 pointarr.push({x: x_cand,y: y_cand});
             }
         }
@@ -73,15 +73,16 @@ function World(s){
 }
 
 function Terrain(){
-    var slot = null;
+    var slot_object = null;
+
     var last_energy_step = null;
 
-    this.getSlot = function(){
-        return slot;
+    this.getSlotObject = function(){
+        return slot_object;
     }
 
-    this.setSlot = function(val){
-        slot = val;
+    this.setSlotObject = function(val){
+        slot_object = val;
     }
 
     this.setLastEnergy = function(val){
