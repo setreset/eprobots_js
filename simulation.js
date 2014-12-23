@@ -58,7 +58,7 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
         //console.log("time: "+(t_end-t_start));
-        if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
+        if (running) setTimeout(simulationStep, GLOBAL_SETTINGS.SLEEPTIME - frame_time);
     }
 
     function draw(){
@@ -105,6 +105,10 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
 
     this.setSettingsLifetime = function(val){
       settings.LIFETIME = val;
+    };
+
+    this.setSettingsEnergyBlockTime = function(val){
+        settings.ENERGY_BLOCK_TIME = val;
     };
 
     // init
