@@ -5,21 +5,21 @@ function World(s){
     }
 
     this.seedEnergy = function(){
-        var energydiff = SETTINGS.OBJECT_COUNT - (s.getEprobots().length + energy_count);
+        var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
 
         for(var i=0;i<energydiff;i++){
             // zufaellige stelle
-            var x = tools_random(SETTINGS.WORLD_WIDTH);
-            var y = tools_random(SETTINGS.WORLD_HEIGHT);
+            var x = tools_random(s.getSettings().WORLD_WIDTH);
+            var y = tools_random(s.getSettings().WORLD_HEIGHT);
             // ist sie frei?
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null){
                 var can_grow = true;
 
-                if (SETTINGS.ENERGY_BLOCK_TIME != null){
+                if (s.getSettings().ENERGY_BLOCK_TIME != null){
                     if (t.getLastEnergy() != null){
                         // true wenn genug zeit verstrichen, false wenn nicht
-                        can_grow = (s.getStepCounter()-t.getLastEnergy()) >= SETTINGS.ENERGY_BLOCK_TIME;
+                        can_grow = (s.getStepCounter()-t.getLastEnergy()) >= s.getSettings().ENERGY_BLOCK_TIME;
                     }
                 }
 
@@ -38,8 +38,8 @@ function World(s){
         var pointarr = [];
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
-            var x_cand = borderjump_x(x + movechoice.x);
-            var y_cand = borderjump_y(y + movechoice.y);
+            var x_cand = borderjump_x(x + movechoice.x, s.getSettings().WORLD_WIDTH);
+            var y_cand = borderjump_y(y + movechoice.y, s.getSettings().WORLD_HEIGHT);
             if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
                 pointarr.push({x: x_cand,y: y_cand});
             }
@@ -61,10 +61,10 @@ function World(s){
     }
 
     // init
-    var worldarr = new Array(SETTINGS.WORLD_WIDTH);
-    for (var x=0;x<SETTINGS.WORLD_WIDTH;x++){
-        worldarr[x] = new Array(SETTINGS.WORLD_HEIGHT);
-        for (var y=0;y<SETTINGS.WORLD_HEIGHT;y++){
+    var worldarr = new Array(s.getSettings().WORLD_WIDTH);
+    for (var x=0;x<s.getSettings().WORLD_WIDTH;x++){
+        worldarr[x] = new Array(s.getSettings().WORLD_HEIGHT);
+        for (var y=0;y<s.getSettings().WORLD_HEIGHT;y++){
             worldarr[x][y] = new Terrain();
         }
     }

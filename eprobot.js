@@ -6,8 +6,8 @@ function Eprobot(s, x_pos, y_pos){
 
         }else{
             var movechoice = DIRECTIONS[action];
-            var x_cand = borderjump_x(x_pos + movechoice.x);
-            var y_cand = borderjump_y(y_pos + movechoice.y);
+            var x_cand = borderjump_x(x_pos + movechoice.x, s.getSettings().WORLD_WIDTH);
+            var y_cand = borderjump_y(y_pos + movechoice.y, s.getSettings().WORLD_HEIGHT);
 
             var t_new = s.getWorld().getTerrain(x_cand,y_cand);
             var obj_on_candidate_field = t_new.getSlotObject();
@@ -23,7 +23,7 @@ function Eprobot(s, x_pos, y_pos){
                 y_pos = y_cand;
 
                 if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == LIFEFORMS.ENERGY){
-                    if (SETTINGS.ENERGY_BLOCK_TIME != null){
+                    if (s.getSettings().ENERGY_BLOCK_TIME != null){
                         t_new.setLastEnergy(s.getStepCounter());
                     }
 
