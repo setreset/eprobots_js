@@ -1,4 +1,4 @@
-function Simulation(){
+function Simulation(context2D){
 
     this.startSimulation = function(){
         console.log("start simulation");
@@ -20,6 +20,8 @@ function Simulation(){
     }
 
     function simulationStep(){
+        t_start = new Date().getTime();
+
         world.seedEnergy();
         draw();
 
@@ -45,7 +47,10 @@ function Simulation(){
         eprobots = eprobots_next;
         stepcounter++;
 
-        if (running) setTimeout(simulationStep, SETTINGS.SLEEPTIME);
+        var t_end = new Date().getTime();
+        var frame_time = t_end-t_start;
+        //console.log("time: "+(t_end-t_start));
+        if (running) setTimeout(simulationStep, SETTINGS.SLEEPTIME - frame_time);
     }
 
     function draw(){
@@ -59,7 +64,10 @@ function Simulation(){
 
                 }else{
                     if (t.getSlotObject().getId()==LIFEFORMS.ENERGY){
-                        context2D.fillStyle = "rgb(0, 255, 0)";
+                        var age = stepcounter - t.getSlotObject().getCreationTime();
+                        var c_green = 256 - age;
+                        if (c_green<0) c_green=0;
+                        context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
                         var c_fac = Math.round(255/SETTINGS.LIFETIME)* t.getSlotObject().getAge();
                         context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
@@ -80,11 +88,9 @@ function Simulation(){
     }
 
     // init
+    var t_start = null;
     var running = false;
     var stepcounter = 0;
-
-    var canvas = document.getElementById('canvas');
-    var context2D = canvas.getContext('2d');
 
     var x_step = canvas.width / SETTINGS.WORLD_WIDTH;
     var y_step = canvas.height / SETTINGS.WORLD_HEIGHT;
