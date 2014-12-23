@@ -6,8 +6,8 @@ function Eprobot(s, x_pos, y_pos){
 
         }else{
             var movechoice = DIRECTIONS[action];
-            var x_cand = borderjump_x(x_pos + movechoice.x, s.getSettings().WORLD_WIDTH);
-            var y_cand = borderjump_y(y_pos + movechoice.y, s.getSettings().WORLD_HEIGHT);
+            var x_cand = borderjump_x(x_pos + movechoice.x, s.getWorldWidth());
+            var y_cand = borderjump_y(y_pos + movechoice.y, s.getWorldHeight());
 
             var t_new = s.getWorld().getTerrain(x_cand,y_cand);
             var obj_on_candidate_field = t_new.getSlotObject();

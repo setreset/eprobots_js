@@ -1,4 +1,4 @@
-function Simulation(context2D, initial_settings){
+function Simulation(context2D, initial_settings, initial_world_width, initial_world_height){
 
     this.startSimulation = function(){
         console.log("start simulation");
@@ -17,6 +17,14 @@ function Simulation(context2D, initial_settings){
 
     this.getEprobots = function(){
         return eprobots;
+    }
+
+    this.getWorldWidth = function(){
+        return world_width;
+    }
+
+    this.getWorldHeight = function(){
+        return world_height;
     }
 
     function simulationStep(){
@@ -57,8 +65,8 @@ function Simulation(context2D, initial_settings){
         //context2D.fillStyle = "rgb(255, 255, 255)";
         context2D.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (var x=0;x<settings.WORLD_WIDTH;x++){
-            for (var y=0;y<settings.WORLD_HEIGHT;y++){
+        for (var x=0;x<world_width;x++){
+            for (var y=0;y<world_height;y++){
                 var t = world.getTerrain(x,y);
                 if (t.getSlotObject()==null){
 
@@ -92,14 +100,7 @@ function Simulation(context2D, initial_settings){
     }
 
     this.setSettings = function(val){
-        settings = {
-            WORLD_WIDTH: val.WORLD_WIDTH,
-            WORLD_HEIGHT: val.WORLD_HEIGHT,
-            OBJECT_COUNT: val.OBJECT_COUNT,
-            LIFETIME : val.LIFETIME,
-            SLEEPTIME: val.SLEEPTIME,
-            ENERGY_BLOCK_TIME: val.ENERGY_BLOCK_TIME
-        }
+        settings = $.extend({}, val);
     }
 
     this.setSettingsLifetime = function(val){
@@ -108,6 +109,8 @@ function Simulation(context2D, initial_settings){
 
     // init
 
+    var world_width = initial_world_width;
+    var world_height = initial_world_height;
     var settings = null;
     this.setSettings(initial_settings);
 
@@ -115,8 +118,8 @@ function Simulation(context2D, initial_settings){
     var running = false;
     var stepcounter = 0;
 
-    var x_step = canvas.width / settings.WORLD_WIDTH;
-    var y_step = canvas.height / settings.WORLD_HEIGHT;
+    var x_step = canvas.width / world_width;
+    var y_step = canvas.height / world_height;
 
     var world = new World(this);
 

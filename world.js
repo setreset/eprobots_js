@@ -9,8 +9,8 @@ function World(s){
 
         for(var i=0;i<energydiff;i++){
             // zufaellige stelle
-            var x = tools_random(s.getSettings().WORLD_WIDTH);
-            var y = tools_random(s.getSettings().WORLD_HEIGHT);
+            var x = tools_random(s.getWorldWidth());
+            var y = tools_random(s.getWorldHeight());
             // ist sie frei?
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null){
@@ -38,8 +38,8 @@ function World(s){
         var pointarr = [];
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
-            var x_cand = borderjump_x(x + movechoice.x, s.getSettings().WORLD_WIDTH);
-            var y_cand = borderjump_y(y + movechoice.y, s.getSettings().WORLD_HEIGHT);
+            var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
+            var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
             if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
                 pointarr.push({x: x_cand,y: y_cand});
             }
@@ -61,10 +61,10 @@ function World(s){
     }
 
     // init
-    var worldarr = new Array(s.getSettings().WORLD_WIDTH);
-    for (var x=0;x<s.getSettings().WORLD_WIDTH;x++){
-        worldarr[x] = new Array(s.getSettings().WORLD_HEIGHT);
-        for (var y=0;y<s.getSettings().WORLD_HEIGHT;y++){
+    var worldarr = new Array(s.getWorldWidth());
+    for (var x=0;x<s.getWorldWidth();x++){
+        worldarr[x] = new Array(s.getWorldHeight());
+        for (var y=0;y<s.getWorldHeight();y++){
             worldarr[x][y] = new Terrain();
         }
     }
