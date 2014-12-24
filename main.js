@@ -5,7 +5,7 @@ $(document).ready(function() {
     var canvas = document.getElementById('canvas');
     var context2D = canvas.getContext('2d');
 
-    simulation = new Simulation(context2D, INITIAL_SIM_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
+    simulation = new Simulation(context2D, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
     var last_world_width = INITIAL_WORLD_WIDTH;
     var last_world_height = INITIAL_WORLD_HEIGHT;
 
@@ -34,7 +34,7 @@ $(document).ready(function() {
                     new_height = last_world_height;
                 }
 
-                simulation = new Simulation(context2D, INITIAL_SIM_SETTINGS, new_width, new_height);
+                simulation = new Simulation(context2D, simulation.getSettings(), new_width, new_height);
                 last_world_width = new_width;
                 last_world_height = new_height;
                 $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
@@ -44,7 +44,7 @@ $(document).ready(function() {
 
     $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
 
-    // INITIAL_SIM_SETTINGS
+    // INITIAL_SIMULATION_SETTINGS
     var init_controls = function(){
         $("#slider_lifetime_label span").text(simulation.getSettings().LIFETIME);
         $("#input_lifetime").val(simulation.getSettings().LIFETIME);
@@ -55,6 +55,11 @@ $(document).ready(function() {
         $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
         $("#slider_energy_block_time").slider("value", simulation.getSettings().ENERGY_BLOCK_TIME);
+
+        $("#slider_object_count_label span").text(simulation.getSettings().OBJECT_COUNT);
+        $("#input_object_count").val(simulation.getSettings().OBJECT_COUNT);
+        // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
+        $("#slider_object_count").slider("value", simulation.getSettings().OBJECT_COUNT);
     }
 
     // LIFETIME
@@ -109,12 +114,38 @@ $(document).ready(function() {
         }
     });
 
+    // OBJECT_COUNT
+    var min_val_object_count = 100;
+    var max_val_object_count = 100000;
+    $("#slider_object_count").slider({
+        value: simulation.getSettings().OBJECT_COUNT,
+        min: min_val_object_count,
+        max: max_val_object_count,
+        slide: function( event, ui ) {
+            var val = ui.value;
+            $("#slider_object_count_label span").text(val);
+            $("#input_object_count").val(val);
+            simulation.setSettingsObjectCount(val);
+        }
+    });
+
+    $("#btn_object_count").on("click", function(e){
+        var int_val = parseInt($("#input_object_count").val());
+        if (!isNaN(int_val)){
+            if (int_val>=min_val_object_count && int_val<=max_val_object_count){
+                simulation.setSettingsObjectCount(int_val);
+                $("#slider_object_count_label span").text(int_val);
+                $("#slider_object_count").slider("value", int_val);
+            }
+        }
+    });
+
     // END INITIAL SETTINGS
 
     init_controls();
 
     $("#btn_resetsettings").on("click", function(e){
-        simulation.setSettings(INITIAL_SIM_SETTINGS);
+        simulation.setSettings(INITIAL_SIMULATION_SETTINGS);
         init_controls();
     });
 });

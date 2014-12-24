@@ -111,6 +111,10 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
         settings.ENERGY_BLOCK_TIME = val;
     };
 
+    this.setSettingsObjectCount = function(val){
+        settings.OBJECT_COUNT = val;
+    };
+
     // init
 
     var world_width = initial_world_width;
@@ -128,7 +132,7 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
     var world = new World(this);
 
     var eprobots = [];
-    eprobots.push(new Eprobot(this, 5, 5));
-    eprobots.push(new Eprobot(this, 10, 10));
+    eprobots.push(new Eprobot(this, tools_random(world_width), tools_random(world_height)));
+    //eprobots.push(new Eprobot(this, 10, 10));
     //world.seedEnergy();
 }
