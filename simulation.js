@@ -1,4 +1,4 @@
-function Simulation(context2D, initial_settings, initial_world_width, initial_world_height){
+function Simulation(canvas, initial_settings, initial_world_width, initial_world_height){
 
     this.startSimulation = function(){
         console.log("start simulation");
@@ -25,6 +25,10 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
 
     this.getWorldHeight = function(){
         return world_height;
+    }
+
+    this.getContext2D = function(){
+        return context2D;
     }
 
     function simulationStep(){
@@ -116,7 +120,7 @@ function Simulation(context2D, initial_settings, initial_world_width, initial_wo
     };
 
     // init
-
+    var context2D = canvas.getContext('2d');
     var world_width = initial_world_width;
     var world_height = initial_world_height;
     var settings = null;

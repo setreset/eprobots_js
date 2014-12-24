@@ -2,10 +2,9 @@ var simulation = null;
 
 $(document).ready(function() {
     console.log("ready");
-    var canvas = document.getElementById('canvas');
-    var context2D = canvas.getContext('2d');
+    var simulation_canvas = document.getElementById('canvas');
 
-    simulation = new Simulation(context2D, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
+    simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
     var last_world_width = INITIAL_WORLD_WIDTH;
     var last_world_height = INITIAL_WORLD_HEIGHT;
 
@@ -25,7 +24,7 @@ $(document).ready(function() {
         if (!simulation.getRunning()){
             var new_dimensions_string = prompt("Insert new world dimensions",last_world_width + "x" + last_world_height);
             if (new_dimensions_string != null){
-                context2D.clearRect(0, 0, canvas.width, canvas.height);
+                simulation.getContext2D().clearRect(0, 0, simulation_canvas.width, simulation_canvas.height);
                 var new_dimensions_arr = new_dimensions_string.split("x");
                 var new_width = parseInt(new_dimensions_arr[0]);
                 var new_height = parseInt(new_dimensions_arr[1]);
@@ -34,7 +33,7 @@ $(document).ready(function() {
                     new_height = last_world_height;
                 }
 
-                simulation = new Simulation(context2D, simulation.getSettings(), new_width, new_height);
+                simulation = new Simulation(simulation_canvas, simulation.getSettings(), new_width, new_height);
                 last_world_width = new_width;
                 last_world_height = new_height;
                 $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
