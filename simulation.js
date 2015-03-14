@@ -50,7 +50,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
-                if (forked_ep != null){
+                if (forked_ep != undefined){
                     eprobots_next.push(forked_ep);
                 }
             }

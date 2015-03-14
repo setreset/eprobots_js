@@ -34,7 +34,7 @@ function World(s){
         }
     }
 
-    this.getFreeSpace = function(x,y) {
+    /*this.getFreeSpace = function(x,y) {
         var pointarr = [];
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -50,6 +50,52 @@ function World(s){
         }else{ // zufaelligen punkt auswaehlen und zurueckgeben
             return pointarr[tools_random(pointarr.length)];
         }
+    }*/
+
+    this.moveObject = function(object, action){
+        var movechoice = DIRECTIONS[action];
+
+        var objectpos = object.getPos();
+        var x_cand = borderjump_x(objectpos.x + movechoice.x, s.getWorldWidth());
+        var y_cand = borderjump_y(objectpos.y + movechoice.y, s.getWorldHeight());
+
+        var t_new = this.getTerrain(x_cand,y_cand);
+        var obj_on_candidate_field = t_new.getSlotObject();
+
+        // ist da auch nichts?
+        if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == LIFEFORMS.ENERGY){
+            // position verschieben
+            // alte position loeschen
+            var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
+            t_old.setSlotObject(null);
+            t_new.setSlotObject(object);
+            object.setPos(x_cand, y_cand);
+
+            if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == LIFEFORMS.ENERGY){
+                if (s.getSettings().ENERGY_BLOCK_TIME != null){
+                    t_new.setLastEnergy(s.getStepCounter());
+                }
+
+                // "eat energy"
+                this.setEnergyCount(this.getEnergyCount()-1);
+                // neuer eprobot...
+                return 1;
+            }
+        }
+    }
+
+    this.getFreeSpace = function(x,y) {
+
+        for (var i=0;i<DIRECTIONS.length;i++){
+            var movechoice = DIRECTIONS[tools_random(DIRECTIONS.length)];
+            var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
+            var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
+            if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
+                return {x: x_cand,y: y_cand};
+            }
+        }
+
+        return null;
     }
 
     this.getEnergyCount = function(){
