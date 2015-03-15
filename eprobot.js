@@ -3,9 +3,8 @@ function Eprobot(s, x_pos, y_pos, program){
         var forked_ep = undefined;
 
         //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
-        working_programm.push(8);
         tools_compute(working_programm);
-        var action = Math.abs(working_programm.pop() % 9);
+        var action = Math.abs(working_programm[29] % 9);
 
         //console.log(action);
 
@@ -49,6 +48,10 @@ function Eprobot(s, x_pos, y_pos, program){
 
     this.getId = function(){
         return LIFEFORMS.EPROBOT;
+    }
+
+    this.getWorkingProgram = function(){
+        return working_programm;
     }
 
     // init

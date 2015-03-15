@@ -31,13 +31,22 @@ function tools_compute(memory) {
         b = memory[program_counter + 1];
         c = memory[program_counter + 2];
 
-        a = Math.abs(a % memory.length);
-        b = Math.abs(b % memory.length);
-        c = Math.abs(c % memory.length);
+        a = a % memory.length;
+        b = b % memory.length;
+        c = c % memory.length;
+
+        //a = Math.abs(a % memory.length);
+        //b = Math.abs(b % memory.length);
+        //c = Math.abs(c % memory.length);
 
         if (a < 0 || b < 0) {
             program_counter = -1;
         } else {
+            if (isNaN(memory[a])||isNaN(memory[b])){
+                console.log("NaN");
+                console.log(memory[a]);
+                console.log(memory[b]);
+            }
             memory[b] = memory[b] - memory[a];
             if (memory[b] > 0) {
                 program_counter = program_counter + 3;
