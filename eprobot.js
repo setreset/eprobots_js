@@ -1,21 +1,24 @@
-function Eprobot(s, x_pos, y_pos){
+function Eprobot(s, x_pos, y_pos, program){
     this.newStep = function(){
         var forked_ep = undefined;
-        var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
-        if (action == DIRECTIONS.length){ // do nothing
 
+        //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
+        working_programm.push(8);
+        tools_compute(working_programm);
+        var action = Math.abs(working_programm.pop() % 9);
+
+        //console.log(action);
+
+        if (action == DIRECTIONS.length){ // do nothing
         }else{
-            forked_ep = this.move(action);
+            var returncode = s.getWorld().moveObject(this, action);
+            if (returncode === 1){
+                forked_ep = this.fork();
+            }
         }
+
         age++;
         return forked_ep;
-    }
-
-    this.move = function(action){
-        var returncode = s.getWorld().moveObject(this, action);
-        if (returncode === 1){
-            return this.fork();
-        }
     }
 
     this.fork = function(){
@@ -23,7 +26,7 @@ function Eprobot(s, x_pos, y_pos){
         var point = s.getWorld().getFreeSpace(x_pos,y_pos);
         // nachwuchs erzeugen und an freie stelle setzen
         if (point != null){
-            var forked_ep = new Eprobot(s, point.x,point.y);
+            var forked_ep = new Eprobot(s, point.x,point.y, tools_mutate(program));
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -52,4 +55,6 @@ function Eprobot(s, x_pos, y_pos){
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);
     var age = 0;
+
+    var working_programm = program.slice();
 }

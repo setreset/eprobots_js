@@ -34,27 +34,13 @@ function World(s){
         }
     }
 
-    /*this.getFreeSpace = function(x,y) {
-        var pointarr = [];
-        for (var i=0;i<DIRECTIONS.length;i++){
-            var movechoice = DIRECTIONS[i];
-            var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
-            var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
-            if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
-                pointarr.push({x: x_cand,y: y_cand});
-            }
-        }
-
-        if (pointarr.length == 0){
-            return null;
-        }else{ // zufaelligen punkt auswaehlen und zurueckgeben
-            return pointarr[tools_random(pointarr.length)];
-        }
-    }*/
-
     this.moveObject = function(object, action){
+        //console.log("moveObject: "+action);
         var movechoice = DIRECTIONS[action];
 
+        if (movechoice === undefined){
+            console.log("achtung: "+action);
+        }
         var objectpos = object.getPos();
         var x_cand = borderjump_x(objectpos.x + movechoice.x, s.getWorldWidth());
         var y_cand = borderjump_y(objectpos.y + movechoice.y, s.getWorldHeight());
@@ -83,6 +69,24 @@ function World(s){
             }
         }
     }
+
+    /*this.getFreeSpace = function(x,y) {
+        var pointarr = [];
+        for (var i=0;i<DIRECTIONS.length;i++){
+            var movechoice = DIRECTIONS[i];
+            var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
+            var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
+            if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
+                pointarr.push({x: x_cand,y: y_cand});
+            }
+        }
+
+        if (pointarr.length == 0){
+            return null;
+        }else{ // zufaelligen punkt auswaehlen und zurueckgeben
+            return pointarr[tools_random(pointarr.length)];
+        }
+    }*/
 
     this.getFreeSpace = function(x,y) {
 

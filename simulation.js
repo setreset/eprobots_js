@@ -59,6 +59,10 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         eprobots = eprobots_next;
         stepcounter++;
 
+        if (eprobots.length==0){
+            initEprobots();
+        }
+
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
         //console.log("time: "+(t_end-t_start));
@@ -88,7 +92,33 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 }
             }
         }
+    }
 
+    function initEprobots(){
+        //console.log("initeprobots");
+        var program;
+
+        for (var loop=0;loop<20;loop++){
+            var x_pos, y_pos;
+            x_pos = tools_random(world_width);
+            y_pos = tools_random(world_height);
+
+            var t_new = world.getTerrain(x_pos,y_pos);
+            var obj_on_candidate_field = t_new.getSlotObject();
+
+            // ist da auch nichts?
+            if (obj_on_candidate_field == null) {
+                //console.log(x_pos, y_pos)
+
+                program = [];
+                for (var i = 0; i < 30; i++) {
+                    var val = tools_random(300);
+                    program.push(val);
+                }
+
+                eprobots.push(new Eprobot(sim, x_pos, y_pos, program));
+            }
+        }
     }
 
     this.getWorld = function(){
@@ -136,7 +166,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var world = new World(this);
 
     var eprobots = [];
-    eprobots.push(new Eprobot(this, tools_random(world_width), tools_random(world_height)));
+    var sim = this;
+
+    initEprobots();
     //eprobots.push(new Eprobot(this, 10, 10));
     //world.seedEnergy();
 }
