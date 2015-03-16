@@ -41,7 +41,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         // processing
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
-            if (eprobot.getAge() >= settings.LIFETIME){
+            if (eprobot.getAge() >= settings.EXISTTIME){
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
 
@@ -82,11 +82,15 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     if (t.getSlotObject().getId()==LIFEFORMS.ENERGY){
                         var age = stepcounter - t.getSlotObject().getCreationTime();
                         var c_green = 256 - age;
-                        if (c_green<0) c_green=0;
+                        if (c_green<100) c_green=100;
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
-                        var c_fac = Math.round(255/settings.LIFETIME)* t.getSlotObject().getAge();
-                        context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
+                        if (t.getSlotObject().getAge()>=settings.LIFETIME){
+                            context2D.fillStyle = "rgb(0, 0, 255)";
+                        }else{
+                            var c_fac = Math.round(255/settings.LIFETIME)* t.getSlotObject().getAge();
+                            context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
+                        }
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                 }
@@ -111,8 +115,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 //console.log(x_pos, y_pos)
 
                 program = [];
-                for (var i = 0; i < 30; i++) {
-                    var val = tools_random(300);
+                for (var i = 0; i < GLOBAL_SETTINGS.PROGRAM_LENGTH; i++) {
+                    var val = tools_random(300)-30;
                     program.push(val);
                 }
 

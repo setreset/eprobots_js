@@ -25,7 +25,7 @@ function tools_compute(memory) {
     var a, b, c;
 
     //console.log("compute");
-    while (program_counter >= 0 && (program_counter + 2) < (memory.length - 1) && step_counter < 100) {
+    while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 100) {
         //console.log(program_counter);
         a = memory[program_counter];
         b = memory[program_counter + 1];
@@ -43,9 +43,13 @@ function tools_compute(memory) {
             program_counter = -1;
         } else {
             if (isNaN(memory[a])||isNaN(memory[b])){
-                console.log("NaN");
-                console.log(memory[a]);
-                console.log(memory[b]);
+                console.log("-->NaN");
+                console.log("a:"+a);
+                console.log("b:"+b);
+                console.log("memory[a]:"+memory[a]);
+                console.log("memory[b]:"+memory[b]);
+                console.log(memory);
+                console.log();
             }
             memory[b] = memory[b] - memory[a];
             if (memory[b] > 0) {
@@ -62,8 +66,8 @@ function tools_mutate(memory) {
     var new_memory = [];
     for (var i=0;i<memory.length;i++){
         var copyval = memory[i];
-        if (Math.random()<0.005){
-            copyval = copyval + (tools_random(50)-25);
+        if (Math.random()<0.01){
+            copyval = copyval + (tools_random(400)-200);
         }
         new_memory.push(copyval);
     }

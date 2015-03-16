@@ -2,17 +2,20 @@ function Eprobot(s, x_pos, y_pos, program){
     this.newStep = function(){
         var forked_ep = undefined;
 
-        //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
-        tools_compute(working_programm);
-        var action = Math.abs(working_programm[29] % 9);
+        if (age < s.getSettings().LIFETIME){
+            //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
+            //var action = 6;
+            tools_compute(working_programm);
+            var action = Math.abs(working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1] % DIRECTIONS.length+1);
 
-        //console.log(action);
+            //console.log(action);
 
-        if (action == DIRECTIONS.length){ // do nothing
-        }else{
-            var returncode = s.getWorld().moveObject(this, action);
-            if (returncode === 1){
-                forked_ep = this.fork();
+            if (action == DIRECTIONS.length){ // do nothing
+            }else{
+                var returncode = s.getWorld().moveObject(this, action);
+                if (returncode === 1){
+                    forked_ep = this.fork();
+                }
             }
         }
 

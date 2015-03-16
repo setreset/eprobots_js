@@ -39,12 +39,14 @@ function World(s){
         var movechoice = DIRECTIONS[action];
 
         var objectpos = object.getPos();
-        //var x_cand = borderjump_x(objectpos.x + movechoice.x, s.getWorldWidth());
-        //var y_cand = borderjump_y(objectpos.y + movechoice.y, s.getWorldHeight());
-
-        var x_cand = objectpos.x + movechoice.x;
-        var y_cand = objectpos.y + movechoice.y;
-        if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) return;
+        if (GLOBAL_SETTINGS.BORDERJUMP){
+            var x_cand = borderjump_x(objectpos.x + movechoice.x, s.getWorldWidth());
+            var y_cand = borderjump_y(objectpos.y + movechoice.y, s.getWorldHeight());
+        }else{
+            var x_cand = objectpos.x + movechoice.x;
+            var y_cand = objectpos.y + movechoice.y;
+            if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) return;
+        }
 
         var t_new = this.getTerrain(x_cand,y_cand);
         var obj_on_candidate_field = t_new.getSlotObject();
@@ -93,11 +95,14 @@ function World(s){
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[tools_random(DIRECTIONS.length)];
-            //var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
-            //var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
-            var x_cand = x + movechoice.x;
-            var y_cand = y + movechoice.y;
-            if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) return null;
+            if (GLOBAL_SETTINGS.BORDERJUMP){
+                var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
+                var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
+            }else{
+                var x_cand = x + movechoice.x;
+                var y_cand = y + movechoice.y;
+                if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) return null;
+            }
 
             if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
                 return {x: x_cand,y: y_cand};
