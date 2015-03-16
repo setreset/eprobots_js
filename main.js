@@ -50,6 +50,11 @@ $(document).ready(function() {
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
         $("#slider_lifetime").slider("value", simulation.getSettings().LIFETIME);
 
+        $("#slider_existtime_label span").text(simulation.getSettings().EXISTTIME);
+        $("#input_existtime").val(simulation.getSettings().EXISTTIME);
+        // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
+        $("#slider_existtime").slider("value", simulation.getSettings().EXISTTIME);
+
         $("#slider_energy_block_time_label span").text(simulation.getSettings().ENERGY_BLOCK_TIME);
         $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
@@ -59,6 +64,11 @@ $(document).ready(function() {
         $("#input_object_count").val(simulation.getSettings().OBJECT_COUNT);
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
         $("#slider_object_count").slider("value", simulation.getSettings().OBJECT_COUNT);
+
+        $("#slider_sleeptime_label span").text(simulation.getSettings().SLEEPTIME);
+        $("#input_sleeptime").val(simulation.getSettings().SLEEPTIME);
+        // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
+        $("#slider_sleeptime").slider("value", simulation.getSettings().SLEEPTIME);
     }
 
     // LIFETIME
@@ -83,6 +93,32 @@ $(document).ready(function() {
                 simulation.setSettingsLifetime(int_val);
                 $("#slider_lifetime_label span").text(int_val);
                 $("#slider_lifetime").slider("value", int_val);
+            }
+        }
+    });
+
+    // EXISTTIME
+    var min_val_existtime = 1;
+    var max_val_existtime = 9999;
+    $("#slider_existtime").slider({
+        value: simulation.getSettings().EXISTTIME,
+        min: min_val_existtime,
+        max: max_val_existtime,
+        slide: function( event, ui ) {
+            var val = ui.value;
+            $("#slider_existtime_label span").text(val);
+            $("#input_existtime").val(val);
+            simulation.setSettingsExisttime(val);
+        }
+    });
+
+    $("#btn_existtime").on("click", function(e){
+        var int_val = parseInt($("#input_existtime").val());
+        if (!isNaN(int_val)){
+            if (int_val>=min_val_existtime && int_val<=max_val_existtime){
+                simulation.setSettingsExisttime(int_val);
+                $("#slider_existtime_label span").text(int_val);
+                $("#slider_existtime").slider("value", int_val);
             }
         }
     });
@@ -135,6 +171,32 @@ $(document).ready(function() {
                 simulation.setSettingsObjectCount(int_val);
                 $("#slider_object_count_label span").text(int_val);
                 $("#slider_object_count").slider("value", int_val);
+            }
+        }
+    });
+
+    // SLEEP TIME
+    var min_val_sleeptime = 0;
+    var max_val_sleeptime = 1000;
+    $("#slider_sleeptime").slider({
+        value: simulation.getSettings().SLEEPTIME,
+        min: min_val_sleeptime,
+        max: max_val_sleeptime,
+        slide: function( event, ui ) {
+            var val = ui.value;
+            $("#slider_sleeptime_label span").text(val);
+            $("#input_sleeptime").val(val);
+            simulation.setSettingsSleeptime(val);
+        }
+    });
+
+    $("#btn_sleeptime").on("click", function(e){
+        var int_val = parseInt($("#input_sleeptime").val());
+        if (!isNaN(int_val)){
+            if (int_val>=min_val_sleeptime && int_val<=max_val_sleeptime){
+                simulation.setSettingsSleeptime(int_val);
+                $("#slider_sleeptime_label span").text(int_val);
+                $("#slider_sleeptime").slider("value", int_val);
             }
         }
     });

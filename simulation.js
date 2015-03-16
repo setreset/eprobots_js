@@ -66,7 +66,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
         //console.log("time: "+(t_end-t_start));
-        if (running) setTimeout(simulationStep, GLOBAL_SETTINGS.SLEEPTIME - frame_time);
+        if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
     }
 
     function draw(){
@@ -145,12 +145,20 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
       settings.LIFETIME = val;
     };
 
+    this.setSettingsExisttime = function(val){
+        settings.EXISTTIME = val;
+    };
+
     this.setSettingsEnergyBlockTime = function(val){
         settings.ENERGY_BLOCK_TIME = val;
     };
 
     this.setSettingsObjectCount = function(val){
         settings.OBJECT_COUNT = val;
+    };
+
+    this.setSettingsSleeptime = function(val){
+        settings.SLEEPTIME = val;
     };
 
     // init
