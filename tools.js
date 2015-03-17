@@ -42,15 +42,6 @@ function tools_compute(memory) {
         if (a < 0 || b < 0) {
             program_counter = -1;
         } else {
-            if (isNaN(memory[a])||isNaN(memory[b])){
-                console.log("-->NaN");
-                console.log("a:"+a);
-                console.log("b:"+b);
-                console.log("memory[a]:"+memory[a]);
-                console.log("memory[b]:"+memory[b]);
-                console.log(memory);
-                console.log();
-            }
             memory[b] = memory[b] - memory[a];
             if (memory[b] > 0) {
                 program_counter = program_counter + 3;

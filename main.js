@@ -4,6 +4,17 @@ $(document).ready(function() {
     console.log("ready");
     var simulation_canvas = document.getElementById('canvas');
 
+    function fullscreen(){
+        if(simulation_canvas.webkitRequestFullScreen) {
+            simulation_canvas.webkitRequestFullScreen();
+        }
+        else {
+            simulation_canvas.mozRequestFullScreen();
+        }
+    }
+
+    simulation_canvas.addEventListener("dblclick",fullscreen)
+
     simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
     var last_world_width = INITIAL_WORLD_WIDTH;
     var last_world_height = INITIAL_WORLD_HEIGHT;

@@ -99,7 +99,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     }
 
     function initEprobots(){
-        //console.log("initeprobots");
+        var currentdate = new Date();
+        console.log("init eprobots: " + currentdate);
         var program;
 
         for (var loop=0;loop<20;loop++){

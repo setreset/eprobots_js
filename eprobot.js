@@ -6,7 +6,13 @@ function Eprobot(s, x_pos, y_pos, program){
             //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
             //var action = 6;
             tools_compute(working_programm);
-            var action = Math.abs(working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1] % DIRECTIONS.length+1);
+            var control_val = working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
+            if (isFinite(control_val)){
+                var action = Math.abs(control_val % DIRECTIONS.length+1);
+            }else{
+                console.log("Infinite: "+control_val);
+                var action = DIRECTIONS.LENGTH; // do nothing
+            }
 
             //console.log(action);
 

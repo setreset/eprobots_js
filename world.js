@@ -35,7 +35,6 @@ function World(s){
     }
 
     this.moveObject = function(object, action){
-        //console.log("moveObject: "+action);
         var movechoice = DIRECTIONS[action];
 
         var objectpos = object.getPos();

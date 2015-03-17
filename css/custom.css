@@ -1,0 +1,7 @@
+canvas:-webkit-full-screen {
+    display: block;
+}
+
+canvas:-moz-full-screen {
+    display: block;
+}
