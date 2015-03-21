@@ -11,9 +11,26 @@ $(document).ready(function() {
         else {
             simulation_canvas.mozRequestFullScreen();
         }
+
     }
 
-    simulation_canvas.addEventListener("dblclick",fullscreen)
+    simulation_canvas.addEventListener("dblclick", fullscreen);
+
+    function on_fullscreen_change() {
+        simulation.resizeCanvas();
+        //if(document.mozFullScreen || document.webkitIsFullScreen) {
+        //    var rect = c.getBoundingClientRect();
+        //    c.width = rect.width;
+        //    c.height = rect.height;
+        //}
+        //else {
+        //    c.width = 500;
+        //    c.height = 400;
+        //}
+    }
+
+    document.addEventListener('mozfullscreenchange', on_fullscreen_change);
+    document.addEventListener('webkitfullscreenchange', on_fullscreen_change);
 
     simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
     var last_world_width = INITIAL_WORLD_WIDTH;

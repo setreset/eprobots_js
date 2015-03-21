@@ -162,6 +162,18 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         settings.SLEEPTIME = val;
     };
 
+    this.resizeCanvas = function(){
+        console.log("resizeCanvas");
+        var rect = canvas.getBoundingClientRect();
+        var c_w = rect.width;
+        var c_h = rect.height;
+
+        canvas.width = c_w; //$(simulation_canvas).width();
+        canvas.height = c_h; //$(simulation_canvas).height();
+        x_step = c_w / world_width;
+        y_step = c_h / world_height;
+    }
+
     // init
     var context2D = canvas.getContext('2d');
     var world_width = initial_world_width;
@@ -173,8 +185,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var running = false;
     var stepcounter = 0;
 
-    var x_step = canvas.width / world_width;
-    var y_step = canvas.height / world_height;
+    var x_step, y_step;
+    this.resizeCanvas();
 
     var world = new World(this);
 

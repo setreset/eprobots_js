@@ -11,7 +11,7 @@ function Eprobot(s, x_pos, y_pos, program){
                 var action = Math.abs(control_val % DIRECTIONS.length+1);
             }else{
                 console.log("Infinite: "+control_val);
-                var action = DIRECTIONS.LENGTH; // do nothing
+                var action = DIRECTIONS.length; // do nothing
             }
 
             //console.log(action);
