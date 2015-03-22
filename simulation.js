@@ -59,7 +59,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         eprobots = eprobots_next;
         stepcounter++;
 
-        if (eprobots.length==0){
+        if (eprobots.length == 0){
             initEprobots();
         }
 
@@ -86,9 +86,10 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
                         if (t.getSlotObject().getAge()>=settings.LIFETIME){
-                            context2D.fillStyle = "rgb(0, 0, 255)";
+                            var c_fac = Math.round(255 * (t.getSlotObject().getAge()-settings.LIFETIME) / (settings.EXISTTIME-settings.LIFETIME));
+                            context2D.fillStyle = "rgb("+c_fac+", "+c_fac+", 255)";
                         }else{
-                            var c_fac = Math.round(255/settings.LIFETIME)* t.getSlotObject().getAge();
+                            var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
                             context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
                         }
                     }

@@ -101,7 +101,7 @@ $(document).ready(function() {
 
     // LIFETIME
     var min_val_lifetime = 1;
-    var max_val_lifetime = 300;
+    var max_val_lifetime = 750;
     $("#slider_lifetime").slider({
         value: simulation.getSettings().LIFETIME,
         min: min_val_lifetime,
