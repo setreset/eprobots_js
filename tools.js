@@ -66,6 +66,10 @@ function tools_mutate(memory) {
     return new_memory;
 }
 
+function tools_map_range(value, low1, high1, low2, high2){
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+}
+
 function borderjump_x(x, world_width){
     if (x >= world_width){
         return 0;

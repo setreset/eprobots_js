@@ -45,9 +45,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
 
-                //var t = world.getTerrain(e_pos.x, e_pos.y);
-                //t.setSlotObject(null);
-                fossils.push(new Fossil(sim, e_pos.x, e_pos.y));
+                if (settings.FOSSILTIME > 0){
+                    fossils.push(new Fossil(sim, e_pos.x, e_pos.y));
+                }else{
+                    var t = world.getTerrain(e_pos.x, e_pos.y);
+                    t.setSlotObject(null);
+                }
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
@@ -66,7 +69,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             // alter des ersten fossils
             var c_fossil = fossils[0];
             var c_fossil_age = stepcounter - c_fossil.getCreationTime();
-            if (c_fossil_age > 200){
+            if (c_fossil_age > settings.FOSSILTIME){
                 var f_pos = c_fossil.getPos();
                 var t = world.getTerrain(f_pos.x, f_pos.y);
                 t.setSlotObject(null);
@@ -106,11 +109,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         if (c_green<100) c_green=100;
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
-                        var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
+                        //var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
+                        var c_fac = Math.round(tools_map_range(t.getSlotObject().getAge(), 0, settings.LIFETIME, 0, 255));
                         context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.FOSSIL){
-                        //    var c_fac = Math.round(255 * (t.getSlotObject().getAge()-settings.LIFETIME) / (settings.EXISTTIME-settings.LIFETIME));
-                        context2D.fillStyle = "rgb(0, 0, 255)";
+                        var age = stepcounter - t.getSlotObject().getCreationTime();
+                        var c_blue = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 255, 100));
+
+                        context2D.fillStyle = "rgb(0, 0,"+c_blue+")";
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                 }
