@@ -78,11 +78,6 @@ $(document).ready(function() {
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
         $("#slider_lifetime").slider("value", simulation.getSettings().LIFETIME);
 
-        $("#slider_existtime_label span").text(simulation.getSettings().EXISTTIME);
-        $("#input_existtime").val(simulation.getSettings().EXISTTIME);
-        // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
-        $("#slider_existtime").slider("value", simulation.getSettings().EXISTTIME);
-
         $("#slider_energy_block_time_label span").text(simulation.getSettings().ENERGY_BLOCK_TIME);
         $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
@@ -121,32 +116,6 @@ $(document).ready(function() {
                 simulation.setSettingsLifetime(int_val);
                 $("#slider_lifetime_label span").text(int_val);
                 $("#slider_lifetime").slider("value", int_val);
-            }
-        }
-    });
-
-    // EXISTTIME
-    var min_val_existtime = 1;
-    var max_val_existtime = 9999;
-    $("#slider_existtime").slider({
-        value: simulation.getSettings().EXISTTIME,
-        min: min_val_existtime,
-        max: max_val_existtime,
-        slide: function( event, ui ) {
-            var val = ui.value;
-            $("#slider_existtime_label span").text(val);
-            $("#input_existtime").val(val);
-            simulation.setSettingsExisttime(val);
-        }
-    });
-
-    $("#btn_existtime").on("click", function(e){
-        var int_val = parseInt($("#input_existtime").val());
-        if (!isNaN(int_val)){
-            if (int_val>=min_val_existtime && int_val<=max_val_existtime){
-                simulation.setSettingsExisttime(int_val);
-                $("#slider_existtime_label span").text(int_val);
-                $("#slider_existtime").slider("value", int_val);
             }
         }
     });

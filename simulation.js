@@ -41,12 +41,13 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         // processing
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
-            if (eprobot.getAge() >= settings.EXISTTIME){
+            if (eprobot.getAge() >= settings.LIFETIME){
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
 
-                var t = world.getTerrain(e_pos.x, e_pos.y);
-                t.setSlotObject(null);
+                //var t = world.getTerrain(e_pos.x, e_pos.y);
+                //t.setSlotObject(null);
+                fossils.push(new Fossil(sim, e_pos.x, e_pos.y));
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
@@ -57,6 +58,26 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         }
 
         eprobots = eprobots_next;
+
+        // die aeltesten fossilien entfernen
+        //console.log(fossils.length);
+        //var f_c=0
+        while (fossils.length>0){
+            // alter des ersten fossils
+            var c_fossil = fossils[0];
+            var c_fossil_age = stepcounter - c_fossil.getCreationTime();
+            if (c_fossil_age > 200){
+                var f_pos = c_fossil.getPos();
+                var t = world.getTerrain(f_pos.x, f_pos.y);
+                t.setSlotObject(null);
+                fossils.shift();
+                //f_c++;
+            }else{
+                break;
+            }
+        }
+        //console.log(f_c+" entfernt");
+
         stepcounter++;
 
         if (eprobots.length == 0){
@@ -85,13 +106,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         if (c_green<100) c_green=100;
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                     }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
-                        if (t.getSlotObject().getAge()>=settings.LIFETIME){
-                            var c_fac = Math.round(255 * (t.getSlotObject().getAge()-settings.LIFETIME) / (settings.EXISTTIME-settings.LIFETIME));
-                            context2D.fillStyle = "rgb("+c_fac+", "+c_fac+", 255)";
-                        }else{
-                            var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
-                            context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
-                        }
+                        var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
+                        context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
+                    }else if (t.getSlotObject().getId()==LIFEFORMS.FOSSIL){
+                        //    var c_fac = Math.round(255 * (t.getSlotObject().getAge()-settings.LIFETIME) / (settings.EXISTTIME-settings.LIFETIME));
+                        context2D.fillStyle = "rgb(0, 0, 255)";
                     }
                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                 }
@@ -192,6 +211,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var world = new World(this);
 
     var eprobots = [];
+    var fossils = [];
+
     var sim = this;
 
     initEprobots();
