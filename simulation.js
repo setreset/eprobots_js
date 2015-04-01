@@ -38,6 +38,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         draw();
 
         var eprobots_next = [];
+        kind_count = {};
         // processing
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
@@ -54,8 +55,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
+                kind_count[eprobot.getKind()]=true;
+
                 if (forked_ep != undefined){
                     eprobots_next.push(forked_ep);
+                    kind_count[forked_ep.getKind()]=true;
                 }
             }
         }
@@ -83,8 +87,15 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         stepcounter++;
 
-        if (eprobots.length == 0){
+        //if (eprobots.length == 0){
+        //    initEprobots();
+        //}
+        if (!(0 in kind_count) && !(1 in kind_count)){
             initEprobots();
+        }else if (0 in kind_count && !(1 in kind_count)){
+            initEprobots(1);
+        }else if (1 in kind_count && !(0 in kind_count)){
+            initEprobots(0);
         }
 
         var t_end = new Date().getTime();
@@ -103,17 +114,24 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 if (t.getSlotObject()==null){
 
                 }else{
-                    if (t.getSlotObject().getId()==LIFEFORMS.ENERGY){
-                        var age = stepcounter - t.getSlotObject().getCreationTime();
+                    var t_object = t.getSlotObject();
+                    if (t_object.getId()==LIFEFORMS.ENERGY){
+                        var age = stepcounter - t_object.getCreationTime();
                         var c_green = 256 - age;
                         if (c_green<100) c_green=100;
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
-                    }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
-                        //var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
-                        var c_fac = Math.round(tools_map_range(t.getSlotObject().getAge(), 0, settings.LIFETIME, 0, 255));
-                        context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
-                    }else if (t.getSlotObject().getId()==LIFEFORMS.FOSSIL){
-                        var age = stepcounter - t.getSlotObject().getCreationTime();
+                    }else if (t_object.getId()==LIFEFORMS.EPROBOT){
+                        if (t_object.getKind() == 0){
+                            //var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
+                            var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 0, 255));
+                            context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
+                        }else if(t_object.getKind() == 1){
+                            var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 0, 255));
+                            context2D.fillStyle = "rgb(255, 157, "+c_fac+")";
+                        }
+
+                    }else if (t_object.getId()==LIFEFORMS.FOSSIL){
+                        var age = stepcounter - t_object.getCreationTime();
                         var c_blue = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 255, 100));
 
                         context2D.fillStyle = "rgb(0, 0,"+c_blue+")";
@@ -124,9 +142,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         }
     }
 
-    function initEprobots(){
+    function initEprobots(kind){
         var currentdate = new Date();
-        console.log("init eprobots: " + currentdate);
+        console.log("init eprobots: " + currentdate + " (kind: " + kind + ")");
         var program;
 
         for (var loop=0;loop<20;loop++){
@@ -147,7 +165,10 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     program.push(val);
                 }
 
-                eprobots.push(new Eprobot(sim, x_pos, y_pos, program));
+                if (kind == undefined){
+                    kind = tools_random(2);
+                }
+                eprobots.push(new Eprobot(sim, kind, x_pos, y_pos, program));
             }
         }
     }
@@ -217,6 +238,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var world = new World(this);
 
     var eprobots = [];
+    var kind_count = {};
     var fossils = [];
 
     var sim = this;

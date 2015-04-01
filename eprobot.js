@@ -1,4 +1,4 @@
-function Eprobot(s, x_pos, y_pos, program){
+function Eprobot(s, kind, x_pos, y_pos, program){
     this.newStep = function(){
         var forked_ep = undefined;
 
@@ -34,7 +34,7 @@ function Eprobot(s, x_pos, y_pos, program){
         var point = s.getWorld().getFreeSpace(x_pos,y_pos);
         // nachwuchs erzeugen und an freie stelle setzen
         if (point != null){
-            var forked_ep = new Eprobot(s, point.x,point.y, tools_mutate(program));
+            var forked_ep = new Eprobot(s, kind, point.x, point.y, tools_mutate(program));
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -57,6 +57,10 @@ function Eprobot(s, x_pos, y_pos, program){
 
     this.getId = function(){
         return LIFEFORMS.EPROBOT;
+    }
+
+    this.getKind = function(){
+        return kind;
     }
 
     this.getWorkingProgram = function(){
