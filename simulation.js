@@ -120,6 +120,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         var c_green = 256 - age;
                         if (c_green<100) c_green=100;
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==LIFEFORMS.EPROBOT){
                         if (t_object.getKind() == 0){
                             //var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
@@ -129,14 +130,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                             var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 0, 255));
                             context2D.fillStyle = "rgb(255, 157, "+c_fac+")";
                         }
-
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==LIFEFORMS.FOSSIL){
                         var age = stepcounter - t_object.getCreationTime();
-                        var c_blue = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 255, 100));
-
+                        var c_blue = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 100, 255));
                         context2D.fillStyle = "rgb(0, 0,"+c_blue+")";
+                        //context2D.fillRect(x * x_step-(2*x_step), y * y_step-(2*y_step), x_step*2, y_step*2);
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
-                    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                 }
             }
         }
@@ -193,8 +194,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
       settings.LIFETIME = val;
     };
 
-    this.setSettingsExisttime = function(val){
-        settings.EXISTTIME = val;
+    this.setSettingsFossiltime = function(val){
+        settings.FOSSILTIME = val;
     };
 
     this.setSettingsEnergyBlockTime = function(val){

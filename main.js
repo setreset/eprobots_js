@@ -78,6 +78,11 @@ $(document).ready(function() {
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
         $("#slider_lifetime").slider("value", simulation.getSettings().LIFETIME);
 
+        $("#slider_fossiltime_label span").text(simulation.getSettings().FOSSILTIME);
+        $("#input_fossiltime").val(simulation.getSettings().FOSSILTIME);
+        // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
+        $("#slider_fossiltime").slider("value", simulation.getSettings().FOSSILTIME);
+
         $("#slider_energy_block_time_label span").text(simulation.getSettings().ENERGY_BLOCK_TIME);
         $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         // beim start wird der slider schon initialisiert, aber bei resetSettings ist das wichtig...
@@ -116,6 +121,32 @@ $(document).ready(function() {
                 simulation.setSettingsLifetime(int_val);
                 $("#slider_lifetime_label span").text(int_val);
                 $("#slider_lifetime").slider("value", int_val);
+            }
+        }
+    });
+
+    // FOSSILTIME
+    var min_val_fossiltime = 0;
+    var max_val_fossiltime = 5000;
+    $("#slider_fossiltime").slider({
+        value: simulation.getSettings().FOSSILTIME,
+        min: min_val_fossiltime,
+        max: max_val_fossiltime,
+        slide: function( event, ui ) {
+            var val = ui.value;
+            $("#slider_fossiltime_label span").text(val);
+            $("#input_fossiltime").val(val);
+            simulation.setSettingsFossiltime(val);
+        }
+    });
+
+    $("#btn_fossiltime").on("click", function(e){
+        var int_val = parseInt($("#input_fossiltime").val());
+        if (!isNaN(int_val)){
+            if (int_val>=min_val_fossiltime && int_val<=max_val_fossiltime){
+                simulation.setSettingsFossiltime(int_val);
+                $("#slider_fossiltime_label span").text(int_val);
+                $("#slider_fossiltime").slider("value", int_val);
             }
         }
     });
