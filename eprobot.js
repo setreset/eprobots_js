@@ -34,7 +34,22 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         var point = s.getWorld().getFreeSpace(x_pos,y_pos);
         // nachwuchs erzeugen und an freie stelle setzen
         if (point != null){
-            var forked_ep = new Eprobot(s, kind, point.x, point.y, tools_mutate(program));
+            // sexuelle fortpflanzung?
+            if (Math.random()<0.1){
+                var eprobots = s.getEprobots();
+                var partner = eprobots[tools_random(eprobots.length)];
+                if (partner.getKind()==kind){
+                    //console.log("recombine");
+                    var new_dna = tools_recombine(program, partner.getInitialProgram());
+                }else{
+                    //console.log("recombine fail");
+                    var new_dna = tools_mutate(program);
+                }
+            }else{
+                var new_dna = tools_mutate(program)
+            }
+
+            var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -65,6 +80,10 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
     this.getWorkingProgram = function(){
         return working_programm;
+    }
+
+    this.getInitialProgram = function(){
+        return program;
     }
 
     // init

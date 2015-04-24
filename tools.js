@@ -66,6 +66,27 @@ function tools_mutate(memory) {
     return new_memory;
 }
 
+function tools_recombine(memory1, memory2) {
+    var crossover_at = tools_random(GLOBAL_SETTINGS.PROGRAM_LENGTH);
+
+    var new_memory = [];
+    for (var i=0;i<GLOBAL_SETTINGS.PROGRAM_LENGTH;i++){
+        if (i < crossover_at){
+            var copyval = memory1[i];
+        }else{
+            var copyval = memory2[i];
+        }
+
+        // mit eingebauter mutation
+        if (Math.random()<0.01){
+            copyval = copyval + (tools_random(400)-200);
+        }
+
+        new_memory.push(copyval);
+    }
+    return new_memory;
+}
+
 function tools_map_range(value, low1, high1, low2, high2){
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
