@@ -1,4 +1,4 @@
-function Fossil(s, x_pos, y_pos){
+function Fossil(s, kind, x_pos, y_pos){
 
     this.getId = function(){
         return LIFEFORMS.FOSSIL;
@@ -10,6 +10,10 @@ function Fossil(s, x_pos, y_pos){
 
     this.getPos = function(){
         return {"x": x_pos, "y": y_pos}
+    }
+
+    this.getKind = function(){
+        return kind;
     }
 
     // init

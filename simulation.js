@@ -47,7 +47,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 var e_pos = eprobot.getPos();
 
                 if (settings.FOSSILTIME > 0){
-                    fossils.push(new Fossil(sim, e_pos.x, e_pos.y));
+                    fossils.push(new Fossil(sim, eprobot.getKind(), e_pos.x, e_pos.y));
                 }else{
                     var t = world.getTerrain(e_pos.x, e_pos.y);
                     t.setSlotObject(null);
@@ -87,16 +87,16 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         stepcounter++;
 
-        //if (eprobots.length == 0){
-        //    initEprobots();
-        //}
-        if (!(0 in kind_count) && !(1 in kind_count)){
+        if (eprobots.length == 0){
             initEprobots();
-        }else if (0 in kind_count && !(1 in kind_count)){
-            initEprobots(1);
-        }else if (1 in kind_count && !(0 in kind_count)){
-            initEprobots(0);
         }
+        //if (!(0 in kind_count) && !(1 in kind_count)){
+        //    initEprobots();
+        //}else if (0 in kind_count && !(1 in kind_count)){
+        //    initEprobots(1);
+        //}else if (1 in kind_count && !(0 in kind_count)){
+        //    initEprobots(0);
+        //}
 
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
@@ -122,20 +122,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         context2D.fillStyle = "rgb(0, "+c_green+", 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==LIFEFORMS.EPROBOT){
-                        if (t_object.getKind() == 0){
-                            //var c_fac = Math.round((255 * t.getSlotObject().getAge())/settings.LIFETIME);
-                            var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 0, 255));
-                            context2D.fillStyle = "rgb(255, "+c_fac+", "+c_fac+")";
-                        }else if(t_object.getKind() == 1){
-                            var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 0, 255));
-                            context2D.fillStyle = "rgb(255, 157, "+c_fac+")";
-                        }
+                        var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 255, 0));
+                        context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==LIFEFORMS.FOSSIL){
                         var age = stepcounter - t_object.getCreationTime();
-                        var c_blue = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 100, 255));
-                        context2D.fillStyle = "rgb(0, 0,"+c_blue+")";
-                        //context2D.fillRect(x * x_step-(2*x_step), y * y_step-(2*y_step), x_step*2, y_step*2);
+                        var c_fac = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 360, 0));
+                        var l_fac = Math.round(tools_map_range(age, 0, settings.FOSSILTIME, 0, 90));
+                        context2D.fillStyle = "hsl("+c_fac+", 100%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
                 }
@@ -169,7 +163,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 if (kind == undefined){
                     kind = tools_random(2);
                 }
-                eprobots.push(new Eprobot(sim, kind, x_pos, y_pos, program));
+                eprobots.push(new Eprobot(sim, 0, x_pos, y_pos, program));
             }
         }
     }

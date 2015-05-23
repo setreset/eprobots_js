@@ -111,6 +111,39 @@ function World(s){
         return null;
     }
 
+    this.get_environment_val = function(x,y) {
+        var local_energycount = 0;
+        var local_eprobotcount = 0;
+        var local_fossilcount = 0;
+        for (var i=0;i<DIRECTIONS.length;i++){
+            var movechoice = DIRECTIONS[tools_random(DIRECTIONS.length)];
+            if (GLOBAL_SETTINGS.BORDERJUMP){
+                var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
+                var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
+            }else{
+                var x_cand = x + movechoice.x;
+                var y_cand = y + movechoice.y;
+                if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) continue;
+            }
+            var t = this.getTerrain(x_cand,y_cand);
+            if (t.getSlotObject()!=null){
+                if (t.getSlotObject().getId()==LIFEFORMS.ENERGY){
+                    local_energycount++;
+                }else if (t.getSlotObject().getId()==LIFEFORMS.EPROBOT){
+                    local_eprobotcount++;
+                }else if (t.getSlotObject().getId()==LIFEFORMS.FOSSIL){
+                    local_fossilcount++;
+                }
+            }
+        }
+
+        return {
+            local_energycount: local_energycount,
+            local_eprobotcount: local_eprobotcount,
+            local_fossilcount: local_fossilcount
+        };
+    }
+
     this.getEnergyCount = function(){
         return energy_count;
     }
