@@ -6,6 +6,7 @@ function World(s){
 
     this.seedEnergy = function(){
         var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
+        //var energydiff = s.getSettings().OBJECT_COUNT - energy_count;
 
         for(var i=0;i<energydiff;i++){
             // zufaellige stelle

@@ -38,7 +38,6 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         draw();
 
         var eprobots_next = [];
-        kind_count = {};
         // processing
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
@@ -55,11 +54,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }else{
                 var forked_ep = eprobot.newStep();
                 eprobots_next.push(eprobot);
-                kind_count[eprobot.getKind()]=true;
 
                 if (forked_ep != undefined){
                     eprobots_next.push(forked_ep);
-                    kind_count[forked_ep.getKind()]=true;
                 }
             }
         }
@@ -100,7 +97,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
-        //console.log("time: "+(t_end-t_start));
+        if (frame_time>t_max) t_max = frame_time;
+        t_count = t_count + frame_time;
+        var mean = t_count/stepcounter;
+        mean = mean.toFixed(1);
+        console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
         if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
     }
 
@@ -224,6 +225,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     this.setSettings(initial_settings);
 
     var t_start = null;
+    var t_max = 0;
+    var t_count = 0;
     var running = false;
     var stepcounter = 0;
 
@@ -237,8 +240,4 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var fossils = [];
 
     var sim = this;
-
-    initEprobots();
-    //eprobots.push(new Eprobot(this, 10, 10));
-    //world.seedEnergy();
 }
