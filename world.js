@@ -5,8 +5,8 @@ function World(s){
     }
 
     this.seedEnergy = function(){
-        var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
-        //var energydiff = s.getSettings().OBJECT_COUNT - energy_count;
+        //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
+        var energydiff = s.getSettings().OBJECT_COUNT - energy_count;
 
         for(var i=0;i<energydiff;i++){
             // zufaellige stelle
@@ -117,7 +117,7 @@ function World(s){
         var local_eprobotcount = 0;
         var local_fossilcount = 0;
         for (var i=0;i<DIRECTIONS.length;i++){
-            var movechoice = DIRECTIONS[tools_random(DIRECTIONS.length)];
+            var movechoice = DIRECTIONS[i];
             if (GLOBAL_SETTINGS.BORDERJUMP){
                 var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
                 var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
