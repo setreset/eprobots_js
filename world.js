@@ -15,22 +15,9 @@ function World(s){
             // ist sie frei?
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null){
-                var can_grow = true;
-
-                if (s.getSettings().ENERGY_BLOCK_TIME != null){
-                    if (t.getLastEnergy() != null){
-                        // true wenn genug zeit verstrichen, false wenn nicht
-                        can_grow = (s.getStepCounter()-t.getLastEnergy()) >= s.getSettings().ENERGY_BLOCK_TIME;
-                    }
-                }
-
-                if (can_grow){
-                    // neues energyobject
-                    new Energy(s, x, y);
-                    energy_count++;
-                }else{
-                    //console.log("no no no");
-                }
+                // neues energyobject
+                new Energy(s, x, y);
+                energy_count++;
             }
         }
     }
@@ -61,10 +48,6 @@ function World(s){
             object.setPos(x_cand, y_cand);
 
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == LIFEFORMS.ENERGY){
-                if (s.getSettings().ENERGY_BLOCK_TIME != null){
-                    t_new.setLastEnergy(s.getStepCounter());
-                }
-
                 // "eat energy"
                 this.setEnergyCount(this.getEnergyCount()-1);
                 // neuer eprobot...
