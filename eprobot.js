@@ -11,6 +11,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
             working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
             working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
+            working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_watercount;
             tools_compute(working_programm);
             var control_val = working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
             if (isFinite(control_val)){
@@ -25,7 +26,12 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             if (action == DIRECTIONS.length){ // do nothing
             }else{
                 var returncode = s.getWorld().moveObject(this, action);
-                if (returncode === 1){
+                if (GLOBAL_SETTINGS.WATER){
+                    var w_check = water > 0;
+                }else{
+                    var w_check = true;
+                }
+                if (returncode === 1 && w_check){
                     forked_ep = this.fork();
                 }
             }
@@ -77,25 +83,26 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     }
 
     this.getId = function(){
-        return LIFEFORMS.EPROBOT;
+        return OBJECTTYPES.EPROBOT;
     }
 
     this.getKind = function(){
         return kind;
     }
 
-    this.getWorkingProgram = function(){
-        return working_programm;
-    }
-
     this.getInitialProgram = function(){
         return program;
+    }
+
+    this.incrWater = function(){
+        water++;
     }
 
     // init
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);
     var age = 0;
+    var water = 0;
 
     var working_programm = program.slice();
 }

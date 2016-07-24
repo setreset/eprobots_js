@@ -9,10 +9,11 @@ var DIRECTIONS = [
     {x:-1,y:1}   // bottom left
 ];
 
-var LIFEFORMS = {
+var OBJECTTYPES = {
     ENERGY: 1,
     EPROBOT: 2,
-    FOSSIL: 3
+    FOSSIL: 3,
+    WATER: 4
 }
 
 // liefert ganzzahlen von 0 bis max-1

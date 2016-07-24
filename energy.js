@@ -1,7 +1,7 @@
 function Energy(s, x_pos, y_pos){
 
     this.getId = function(){
-        return LIFEFORMS.ENERGY;
+        return OBJECTTYPES.ENERGY;
     }
 
     this.getCreationTime = function(){
