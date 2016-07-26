@@ -75,7 +75,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     }
 
     function simulationStep(){
-        t_start = new Date().getTime();
+        if (GLOBAL_SETTINGS.LOG_STATS){
+            t_start = new Date().getTime();
+        }
 
         world.seedEnergy();
         draw();
@@ -138,13 +140,16 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         //    initEprobots(0);
         //}
 
-        var t_end = new Date().getTime();
-        var frame_time = t_end-t_start;
-        if (frame_time>t_max) t_max = frame_time;
-        t_count = t_count + frame_time;
-        var mean = t_count/stepcounter;
-        mean = mean.toFixed(1);
-        console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
+        if (GLOBAL_SETTINGS.LOG_STATS){
+            var t_end = new Date().getTime();
+            var frame_time = t_end-t_start;
+            if (frame_time>t_max) t_max = frame_time;
+            t_count = t_count + frame_time;
+            var mean = t_count/stepcounter;
+            mean = mean.toFixed(1);
+            console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
+        }
+
         if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
     }
 
@@ -251,6 +256,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
     this.setSettingsSleeptime = function(val){
         settings.SLEEPTIME = val;
+    };
+
+    this.setSettingsBreedtime = function(val){
+        settings.BREEDTIME = val;
+    };
+
+    this.setSettingsEnergyWidth = function(val){
+        settings.ENERGY_WIDTH = val;
     };
 
     this.resizeCanvas = function(){

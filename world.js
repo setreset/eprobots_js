@@ -8,9 +8,17 @@ function World(s){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
         var energydiff = s.getSettings().OBJECT_COUNT - energy_count;
 
+        var energy_width = s.getSettings().ENERGY_WIDTH;
+        if (energy_width=="MAX"){
+            energy_width = s.getWorldWidth();
+        }else{
+            energy_width = parseInt(energy_width);
+        }
+
         for(var i=0;i<energydiff;i++){
+
             // zufaellige stelle
-            var x = tools_random(s.getWorldWidth());
+            var x = tools_random(energy_width);
             var y = tools_random(s.getWorldHeight());
             // ist sie frei?
             var t = this.getTerrain(x,y);
