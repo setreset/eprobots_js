@@ -24,14 +24,15 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             //console.log(action);
 
             if (action == DIRECTIONS.length){ // do nothing
+                if (water > 0){
+                    if (this.spit_water()){
+                        console.log("spit");
+                        water--;
+                    }
+                }
             }else{
                 var returncode = s.getWorld().moveObject(this, action);
-                if (GLOBAL_SETTINGS.WATER){
-                    var w_check = water > 0;
-                }else{
-                    var w_check = true;
-                }
-                if (returncode === 1 && w_check){
+                if (returncode === 1){
                     forked_ep = this.fork();
                 }
             }
@@ -47,7 +48,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         // nachwuchs erzeugen und an freie stelle setzen
         if (point != null){
             // sexuelle fortpflanzung?
-            if (Math.random()<0.1){
+            if (Math.random()<0.5){
                 var eprobots = s.getEprobots();
                 var partner = eprobots[tools_random(eprobots.length)];
                 if (partner.getKind()==kind){
@@ -64,6 +65,21 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);
             // nachwuchs anmelden
             return forked_ep;
+        }else{
+            return null;
+        }
+    }
+
+    this.spit_water = function(){
+        // freie stelle suchen
+        var point = s.getWorld().getFreeSpace(x_pos,y_pos);
+        // nachwuchs erzeugen und an freie stelle setzen
+        if (point != null){
+
+
+            var waterobj = new Water(s, point.x, point.y);
+            // nachwuchs anmelden
+            return waterobj;
         }else{
             return null;
         }
@@ -96,6 +112,10 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
     this.incrWater = function(){
         water++;
+    }
+
+    this.getWater = function(){
+        return water;
     }
 
     // init

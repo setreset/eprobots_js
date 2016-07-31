@@ -12,9 +12,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             //    this.setWater_cicle(x_off, y_off, r);
             //}
 
-            for (var l=10;l<=140;l=l+15){
-                for (var x=15;x<=135;x++){
-                    new Water(this, x, l);
+            for (var l=10;l<=140;l=l+30){
+                for (var x=75;x<=135;x++){
+                    new WaterSource(this, x, l);
                 }
             }
         }
@@ -30,14 +30,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         while (y <= x){
             console.log(x+" "+y);
-            new Water(this, x0+x, y0+y); //sowie symmetrische Pixel einfärben
-            new Water(this, x0-x, y0+y);
-            new Water(this, x0-x, y0-y);
-            new Water(this, x0+x, y0-y);
-            new Water(this, x0+y, y0+x);
-            new Water(this, x0-y, y0+x);
-            new Water(this, x0-y, y0-x);
-            new Water(this, x0+y, y0-x);
+            new WaterSource(this, x0+x, y0+y); //sowie symmetrische Pixel einfärben
+            new WaterSource(this, x0-x, y0+y);
+            new WaterSource(this, x0-x, y0-y);
+            new WaterSource(this, x0+x, y0-y);
+            new WaterSource(this, x0+y, y0+x);
+            new WaterSource(this, x0-y, y0+x);
+            new WaterSource(this, x0-y, y0-x);
+            new WaterSource(this, x0+y, y0-x);
 
 
             d = d + 2*y + 1;
@@ -184,7 +184,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         context2D.fillStyle = "hsl("+c_fac+", 100%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
-                    }else if (t_object.getId()==OBJECTTYPES.WATER){
+                    }else if (t_object.getId()==OBJECTTYPES.WATER_SOURCE || t_object.getId()==OBJECTTYPES.WATER){
                         context2D.fillStyle = "rgb(0, 0, 255)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 

@@ -15,17 +15,18 @@ function World(s){
             energy_width = parseInt(energy_width);
         }
 
-        for(var i=0;i<energydiff;i++){
+        for(var x=0;x<energy_width;x++){
 
-            // zufaellige stelle
-            var x = tools_random(energy_width);
-            var y = tools_random(s.getWorldHeight());
-            // ist sie frei?
-            var t = this.getTerrain(x,y);
-            if (t.getSlotObject() == null){
-                // neues energyobject
-                new Energy(s, x, y);
-                energy_count++;
+            for (var i=0;i<(energydiff/energy_width)-(x/5);i++){
+                // zufaellige stelle
+                var y = tools_random(s.getWorldHeight());
+                // ist sie frei?
+                var t = this.getTerrain(x,y);
+                if (t.getSlotObject() == null){
+                    // neues energyobject
+                    new Energy(s, x, y);
+                    energy_count++;
+                }
             }
         }
     }
@@ -46,50 +47,59 @@ function World(s){
         var t_new = this.getTerrain(x_cand,y_cand);
         var obj_on_candidate_field = t_new.getSlotObject();
 
-        // ist da auch nichts?
-        if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY){
-            // position verschieben
-            // alte position loeschen
-            var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
-            t_old.setSlotObject(null);
-            t_new.setSlotObject(object);
-            object.setPos(x_cand, y_cand);
+        if (object.getId()==OBJECTTYPES.EPROBOT){
+            // ist da auch nichts?
+            if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY || obj_on_candidate_field.getId() == OBJECTTYPES.WATER){
+                // position verschieben
+                // alte position loeschen
+                var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
+                t_old.setSlotObject(null);
+                t_new.setSlotObject(object);
+                object.setPos(x_cand, y_cand);
 
-            if (obj_on_candidate_field != null){
-                // "eat energy"
-                this.setEnergyCount(this.getEnergyCount()-1);
-                // neuer eprobot...
-                if (object.getAge() > s.getSettings().BREEDTIME){
-                    return 1;
+                if (obj_on_candidate_field != null) {
+                    if (obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
+                        // "eat energy"
+                        this.decrEnergyCount();
+                        // neuer eprobot...
+                        if (GLOBAL_SETTINGS.WATER){
+                            var w_check = object.getWater() > 0;
+                        }else{
+                            var w_check = true;
+                        }
+                        if (object.getAge() > s.getSettings().BREEDTIME && w_check /*&& s.getEprobots().length < 2000*/) {
+                            return 1;
+                        }
+                    }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER) {
+                        object.incrWater();
+                    }
                 }
+
+            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER_SOURCE){
+                object.incrWater();
+
+            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.FOSSIL){
+                //object.incrWater();
+                //this.moveObject(obj_on_candidate_field, direction);
             }
 
-        }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER){
-            object.incrWater();
+        }else if (object.getId()==OBJECTTYPES.FOSSIL){
+            if (obj_on_candidate_field == null){
+                console.log("verschiebe fossil");
+                // position verschieben
+                // alte position loeschen
+                var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
+                t_old.setSlotObject(null);
+                t_new.setSlotObject(object);
+                object.setPos(x_cand, y_cand);
+
+            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.FOSSIL){
+                //object.incrWater();
+                this.moveObject(obj_on_candidate_field, direction);
+            }
         }
 
-        else if (obj_on_candidate_field.getId() == OBJECTTYPES.FOSSIL){
-            //object.incrWater();
-        }
     }
-
-    /*this.getFreeSpace = function(x,y) {
-        var pointarr = [];
-        for (var i=0;i<DIRECTIONS.length;i++){
-            var movechoice = DIRECTIONS[i];
-            var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
-            var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
-            if (this.getTerrain(x_cand,y_cand).getSlotObject() == null){
-                pointarr.push({x: x_cand,y: y_cand});
-            }
-        }
-
-        if (pointarr.length == 0){
-            return null;
-        }else{ // zufaelligen punkt auswaehlen und zurueckgeben
-            return pointarr[tools_random(pointarr.length)];
-        }
-    }*/
 
     this.getFreeSpace = function(x,y) {
 
@@ -135,7 +145,7 @@ function World(s){
                     local_eprobotcount++;
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.FOSSIL){
                     local_fossilcount++;
-                }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER){
+                }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER_SOURCE){
                     local_watercount++;
                 }
             }
@@ -155,6 +165,10 @@ function World(s){
 
     this.setEnergyCount = function(new_e){
         energy_count = new_e;
+    }
+
+    this.decrEnergyCount = function(){
+        energy_count--;
     }
 
     // init
