@@ -17,7 +17,7 @@ function World(s){
 
         for(var x=0;x<energy_width;x++){
 
-            for (var i=0;i<(energydiff/energy_width)-(x/5);i++){
+            for (var i=0;i<(energydiff/energy_width)-(x/12);i++){
                 // zufaellige stelle
                 var y = tools_random(s.getWorldHeight());
                 // ist sie frei?
@@ -126,7 +126,9 @@ function World(s){
         var local_energycount = 0;
         var local_eprobotcount = 0;
         var local_fossilcount = 0;
+        var local_watersourcecount = 0;
         var local_watercount = 0;
+
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
             if (GLOBAL_SETTINGS.BORDERJUMP){
@@ -146,6 +148,8 @@ function World(s){
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.FOSSIL){
                     local_fossilcount++;
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER_SOURCE){
+                    local_watersourcecount++;
+                }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER){
                     local_watercount++;
                 }
             }
@@ -155,6 +159,7 @@ function World(s){
             local_energycount: local_energycount,
             local_eprobotcount: local_eprobotcount,
             local_fossilcount: local_fossilcount,
+            local_watersourcecount: local_watersourcecount,
             local_watercount: local_watercount
         };
     }
