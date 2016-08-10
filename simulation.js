@@ -79,8 +79,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             t_start = new Date().getTime();
         }
 
-        world.seedEnergy();
+        //world.seedEnergy();
         draw();
+
+        if (eprobots.length == 0){
+            initEprobots();
+        }
 
         var eprobots_next = [];
         // processing
@@ -110,10 +114,6 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         stepcounter++;
 
-        if (eprobots.length == 0){
-            initEprobots();
-        }
-
         if (GLOBAL_SETTINGS.LOG_STATS){
             var t_end = new Date().getTime();
             var frame_time = t_end-t_start;
@@ -132,13 +132,20 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         context2D.clearRect(0, 0, canvas.width, canvas.height);
 
         for (var x=0;x<world_width;x++){
+            var px = x/world_width;
+            px = 0.7 - Math.abs(Math.cos(px*Math.PI*2))*0.7;
             for (var y=0;y<world_height;y++){
                 var t = world.getTerrain(x,y);
-                if (t.getSlotObject()==null){
+                var t_object = t.getSlotObject();
 
-                }else{
-                    var t_object = t.getSlotObject();
+                if (t_object==null){
 
+                    if (Math.random() < px){
+                        t_object = new Energy(sim, x, y);
+                    }
+                }
+
+                if (t_object != null){
                     if (t_object.getId()==OBJECTTYPES.ENERGY){
                         var age = stepcounter - t_object.getCreationTime();
                         var c_green = 256 - age;
@@ -188,7 +195,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             var obj_on_candidate_field = t_new.getSlotObject();
 
             // ist da auch nichts?
-            if (obj_on_candidate_field == null) {
+            if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
                 //console.log(x_pos, y_pos)
 
                 program = [];
