@@ -6,7 +6,7 @@ function World(s){
 
     this.seedEnergy = function(){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
-        var energydiff = s.getSettings().OBJECT_COUNT - energy_count;
+        var energydiff = energycount_max - energy_count;
 
         var energy_width = s.getSettings().ENERGY_WIDTH;
         if (energy_width=="MAX"){
@@ -67,7 +67,7 @@ function World(s){
                         }else{
                             var w_check = true;
                         }
-                        if (object.getAge() > s.getSettings().BREEDTIME && w_check /*&& s.getEprobots().length < 2000*/) {
+                        if (object.getAge() > s.getSettings().BREEDTIME && w_check && s.getEprobots().length < s.getSettings().OBJECT_COUNT) {
                             return 1;
                         }
                     }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER) {
@@ -185,5 +185,7 @@ function World(s){
         }
     }
 
+    var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / 4.5, 10);
+    console.log("energycount_max: "+ energycount_max)
     var energy_count = 0;
 }

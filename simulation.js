@@ -79,7 +79,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             t_start = new Date().getTime();
         }
 
-        //world.seedEnergy();
+        world.seedEnergy();
         draw();
 
         if (eprobots.length == 0){
@@ -132,18 +132,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         context2D.clearRect(0, 0, canvas.width, canvas.height);
 
         for (var x=0;x<world_width;x++){
-            var px = x/world_width;
-            px = 0.7 - Math.abs(Math.cos(px*Math.PI*2))*0.7;
             for (var y=0;y<world_height;y++){
                 var t = world.getTerrain(x,y);
                 var t_object = t.getSlotObject();
-
-                if (t_object==null){
-
-                    if (Math.random() < px){
-                        t_object = new Energy(sim, x, y);
-                    }
-                }
 
                 if (t_object != null){
                     if (t_object.getId()==OBJECTTYPES.ENERGY){
