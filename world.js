@@ -47,56 +47,24 @@ function World(s){
         var t_new = this.getTerrain(x_cand,y_cand);
         var obj_on_candidate_field = t_new.getSlotObject();
 
-        if (object.getId()==OBJECTTYPES.EPROBOT){
-            // ist da auch nichts?
-            if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY || obj_on_candidate_field.getId() == OBJECTTYPES.WATER){
-                // position verschieben
-                // alte position loeschen
-                var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
-                t_old.setSlotObject(null);
-                t_new.setSlotObject(object);
-                object.setPos(x_cand, y_cand);
+        // ist da auch nichts?
+        if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY){
+            // position verschieben
+            // alte position loeschen
+            var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
+            t_old.setSlotObject(null);
+            t_new.setSlotObject(object);
+            object.setPos(x_cand, y_cand);
 
-                if (obj_on_candidate_field != null) {
-                    if (obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
-                        // "eat energy"
-                        this.decrEnergyCount();
-                        // neuer eprobot...
-                        if (GLOBAL_SETTINGS.WATER){
-                            var w_check = object.getWater() > 0;
-                        }else{
-                            var w_check = true;
-                        }
-                        if (object.getAge() > s.getSettings().BREEDTIME && w_check && s.getEprobots().length < s.getSettings().OBJECT_COUNT) {
-                            return 1;
-                        }
-                    }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER) {
-                        object.incrWater();
-                    }
+            if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
+                // "eat energy"
+                energy_count--;
+                // neuer eprobot...
+                if (object.getAge() > s.getSettings().BREEDTIME && s.getEprobots().length < s.getSettings().OBJECT_COUNT) {
+                    return 1;
                 }
-
-            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.WATER_SOURCE){
-                object.incrWater();
-
-            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.FOSSIL){
-                //object.incrWater();
-                //this.moveObject(obj_on_candidate_field, direction);
             }
 
-        }else if (object.getId()==OBJECTTYPES.FOSSIL){
-            if (obj_on_candidate_field == null){
-                console.log("verschiebe fossil");
-                // position verschieben
-                // alte position loeschen
-                var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
-                t_old.setSlotObject(null);
-                t_new.setSlotObject(object);
-                object.setPos(x_cand, y_cand);
-
-            }else if (obj_on_candidate_field.getId() == OBJECTTYPES.FOSSIL){
-                //object.incrWater();
-                this.moveObject(obj_on_candidate_field, direction);
-            }
         }
 
     }
@@ -126,8 +94,6 @@ function World(s){
         var local_energycount = 0;
         var local_eprobotcount = 0;
         var local_fossilcount = 0;
-        var local_watersourcecount = 0;
-        var local_watercount = 0;
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -147,10 +113,6 @@ function World(s){
                     local_eprobotcount++;
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.FOSSIL){
                     local_fossilcount++;
-                }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER_SOURCE){
-                    local_watersourcecount++;
-                }else if (t.getSlotObject().getId()==OBJECTTYPES.WATER){
-                    local_watercount++;
                 }
             }
         }
@@ -158,22 +120,8 @@ function World(s){
         return {
             local_energycount: local_energycount,
             local_eprobotcount: local_eprobotcount,
-            local_fossilcount: local_fossilcount,
-            local_watersourcecount: local_watersourcecount,
-            local_watercount: local_watercount
+            local_fossilcount: local_fossilcount
         };
-    }
-
-    this.getEnergyCount = function(){
-        return energy_count;
-    }
-
-    this.setEnergyCount = function(new_e){
-        energy_count = new_e;
-    }
-
-    this.decrEnergyCount = function(){
-        energy_count--;
     }
 
     // init

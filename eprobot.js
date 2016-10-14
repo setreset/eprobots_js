@@ -3,21 +3,12 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         var forked_ep = undefined;
 
         if (age < s.getSettings().LIFETIME){
-            //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
-            //var action = 6;
             // set input
             if (GLOBAL_SETTINGS.SENSE){
-                var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
-                //console.log(inputval);
-                working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
-                working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
-                working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
-                working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_watersourcecount;
-                working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-6] = inputval.local_watercount;
+                this.set_input();
             }
 
-            tools_compute(working_programm);
-            var control_val = working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
+            var control_val = this.get_move();
             if (isFinite(control_val)){
                 var action = Math.abs(control_val % DIRECTIONS.length+1);
             }else{
@@ -25,15 +16,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                 var action = DIRECTIONS.length; // do nothing
             }
 
-            //console.log(action);
-
             if (action == DIRECTIONS.length){ // do nothing
-                if (water > 0){
-                    if (this.spit_water()){
-                        console.log("spit");
-                        water--;
-                    }
-                }
             }else{
                 var returncode = s.getWorld().moveObject(this, action);
                 if (returncode === 1){
@@ -44,6 +27,21 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
         age++;
         return forked_ep;
+    }
+
+    this.set_input = function(){
+        var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
+        //console.log(inputval);
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
+    }
+
+    this.get_move = function(){
+        //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
+        //var action = 6;
+        tools_compute(working_programm);
+        return working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
     }
 
     this.fork = function(){
@@ -74,21 +72,6 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         }
     }
 
-    this.spit_water = function(){
-        // freie stelle suchen
-        var point = s.getWorld().getFreeSpace(x_pos,y_pos);
-        // nachwuchs erzeugen und an freie stelle setzen
-        if (point != null){
-
-
-            var waterobj = new Water(s, point.x, point.y);
-            // nachwuchs anmelden
-            return waterobj;
-        }else{
-            return null;
-        }
-    }
-
     this.getAge = function(){
         return age;
     }
@@ -114,19 +97,11 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         return program;
     }
 
-    this.incrWater = function(){
-        water++;
-    }
-
-    this.getWater = function(){
-        return water;
-    }
 
     // init
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);
     var age = 0;
-    var water = 0;
 
     var working_programm = program.slice();
 }

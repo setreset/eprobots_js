@@ -12,9 +12,7 @@ var DIRECTIONS = [
 var OBJECTTYPES = {
     ENERGY: 1,
     EPROBOT: 2,
-    FOSSIL: 3,
-    WATER_SOURCE: 4,
-    WATER: 5
+    FOSSIL: 3
 }
 
 // liefert ganzzahlen von 0 bis max-1

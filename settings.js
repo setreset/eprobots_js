@@ -13,7 +13,6 @@ var INITIAL_WORLD_HEIGHT = 150;
 var GLOBAL_SETTINGS = {
     PROGRAM_LENGTH: 35,
     BORDERJUMP: true,
-    WATER: false,
     SENSE: true,
     LOG_STATS: false
 }
