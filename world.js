@@ -31,6 +31,54 @@ function World(s){
         }
     }
 
+    this.seedEnergy_tile = function(){
+        for (var tile_x=0;tile_x< tiles.length; tile_x++){
+            for (var tile_y=0;tile_y<tiles[tile_x].length;tile_y++){
+                if (tiles[tile_x][tile_y]==1){
+                    this.seedEnergy_one_tile(tile_x,tile_y);
+                }
+            }
+        }
+        if (s.getStepCounter()%250==0){
+            console.log("get_tiles")
+            tiles = this.get_tiles();
+        }
+    };
+
+    this.seedEnergy_one_tile = function(tile_x, tile_y){
+        var energydiff = energycount_max - energy_count
+        var energydiff_one_tile = energydiff/(tile_count*tile_count*0.5);
+
+        //koordinaten errechnen
+        var tile_width = parseInt(s.getWorldWidth() / tile_count, 10);
+        var tile_height = parseInt(s.getWorldHeight() / tile_count, 10);
+        var x_start = tile_x * tile_width;
+        var y_start = tile_y * tile_height;
+
+        for(var i=0;i<energydiff_one_tile;i++){
+            var x = tools_random(tile_width) + x_start;
+            var y = tools_random(tile_height) + y_start;
+            // ist sie frei?
+            var t = this.getTerrain(x,y);
+            if (t.getSlotObject() == null){
+                // neues energyobject
+                new Energy(s, x, y);
+                energy_count++;
+            }
+        }
+    }
+
+    this.get_tiles = function(){
+        var tile_arr = new Array(tile_count);
+        for (var x=0;x<tile_arr.length;x++){
+            tile_arr[x] = new Array(tile_count);
+            for (var y=0;y<tile_arr[x].length;y++){
+                tile_arr[x][y] = tools_random(2);
+            }
+        }
+        return tile_arr;
+    };
+
     this.moveObject = function(object, direction){
         var movechoice = DIRECTIONS[direction];
 
@@ -54,6 +102,7 @@ function World(s){
             var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
             t_old.setSlotObject(null);
             t_new.setSlotObject(object);
+            t_new.set_trace(255);
             object.setPos(x_cand, y_cand);
 
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
@@ -94,6 +143,10 @@ function World(s){
         var local_energycount = 0;
         var local_eprobotcount = 0;
         var local_fossilcount = 0;
+        var local_tracecount = 0;
+
+        var t = this.getTerrain(x,y);
+        local_tracecount += t.get_trace();
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -105,7 +158,10 @@ function World(s){
                 var y_cand = y + movechoice.y;
                 if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) continue;
             }
+
             var t = this.getTerrain(x_cand,y_cand);
+            local_tracecount += t.get_trace();
+
             if (t.getSlotObject()!=null){
                 if (t.getSlotObject().getId()==OBJECTTYPES.ENERGY){
                     local_energycount++;
@@ -120,7 +176,8 @@ function World(s){
         return {
             local_energycount: local_energycount,
             local_eprobotcount: local_eprobotcount,
-            local_fossilcount: local_fossilcount
+            local_fossilcount: local_fossilcount,
+            local_tracecount: local_tracecount
         };
     }
 
@@ -133,7 +190,11 @@ function World(s){
         }
     }
 
-    var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / 4.5, 10);
-    console.log("energycount_max: "+ energycount_max)
+    var energy_factor = 4.5;
+    var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / energy_factor, 10);
+    console.log("energycount_max: "+ energycount_max);
     var energy_count = 0;
+
+    var tile_count = 3;
+    var tiles = this.get_tiles();
 }

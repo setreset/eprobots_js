@@ -109,7 +109,7 @@ $(document).ready(function() {
     });
 
     // OBJECT_COUNT
-    var min_val_object_count = 100;
+    var min_val_object_count = 50;
     var max_val_object_count = 100000;
 
     $("#btn_object_count").on("click", function(e){

@@ -35,6 +35,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount;
     }
 
     this.get_move = function(){
@@ -44,16 +45,44 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         return working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
     }
 
+    this.get_local_partner = function(){
+        var eprobots = s.getEprobots();
+        var smallest_dist = s.getWorldWidth()/2;
+        var cand = null;
+        if (eprobots.length>0){
+            for (var t=0;t<10;t++){
+                var p = eprobots[tools_random(eprobots.length)];
+                var p_pos = p.getPos();
+
+                var dist_x = Math.abs(p_pos.x-x_pos);
+                if (dist_x > s.getWorldWidth()/2){
+                    dist_x= s.getWorldWidth()-dist_x;
+                }
+
+                var dist_y = Math.abs(p_pos.y-y_pos);
+                if (dist_y > s.getWorldHeight()/2){
+                    dist_y= s.getWorldHeight()-dist_y;
+                }
+                var dist = Math.sqrt(dist_x*dist_x+dist_y*dist_y);
+                if (dist<smallest_dist){
+                    smallest_dist = dist;
+                    cand = p;
+                }
+            }
+        }
+        return cand;
+    }
+
     this.fork = function(){
         // freie stelle suchen
         var point = s.getWorld().getFreeSpace(x_pos,y_pos);
         // nachwuchs erzeugen und an freie stelle setzen
         if (point != null){
             // sexuelle fortpflanzung?
-            if (Math.random()<0.5){
-                var eprobots = s.getEprobots();
-                var partner = eprobots[tools_random(eprobots.length)];
-                if (partner.getKind()==kind){
+            if (Math.random()<0.5 && false){
+                var partner = this.get_local_partner();
+
+                if (partner && partner.getKind()==kind){
                     //console.log("recombine");
                     var new_dna = tools_recombine(program, partner.getInitialProgram());
                 }else{
