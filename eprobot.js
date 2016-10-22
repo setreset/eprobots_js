@@ -30,12 +30,12 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     }
 
     this.set_input = function(){
-        var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
-        //console.log(inputval);
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount;
+        //var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
+        ////console.log(inputval);
+        //working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
+        //working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
+        //working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
+        //working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount;
     }
 
     this.get_move = function(){

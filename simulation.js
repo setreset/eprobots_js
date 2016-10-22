@@ -133,8 +133,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     if (t.get_trace() > 0.0){
                         context2D.fillStyle = "rgb(255,255,"+t_fac+")";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        t.decr_trace();
                     }
+                }
+
+                if (t.get_trace() > 0.0){
+                    t.decr_trace();
                 }
             }
         }
