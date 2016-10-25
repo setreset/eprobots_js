@@ -17,8 +17,16 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         return running;
     }
 
-    this.getEprobots = function(){
-        return eprobots;
+    this.getEprobots = function(kind){
+        if (kind==0){
+            return eprobots;
+        }else{
+            return eprobots_1
+        }
+    }
+
+    this.get_eprobots_count = function(){
+        return eprobots.length + eprobots_1.length;
     }
 
     this.getWorldWidth = function(){
@@ -42,13 +50,42 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         draw();
 
         if (eprobots.length == 0){
-            initEprobots();
+            initEprobots(0);
+        }
+        if (eprobots_1.length == 0){
+            initEprobots(1);
         }
 
+        processEprobots(0);
+        processEprobots(1);
+
+        stepcounter++;
+
+        if (GLOBAL_SETTINGS.LOG_STATS){
+            var t_end = new Date().getTime();
+            var frame_time = t_end-t_start;
+            if (frame_time>t_max) t_max = frame_time;
+            t_count = t_count + frame_time;
+            var mean = t_count/stepcounter;
+            mean = mean.toFixed(1);
+            console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
+        }
+
+        if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
+    }
+
+    function processEprobots(kind){
         var eprobots_next = [];
+
+        if (kind==0){
+            var ep = eprobots;
+        }else if (kind == 1){
+            var ep = eprobots_1;
+        }
+
         // processing
-        for (var i=0;i<eprobots.length;i++){
-            var eprobot = eprobots[i];
+        for (var i=0;i<ep.length;i++){
+            var eprobot = ep[i];
             if (eprobot.getAge() >= settings.LIFETIME){
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
@@ -69,21 +106,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }
         }
 
-        eprobots = eprobots_next;
-
-        stepcounter++;
-
-        if (GLOBAL_SETTINGS.LOG_STATS){
-            var t_end = new Date().getTime();
-            var frame_time = t_end-t_start;
-            if (frame_time>t_max) t_max = frame_time;
-            t_count = t_count + frame_time;
-            var mean = t_count/stepcounter;
-            mean = mean.toFixed(1);
-            console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
+        if (kind==0){
+            eprobots = eprobots_next;
+        }else if (kind == 1){
+            eprobots_1 = eprobots_next;
         }
-
-        if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
     }
 
     function draw(){
@@ -107,14 +134,20 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     }else if (t_object.getId()==OBJECTTYPES.EPROBOT){
                         //var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 255, 0));
                         //context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
-                        context2D.fillStyle = "rgb(255, 0, 0)";
-                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                        if (t_object.getKind()==0){
+                            context2D.fillStyle = "rgb(255, 0, 0)";
+                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                        }else if(t_object.getKind()==1){
+                            context2D.fillStyle = "rgb(0, 0, 255)";
+                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                        }
+
 
                     }else if (t_object.getId()==OBJECTTYPES.FOSSIL){
                         var fossil_age = stepcounter - t_object.getCreationTime();
                         var c_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 360, 0));
                         var l_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 0, 90));
-                        context2D.fillStyle = "hsl("+c_fac+", 100%, "+l_fac+"%)";
+                        context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
                         if (fossil_age > settings.FOSSILTIME){
@@ -129,26 +162,48 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     //var c_green = 256 - age;
                     //if (c_green<100) c_green=100;
 
-                    var t_fac = 255-t.get_trace();
-                    if (t.get_trace() > 0.0){
-                        context2D.fillStyle = "rgb(255,255,"+t_fac+")";
+                    var trace_val_0 = t.get_trace(0);
+                    var trace_val_1 = t.get_trace(1);
+                    if (trace_val_0 > 0 && trace_val_1 == 0) {
+                        var l_val = Math.round(tools_map_range(trace_val_0, 0, 64, 90, 45));
+                        context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }else if (trace_val_1 > 0 && trace_val_0 == 0) {
+                        var l_val = Math.round(tools_map_range(trace_val_1, 0, 64, 90, 45));
+                        context2D.fillStyle = "hsl(194, 52%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
+                    //else if (trace_val_0 > 0 && trace_val_1 > 0){
+                    //    var h0 = 0;
+                    //    var s0 = 0.52;
+                    //    var l0 = tools_map_range(trace_val_0, 0, 64, 0.9, 0.45);
+                    //
+                    //    var h1 = 0.54;
+                    //    var s1 = 0.52;
+                    //    var l1 = tools_map_range(trace_val_1, 0, 64, 0.9, 0.45);
+                    //
+                    //    var rgb0 = hslToRgb(h0, s0, l0);
+                    //    var rgb1 = hslToRgb(h1, s1, l1);
+                    //    var rgb_all = merge_colors(rgb0, rgb1);
+                    //
+                    //    //console.log(rgb_all);
+                    //    context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
+                    //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    //}
                 }
 
-                if (t.get_trace() > 0.0){
-                    t.decr_trace();
-                }
+                t.decr_trace(0);
+                t.decr_trace(1);
             }
         }
     }
 
-    function initEprobots(){
+    function initEprobots(kind){
         var currentdate = new Date();
         console.log("init eprobots: " + currentdate);
         var program;
 
-        for (var loop=0;loop<50;loop++){
+        for (var loop=0;loop<25;loop++){
             var x_pos, y_pos;
             x_pos = tools_random(world_width);
             y_pos = tools_random(world_height);
@@ -166,7 +221,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     program.push(val);
                 }
 
-                eprobots.push(new Eprobot(sim, 0, x_pos, y_pos, program));
+                if (kind == 0){
+                    eprobots.push(new Eprobot(sim, 0, x_pos, y_pos, program));
+                }else if (kind == 1){
+                    eprobots_1.push(new Eprobot(sim, 1, x_pos, y_pos, program));
+                }
+
             }
         }
     }
@@ -246,6 +306,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var world = new World(this);
 
     var eprobots = [];
+    var eprobots_1 = [];
 
     var sim = this;
 }

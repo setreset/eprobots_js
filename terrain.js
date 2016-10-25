@@ -1,24 +1,19 @@
 function Terrain(){
     var slot_object = null;
-    var trace = 0;
+    var traces = [0,0];
 
-    this.inc_trace = function(){
-        trace++;
-    };
-
-    this.decr_trace = function(){
-        trace-=4;
-        if (trace<=0){
-            trace=0.0;
+    this.decr_trace = function(kind){
+        if (traces[kind]>0){
+            traces[kind]-=1;
         }
     };
 
-    this.get_trace = function(){
-        return trace;
+    this.get_trace = function(kind){
+        return traces[kind];
     };
 
-    this.set_trace = function(val){
-        trace = val;
+    this.set_trace = function(kind, val){
+        traces[kind] = val;
     };
 
     this.getSlotObject = function(){

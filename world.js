@@ -97,19 +97,25 @@ function World(s){
 
         // ist da auch nichts?
         if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY){
+            if (object.getKind()==0 && t_new.get_trace(1)>0){
+                return
+            }
+            if (object.getKind()==1 && t_new.get_trace(0)>0){
+                return
+            }
             // position verschieben
             // alte position loeschen
             var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
             t_old.setSlotObject(null);
             t_new.setSlotObject(object);
-            t_new.set_trace(255);
+            t_new.set_trace(object.getKind(),64);
             object.setPos(x_cand, y_cand);
 
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
                 // "eat energy"
                 energy_count--;
                 // neuer eprobot...
-                if (object.getAge() > s.getSettings().BREEDTIME && s.getEprobots().length < s.getSettings().OBJECT_COUNT) {
+                if (object.getAge() > s.getSettings().BREEDTIME && s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
                     return 1;
                 }
             }
