@@ -97,12 +97,6 @@ function World(s){
 
         // ist da auch nichts?
         if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY){
-            if (object.getKind()==0 && t_new.get_trace(1)>0){
-                return
-            }
-            if (object.getKind()==1 && t_new.get_trace(0)>0){
-                return
-            }
             // position verschieben
             // alte position loeschen
             var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);

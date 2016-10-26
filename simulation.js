@@ -18,15 +18,15 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     }
 
     this.getEprobots = function(kind){
-        if (kind==0){
-            return eprobots;
-        }else{
-            return eprobots_1
-        }
+        return eprobots[kind];
     }
 
     this.get_eprobots_count = function(){
-        return eprobots.length + eprobots_1.length;
+        var sum = 0;
+        for (var i=0;i<eprobots.length;i++){
+            sum += eprobots[i].length;
+        }
+        return sum;
     }
 
     this.getWorldWidth = function(){
@@ -50,17 +50,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         //world.seedEnergy_tile();
         draw();
 
-        if (eprobots.length == 0){
-            beep();
-            initEprobots(0);
-        }
-        if (eprobots_1.length == 0){
-            beep();
-            initEprobots(1);
-        }
+        for (var i=0; i<eprobots.length;i++){
+            if (eprobots[i].length==0){
+                beep();
+                initEprobots(i);
+            }
 
-        processEprobots(0);
-        processEprobots(1);
+            processEprobots(i);
+        }
 
         stepcounter++;
 
@@ -80,11 +77,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     function processEprobots(kind){
         var eprobots_next = [];
 
-        if (kind==0){
-            var ep = eprobots;
-        }else if (kind == 1){
-            var ep = eprobots_1;
-        }
+        var ep = eprobots[kind];
 
         // processing
         for (var i=0;i<ep.length;i++){
@@ -109,11 +102,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }
         }
 
-        if (kind==0){
-            eprobots = eprobots_next;
-        }else if (kind == 1){
-            eprobots_1 = eprobots_next;
-        }
+        eprobots[kind] = eprobots_next;
     }
 
     function draw(){
@@ -176,23 +165,23 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         context2D.fillStyle = "hsl(194, 52%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
-                    //else if (trace_val_0 > 0 && trace_val_1 > 0){
-                    //    var h0 = 0;
-                    //    var s0 = 0.52;
-                    //    var l0 = tools_map_range(trace_val_0, 0, 64, 0.9, 0.45);
-                    //
-                    //    var h1 = 0.54;
-                    //    var s1 = 0.52;
-                    //    var l1 = tools_map_range(trace_val_1, 0, 64, 0.9, 0.45);
-                    //
-                    //    var rgb0 = hslToRgb(h0, s0, l0);
-                    //    var rgb1 = hslToRgb(h1, s1, l1);
-                    //    var rgb_all = merge_colors(rgb0, rgb1);
-                    //
-                    //    //console.log(rgb_all);
-                    //    context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
-                    //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    //}
+                    else if (trace_val_0 > 0 && trace_val_1 > 0){
+                        var h0 = 0;
+                        var s0 = 0.52;
+                        var l0 = tools_map_range(trace_val_0, 0, 64, 0.9, 0.45);
+
+                        var h1 = 0.54;
+                        var s1 = 0.52;
+                        var l1 = tools_map_range(trace_val_1, 0, 64, 0.9, 0.45);
+
+                        var rgb0 = hslToRgb(h0, s0, l0);
+                        var rgb1 = hslToRgb(h1, s1, l1);
+                        var rgb_all = merge_colors(rgb0, rgb1);
+
+                        //console.log(rgb_all);
+                        context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }
                 }
 
                 t.decr_trace(0);
@@ -224,12 +213,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     program.push(val);
                 }
 
-                if (kind == 0){
-                    eprobots.push(new Eprobot(sim, 0, x_pos, y_pos, program));
-                }else if (kind == 1){
-                    eprobots_1.push(new Eprobot(sim, 1, x_pos, y_pos, program));
-                }
-
+                var newep = new Eprobot(sim, kind, x_pos, y_pos, program);
+                eprobots[kind].push(newep);
             }
         }
     }
@@ -308,8 +293,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
     var world = new World(this);
 
-    var eprobots = [];
-    var eprobots_1 = [];
+    var eprobots = [[],[]];
 
     var sim = this;
 }
