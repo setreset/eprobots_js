@@ -108,7 +108,7 @@ function World(s){
             var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
             t_old.setSlotObject(null);
             t_new.setSlotObject(object);
-            t_new.set_trace(object.getKind(),64);
+            t_new.set_trace(object.getKind(), s.getSettings().TRACETIME);
             object.setPos(x_cand, y_cand);
 
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
