@@ -94,11 +94,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 }
             }else{
                 var forked_ep = eprobot.newStep();
-                eprobots_next.push(eprobot);
-
-                if (forked_ep != undefined){
+                if (forked_ep != null){
                     eprobots_next.push(forked_ep);
                 }
+
+                eprobots_next.push(eprobot);
             }
         }
 
@@ -294,6 +294,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var world = new World(this);
 
     var eprobots = [[],[]];
+    //var eprobots = [[],[]];
 
     var sim = this;
 }

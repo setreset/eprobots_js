@@ -79,7 +79,7 @@ function World(s){
         return tile_arr;
     };
 
-    this.moveObject = function(object, direction){
+    this.getCoordinates = function(object, direction){
         var movechoice = DIRECTIONS[direction];
 
         var objectpos = object.getPos();
@@ -92,30 +92,7 @@ function World(s){
             if (x_cand < 0 || x_cand >= s.getWorldWidth() || y_cand < 0 || y_cand >= s.getWorldHeight()) return;
         }
 
-        var t_new = this.getTerrain(x_cand,y_cand);
-        var obj_on_candidate_field = t_new.getSlotObject();
-
-        // ist da auch nichts?
-        if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY){
-            // position verschieben
-            // alte position loeschen
-            var t_old = s.getWorld().getTerrain(objectpos.x, objectpos.y);
-            t_old.setSlotObject(null);
-            t_new.setSlotObject(object);
-            t_new.set_trace(object.getKind(), s.getSettings().TRACETIME);
-            object.setPos(x_cand, y_cand);
-
-            if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
-                // "eat energy"
-                energy_count--;
-                // neuer eprobot...
-                if (object.getAge() > s.getSettings().BREEDTIME && s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
-                    return 1;
-                }
-            }
-
-        }
-
+        return [x_cand,y_cand];
     }
 
     this.getFreeSpace = function(x,y) {
@@ -143,10 +120,12 @@ function World(s){
         var local_energycount = 0;
         var local_eprobotcount = 0;
         var local_fossilcount = 0;
-        var local_tracecount = 0;
+        var local_tracecount_0 = 0;
+        var local_tracecount_1 = 0;
 
         var t = this.getTerrain(x,y);
-        local_tracecount += t.get_trace();
+        local_tracecount_0 += t.get_trace(0);
+        local_tracecount_1 += t.get_trace(1);
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -160,7 +139,8 @@ function World(s){
             }
 
             var t = this.getTerrain(x_cand,y_cand);
-            local_tracecount += t.get_trace();
+            local_tracecount_0 += t.get_trace(0);
+            local_tracecount_1 += t.get_trace(1);
 
             if (t.getSlotObject()!=null){
                 if (t.getSlotObject().getId()==OBJECTTYPES.ENERGY){
@@ -177,8 +157,13 @@ function World(s){
             local_energycount: local_energycount,
             local_eprobotcount: local_eprobotcount,
             local_fossilcount: local_fossilcount,
-            local_tracecount: local_tracecount
+            local_tracecount_0: local_tracecount_0,
+            local_tracecount_1: local_tracecount_1
         };
+    }
+
+    this.decr_energycount = function(){
+        energy_count--;
     }
 
     // init
