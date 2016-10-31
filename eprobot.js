@@ -91,7 +91,8 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
         working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount_0;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-6] = inputval.local_tracecount_1;
     }
 
     this.get_move = function(){

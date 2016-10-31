@@ -157,8 +157,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     var trace_val_0 = t.get_trace(0);
                     var trace_val_1 = t.get_trace(1);
                     if (trace_val_0 > 0 && trace_val_1 == 0) {
-                        var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 45));
+                        var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
                         context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        //context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (trace_val_1 > 0 && trace_val_0 == 0) {
                         var l_val = Math.round(tools_map_range(trace_val_1, 0, settings.TRACETIME, 90, 45));
