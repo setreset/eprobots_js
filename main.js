@@ -78,7 +78,6 @@ $(document).ready(function() {
         $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         $("#input_object_count").val(simulation.getSettings().OBJECT_COUNT);
         $("#input_sleeptime").val(simulation.getSettings().SLEEPTIME);
-        $("#input_breedtime").val(simulation.getSettings().BREEDTIME);
         $("#input_energy_width").val(simulation.getSettings().ENERGY_WIDTH);
     }
 
@@ -130,19 +129,6 @@ $(document).ready(function() {
         if (!isNaN(int_val)){
             if (int_val>=min_val_sleeptime && int_val<=max_val_sleeptime){
                 simulation.setSettingsSleeptime(int_val);
-            }
-        }
-    });
-
-    // BREED TIME
-    var min_val_breedtime = 0;
-    var max_val_breedtime = 1000;
-
-    $("#btn_breedtime").on("click", function(e){
-        var int_val = parseInt($("#input_breedtime").val());
-        if (!isNaN(int_val)){
-            if (int_val>=min_val_breedtime && int_val<=max_val_breedtime){
-                simulation.setSettingsBreedtime(int_val);
             }
         }
     });

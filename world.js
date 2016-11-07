@@ -4,21 +4,54 @@ function World(s){
         return worldarr[x][y];
     }
 
+    this.seedEnergy_new = function(){
+        //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
+        var energydiff = 500 - energy_count;
+        var energy_height = 10;
+
+        for(var i=0;i<energydiff;i++){
+            var x = tools_random(s.getWorldWidth());
+            var y = s.getWorldHeight()-tools_random(energy_height)-1;
+            // ist sie frei?
+            var t = this.getTerrain(x,y);
+            if (t.getSlotObject() == null){
+                // neues energyobject
+                new Energy(s, x, y);
+                energy_count++;
+            }
+        }
+
+        for(var i=0;i<50;i++){
+
+            // zufaellige stelle
+            var x = tools_random(s.getWorldWidth());
+            var y = tools_random(s.getWorldHeight()-energy_height);
+            // ist sie frei?
+            var t = this.getTerrain(x,y);
+            if (t.getSlotObject() == null && t.getFruitfulness()>0){
+                // neues energyobject
+                new Energy(s, x, y);
+                energy_count++;
+            }
+        }
+    };
+
     this.seedEnergy = function(){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
         var energydiff = energycount_max - energy_count;
 
-        var energy_width = s.getSettings().ENERGY_WIDTH;
-        if (energy_width=="MAX"){
-            energy_width = s.getWorldWidth();
-        }else{
-            energy_width = parseInt(energy_width);
-        }
+        var energy_width = s.getWorldWidth()/4;//s.getSettings().ENERGY_WIDTH;
+        //if (energy_width=="MAX"){
+        //    energy_width = s.getWorldWidth();
+        //}else{
+        //    energy_width = parseInt(energy_width);
+        //}
 
-        for(var x=0;x<energy_width;x++){
+        if (s.getSettings().KINDERGARTEN){
+            for(var i=0;i<energydiff;i++){
 
-            for (var i=0;i<(energydiff/energy_width)-(x/12);i++){
                 // zufaellige stelle
+                var x = tools_random(s.getWorldWidth()/8);
                 var y = tools_random(s.getWorldHeight());
                 // ist sie frei?
                 var t = this.getTerrain(x,y);
@@ -27,6 +60,21 @@ function World(s){
                     new Energy(s, x, y);
                     energy_count++;
                 }
+
+            }
+        }
+
+        for(var i=0;i<energydiff;i++){
+
+            // zufaellige stelle
+            var x = tools_random(s.getWorldWidth());
+            var y = tools_random(s.getWorldHeight());
+            // ist sie frei?
+            var t = this.getTerrain(x,y);
+            if (t.getSlotObject() == null && t.getFruitfulness()>0){
+                // neues energyobject
+                new Energy(s, x, y);
+                energy_count++;
             }
         }
     }
@@ -93,7 +141,7 @@ function World(s){
         }
 
         return [x_cand,y_cand];
-    }
+    };
 
     this.getFreeSpace = function(x,y) {
 
@@ -114,7 +162,7 @@ function World(s){
         }
 
         return null;
-    }
+    };
 
     this.get_environment_val = function(x,y) {
         var local_energycount = 0;
@@ -122,10 +170,12 @@ function World(s){
         var local_fossilcount = 0;
         var local_tracecount_0 = 0;
         var local_tracecount_1 = 0;
+        var local_fruitfulness = 0;
 
         var t = this.getTerrain(x,y);
         local_tracecount_0 += t.get_trace(0);
         local_tracecount_1 += t.get_trace(1);
+        local_fruitfulness += t.getFruitfulness();
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -141,6 +191,7 @@ function World(s){
             var t = this.getTerrain(x_cand,y_cand);
             local_tracecount_0 += t.get_trace(0);
             local_tracecount_1 += t.get_trace(1);
+            local_fruitfulness += t.getFruitfulness();
 
             if (t.getSlotObject()!=null){
                 if (t.getSlotObject().getId()==OBJECTTYPES.ENERGY){
@@ -158,13 +209,14 @@ function World(s){
             local_eprobotcount: local_eprobotcount,
             local_fossilcount: local_fossilcount,
             local_tracecount_0: local_tracecount_0,
-            local_tracecount_1: local_tracecount_1
+            local_tracecount_1: local_tracecount_1,
+            local_fruitfulness: local_fruitfulness
         };
-    }
+    };
 
     this.decr_energycount = function(){
         energy_count--;
-    }
+    };
 
     // init
     var worldarr = new Array(s.getWorldWidth());
@@ -175,11 +227,12 @@ function World(s){
         }
     }
 
-    var energy_factor = 4.5;
+    var energy_factor = 40;
     var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / energy_factor, 10);
+
     console.log("energycount_max: "+ energycount_max);
     var energy_count = 0;
 
-    var tile_count = 3;
-    var tiles = this.get_tiles();
+    //var tile_count = 3;
+    //var tiles = this.get_tiles();
 }

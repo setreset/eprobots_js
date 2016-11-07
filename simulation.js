@@ -139,7 +139,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         var fossil_age = stepcounter - t_object.getCreationTime();
                         var c_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 360, 0));
                         var l_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 0, 90));
-                        context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
+                        context2D.fillStyle = "hsl("+c_fac+", 100%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
                         if (fossil_age > settings.FOSSILTIME){
@@ -156,37 +156,53 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
                     var trace_val_0 = t.get_trace(0);
                     var trace_val_1 = t.get_trace(1);
-                    if (trace_val_0 > 0 && trace_val_1 == 0) {
+                    var fruitfulness = t.getFruitfulness();
+
+                    //if (trace_val_0 > 0 && trace_val_1 == 0) {
+                    //    var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
+                    //    //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                    //    context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
+                    //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    //}else if (trace_val_1 > 0 && trace_val_0 == 0) {
+                    //    var l_val = Math.round(tools_map_range(trace_val_1, 0, settings.TRACETIME, 90, 45));
+                    //    context2D.fillStyle = "hsl(194, 52%, " + l_val + "%)";
+                    //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    //}
+                    //else if (trace_val_0 > 0 && trace_val_1 > 0){
+                    //    var h0 = 0;
+                    //    var s0 = 0.52;
+                    //    var l0 = tools_map_range(trace_val_0, 0, 64, 0.9, 0.45);
+                    //
+                    //    var h1 = 0.54;
+                    //    var s1 = 0.52;
+                    //    var l1 = tools_map_range(trace_val_1, 0, 64, 0.9, 0.45);
+                    //
+                    //    var rgb0 = hslToRgb(h0, s0, l0);
+                    //    var rgb1 = hslToRgb(h1, s1, l1);
+                    //    var rgb_all = merge_colors(rgb0, rgb1);
+                    //
+                    //    //console.log(rgb_all);
+                    //    context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
+                    //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    //}
+                    if(fruitfulness > 0){
+                        var l_val = Math.round(tools_map_range(fruitfulness, 0, 1000, 100, 20));
+                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        context2D.fillStyle = "hsl(29, 100%, " + l_val + "%)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }
+                    else if (trace_val_0 > 0) {
                         var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
-                        context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
-                        //context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
+                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    }else if (trace_val_1 > 0 && trace_val_0 == 0) {
-                        var l_val = Math.round(tools_map_range(trace_val_1, 0, settings.TRACETIME, 90, 45));
-                        context2D.fillStyle = "hsl(194, 52%, " + l_val + "%)";
-                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    }
-                    else if (trace_val_0 > 0 && trace_val_1 > 0){
-                        var h0 = 0;
-                        var s0 = 0.52;
-                        var l0 = tools_map_range(trace_val_0, 0, 64, 0.9, 0.45);
-
-                        var h1 = 0.54;
-                        var s1 = 0.52;
-                        var l1 = tools_map_range(trace_val_1, 0, 64, 0.9, 0.45);
-
-                        var rgb0 = hslToRgb(h0, s0, l0);
-                        var rgb1 = hslToRgb(h1, s1, l1);
-                        var rgb_all = merge_colors(rgb0, rgb1);
-
-                        //console.log(rgb_all);
-                        context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
-                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    }
+                    }//}else if (trace_val_1 > 0 && trace_val_0 == 0) {
                 }
 
+
                 t.decr_trace(0);
-                t.decr_trace(1);
+                //t.decr_trace(1);
+                t.decrFruitfulness();
             }
         }
     }
@@ -210,7 +226,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
                 program = [];
                 for (var i = 0; i < GLOBAL_SETTINGS.PROGRAM_LENGTH; i++) {
-                    var val = tools_random(300)-30;
+                    var val = tools_random(GLOBAL_SETTINGS.PROGRAM_LENGTH*10)-GLOBAL_SETTINGS.PROGRAM_LENGTH;
                     program.push(val);
                 }
 
@@ -256,10 +272,6 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         settings.SLEEPTIME = val;
     };
 
-    this.setSettingsBreedtime = function(val){
-        settings.BREEDTIME = val;
-    };
-
     this.setSettingsEnergyWidth = function(val){
         settings.ENERGY_WIDTH = val;
     };
@@ -294,7 +306,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
     var world = new World(this);
 
-    var eprobots = [[],[]];
+    var eprobots = [[]];
     //var eprobots = [[],[]];
 
     var sim = this;

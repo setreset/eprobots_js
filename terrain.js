@@ -1,6 +1,7 @@
 function Terrain(){
     var slot_object = null;
     var traces = [0,0];
+    var fruitfulness = 0;
 
     this.decr_trace = function(kind){
         if (traces[kind]>0){
@@ -15,6 +16,22 @@ function Terrain(){
     this.set_trace = function(kind, val){
         traces[kind] = val;
     };
+
+    this.addFruitfulness = function(val){
+        if (fruitfulness<1000){
+            fruitfulness+=val;
+        }
+    }
+
+    this.decrFruitfulness = function(){
+        if (fruitfulness>0){
+            fruitfulness--;
+        }
+    }
+
+    this.getFruitfulness = function(){
+        return fruitfulness;
+    }
 
     this.getSlotObject = function(){
         return slot_object;

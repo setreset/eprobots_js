@@ -8,32 +8,66 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                 this.set_input();
             }
 
-            var control_val = this.get_move();
+            var control_vals = this.get_move();
+            var control_val = control_vals[0];
+            //var control_val = this.get_move_random();
             if (isFinite(control_val)){
-                var action = Math.abs(control_val % DIRECTIONS.length+1);
+                var move_action = Math.abs(control_val % DIRECTIONS.length+1);
             }else{
                 console.log("Infinite: "+control_val);
-                var action = DIRECTIONS.length; // do nothing
+                var move_action = 0; // do nothing
             }
 
-            forked_ep = this.processAction(action);
+            var rep_val = control_vals[1];
+            if (isFinite(rep_val)){
+                var rep_action = Math.abs(rep_val % 2);
+            }else{
+                var rep_action = 0; // do nothing
+            }
+
+            forked_ep = this.processAction(move_action, rep_action);
         }
 
         age++;
         return forked_ep;
     }
 
-    this.processAction = function(action){
+    this.processAction = function(move_action, rep_action){
         var forked_ep = null;
-        if (action == DIRECTIONS.length){ // do nothing
+        if (rep_action==1) {
+            //if (energy > 0) {
+                var t = s.getWorld().getTerrain(x_pos, y_pos);
+                t.addFruitfulness(500);
+                age+=2;
+                //energy--;
+                //age++;
+                //age++;
+                //age++;
+                //age++;
+            //}
+        }
+
+        if (energy > 0){
+            if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
+                forked_ep = this.fork();
+                //age++;
+            }
+        }
+
+        if (move_action == 0){ // do nothing
+            //if (energy > 0){
+            //    if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
+            //        forked_ep = this.fork();
+            //    }
+            //}
         }else{
-            var coord__new = s.getWorld().getCoordinates(this, action);
+            var coord__new = s.getWorld().getCoordinates(this, move_action-1);
             var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
             var obj_on_candidate_field = t_new.getSlotObject();
 
             // ist da auch nichts?
             if (this.canMoveToField(obj_on_candidate_field)){
-                forked_ep = this.preMove(obj_on_candidate_field);
+                this.preMove(obj_on_candidate_field);
 
                 // position verschieben
                 // alte position loeschen
@@ -48,27 +82,22 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     };
 
     this.preMove = function(obj_on_candidate_field){
-        var forked_ep = null;
 
         if (kind==0){
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
                 // "eat energy"
                 s.getWorld().decr_energycount();
                 // neuer eprobot...
-                if (this.getAge() > s.getSettings().BREEDTIME && s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
-                    forked_ep = this.fork();
-                }
+                energy++;
             }
-            return forked_ep;
         }else if(kind==1){
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
                 obj_on_candidate_field.kill();
                 // neuer eprobot...
-                if (this.getAge() > s.getSettings().BREEDTIME && s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
+                if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
                     forked_ep = this.fork();
                 }
             }
-            return forked_ep;
         }
     };
 
@@ -88,11 +117,23 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     this.set_input = function(){
         var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
         //console.log(inputval);
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2] = inputval.local_energycount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_eprobotcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_fossilcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_tracecount_0;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-6] = inputval.local_tracecount_1;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_energycount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_eprobotcount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_fossilcount;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-6] = inputval.local_tracecount_0;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-7] = inputval.local_tracecount_1;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-8] = inputval.local_fruitfulness;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-9] = age;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-10] = energy;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-11] = x_pos;
+        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-12] = y_pos;
+
+    }
+
+    this.get_move_random = function(){
+        var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
+        //var action = 6;
+        return action;
     }
 
     this.get_move = function(){
@@ -101,11 +142,11 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         //return action;
 
         tools_compute(working_programm);
-        return working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1];
+        return [working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1],working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2]];
     }
 
-    this.get_local_partner = function(){
-        var eprobots = s.getEprobots();
+    this.get_local_partner = function(kind){
+        var eprobots = s.getEprobots(kind);
         var smallest_dist = s.getWorldWidth()/2;
         var cand = null;
         if (eprobots.length>0){
@@ -139,9 +180,9 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         if (point != null){
             // sexuelle fortpflanzung?
             if (Math.random()<0.5 && false){
-                var partner = this.get_local_partner();
+                var partner = this.get_local_partner(kind);
 
-                if (partner && partner.getKind()==kind){
+                if (partner){
                     //console.log("recombine");
                     var new_dna = tools_recombine(program, partner.getInitialProgram());
                 }else{
@@ -153,6 +194,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             }
 
             var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);
+            energy--;
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -190,6 +232,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);
     var age = 0;
+    var energy = 0;
 
     var working_programm = program.slice();
 }
