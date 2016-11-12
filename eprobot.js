@@ -38,7 +38,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             //if (energy > 0) {
                 var t = s.getWorld().getTerrain(x_pos, y_pos);
                 t.addFruitfulness(500);
-                age+=2;
+                age+=4;
                 //energy--;
                 //age++;
                 //age++;

@@ -227,7 +227,7 @@ function World(s){
         }
     }
 
-    var energy_factor = 40;
+    var energy_factor = 9; //40
     var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / energy_factor, 10);
 
     console.log("energycount_max: "+ energycount_max);

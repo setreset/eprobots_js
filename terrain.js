@@ -18,8 +18,10 @@ function Terrain(){
     };
 
     this.addFruitfulness = function(val){
-        if (fruitfulness<1000){
-            fruitfulness+=val;
+        fruitfulness += val;
+
+        if (fruitfulness > 1000){
+            fruitfulness = 1000;
         }
     }
 

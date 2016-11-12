@@ -42,9 +42,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     }
 
     function simulationStep(){
-        if (GLOBAL_SETTINGS.LOG_STATS){
-            t_start = new Date().getTime();
-        }
+        t_start = new Date().getTime();
 
         world.seedEnergy();
         //world.seedEnergy_tile();
@@ -61,9 +59,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         stepcounter++;
 
+        var t_end = new Date().getTime();
+        var frame_time = t_end-t_start;
         if (GLOBAL_SETTINGS.LOG_STATS){
-            var t_end = new Date().getTime();
-            var frame_time = t_end-t_start;
             if (frame_time>t_max) t_max = frame_time;
             t_count = t_count + frame_time;
             var mean = t_count/stepcounter;
@@ -116,30 +114,31 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
                 if (t_object != null){
                     if (t_object.getId()==OBJECTTYPES.ENERGY){
-                        //var age = stepcounter - t_object.getCreationTime();
-                        //var c_green = 256 - age;
-                        //if (c_green<100) c_green=100;
-                        //context2D.fillStyle = "rgb(0, "+c_green+", 0)";
-                        context2D.fillStyle = "rgb(0, 255, 0)";
+                        var age = stepcounter - t_object.getCreationTime();
+                        var c_green = 256 - age;
+                        if (c_green<100) c_green=100;
+                        context2D.fillStyle = "rgb(0, "+c_green+", 0)";
+                        //context2D.fillStyle = "rgb(0, 255, 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
                     }else if (t_object.getId()==OBJECTTYPES.EPROBOT){
-                        //var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 255, 0));
-                        //context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
-                        if (t_object.getKind()==0){
-                            context2D.fillStyle = "rgb(255, 0, 0)";
+                        var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME, 255, 100));
+
+                        //if (t_object.getKind()==0){
+                            context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
+                            //context2D.fillStyle = "rgb(255, 0, 0)";
                             context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        }else if(t_object.getKind()==1){
-                            context2D.fillStyle = "rgb(0, 0, 255)";
-                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        }
+                        //}else if(t_object.getKind()==1){
+                        //    context2D.fillStyle = "rgb(0, 0, 255)";
+                        //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                        //}
 
 
                     }else if (t_object.getId()==OBJECTTYPES.FOSSIL){
                         var fossil_age = stepcounter - t_object.getCreationTime();
                         var c_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 360, 0));
                         var l_fac = Math.round(tools_map_range(fossil_age, 0, settings.FOSSILTIME, 0, 90));
-                        context2D.fillStyle = "hsl("+c_fac+", 100%, "+l_fac+"%)";
+                        context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
                         if (fossil_age > settings.FOSSILTIME){

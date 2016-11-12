@@ -4,31 +4,51 @@ $(document).ready(function() {
     console.log("ready");
     var simulation_canvas = document.getElementById('canvas');
 
-    function fullscreen(){
-        if(simulation_canvas.webkitRequestFullScreen) {
-            simulation_canvas.webkitRequestFullScreen();
+    function toggleFullscreen() {
+        var elem = document.getElementById('canvas');
+        if (!document.fullscreenElement && !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
         }
-        else {
-            simulation_canvas.mozRequestFullScreen();
-        }
-
     }
 
-    simulation_canvas.addEventListener("dblclick", fullscreen);
+    function toggleRun() {
+        if (simulation.getRunning()){
+            simulation.stopSimulation();
+            $("#btn_reset").removeAttr("disabled");
+            $("#btn_start").text("Start");
+        }else{
+            simulation.startSimulation();
+            $("#btn_reset").attr("disabled", "disabled");
+            $("#btn_start").text("Stop");
+        }
+    }
+
+    simulation_canvas.addEventListener("click", toggleRun);
 
     function on_fullscreen_change() {
         simulation.resizeCanvas();
-        //if(document.mozFullScreen || document.webkitIsFullScreen) {
-        //    var rect = c.getBoundingClientRect();
-        //    c.width = rect.width;
-        //    c.height = rect.height;
-        //}
-        //else {
-        //    c.width = 500;
-        //    c.height = 400;
-        //}
     }
 
+    document.addEventListener('fullscreenchange', on_fullscreen_change);
     document.addEventListener('mozfullscreenchange', on_fullscreen_change);
     document.addEventListener('webkitfullscreenchange', on_fullscreen_change);
 
@@ -36,17 +56,7 @@ $(document).ready(function() {
     var last_world_width = INITIAL_WORLD_WIDTH;
     var last_world_height = INITIAL_WORLD_HEIGHT;
 
-    $("#btn_start").on("click", function(e){
-        if (simulation.getRunning()){
-            simulation.stopSimulation();
-            $("#btn_reset").removeAttr("disabled");
-            $(this).text("Start");
-        }else{
-            simulation.startSimulation();
-            $("#btn_reset").attr("disabled", "disabled");
-            $(this).text("Stop");
-        }
-    });
+    $("#btn_start").on("click", toggleRun);
 
     $("#btn_reset").on("click", function(e){
         if (!simulation.getRunning()){
@@ -68,6 +78,8 @@ $(document).ready(function() {
             }
         }
     });
+
+    $("#btn_fullscreen").on("click", toggleFullscreen);
 
     $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
 
