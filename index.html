@@ -35,60 +35,9 @@
 
 				<div class="col-md-2">
 
-					<div class="row">
-						<div class="col-md-12">
-							<label id="slider_lifetime_label">Lifetime: <span></span></label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="col-md-8">
-									<input class="form-control" id="input_lifetime" type="number">
-								</div>
-								<div class="col-md-4">
-									<button id="btn_lifetime" class="btn btn-default">Set</button>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div id="container_simulationsettings_control">
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label id="slider_fossiltime_label">Fossiltime: <span></span></label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <input class="form-control" id="input_fossiltime" type="number">
-                                </div>
-                                <div class="col-md-4">
-                                    <button id="btn_fossiltime" class="btn btn-default">Set</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-					<div class="row">
-						<div class="col-md-12">
-							<label id="slider_object_count_label">Object count: <span></span></label>
-						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="col-md-8">
-									<input class="form-control" id="input_object_count" type="number">
-								</div>
-								<div class="col-md-4">
-									<button id="btn_object_count" class="btn btn-default">Set</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
 					<div class="row" style="margin-top:10px">
 						<div class="col-md-12">
 							<button id="btn_resetsettings" class="btn btn-default">Reset settings</button>
@@ -131,7 +80,25 @@
                 </div>
             </div>
 
-
+			<div style="display: none" id="tpl_simulation_setting_control">
+				<div class="row" style="margin-top:10px">
+					<div class="col-md-12">
+						<label>TLP-SETTING-LABEL</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-8">
+								<input id="input_TLP-SETTING-ID" class="form-control">
+							</div>
+							<div class="col-md-4">
+								<button id="btn_TLP-SETTING-ID" data-settingkey="TLP-SETTING-ID" class="btn btn-default">Set</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</body>

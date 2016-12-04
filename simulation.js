@@ -191,7 +191,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
                     else if (trace_val_0 > 0) {
-                        var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
+                        var l_val = Math.round(tools_map_range(trace_val_0, 0, GLOBAL_SETTINGS.TRACETIME, 90, 60));
                         //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
                         context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
@@ -247,20 +247,16 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         return settings;
     }
 
+    this.getSettingVal = function(setting_id){
+        return settings[setting_id];
+    }
+
     this.setSettings = function(val){
         settings = $.extend({}, val);
     }
 
-    this.setSettingsLifetime = function(val){
-      settings.LIFETIME = val;
-    };
-
-    this.setSettingsFossiltime = function(val){
-        settings.FOSSILTIME = val;
-    };
-
-    this.setSettingsObjectCount = function(val){
-        settings.OBJECT_COUNT = val;
+    this.setSettingVal = function(setting_id, val){
+        settings[setting_id] = val;
     };
 
 

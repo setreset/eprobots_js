@@ -6,6 +6,17 @@ $(document).ready(function() {
     // build up simulation setting controls
     for (var key in INITIAL_SIMULATION_SETTINGS) {
         //console.log(key + " " + INITIAL_SIMULATION_SETTINGS[key]);
+
+        //hole template
+        var tpl_str = $("#tpl_simulation_setting_control").html();
+
+        // manipulation
+        var labeltext = key.toLowerCase().capitalize() + ":";
+        tpl_str = tpl_str.replaceAll("TLP-SETTING-LABEL", labeltext);
+        tpl_str = tpl_str.replaceAll("TLP-SETTING-ID", key.toLowerCase());
+
+        // insert
+        $("#container_simulationsettings_control").append(tpl_str)
     }
 
     var simulation_canvas = document.getElementById('canvas');
@@ -94,64 +105,40 @@ $(document).ready(function() {
     }
 
     var init_simulation_settings = function(){
-        $("#input_lifetime").val(simulation.getSettings().LIFETIME);
-        $("#input_fossiltime").val(simulation.getSettings().FOSSILTIME);
-        $("#input_object_count").val(simulation.getSettings().OBJECT_COUNT);
+        for (var key in INITIAL_SIMULATION_SETTINGS) {
+            var identifier = "#input_"+ key.toLowerCase();
+            $(identifier).val(simulation.getSettingVal(key));
+        }
     }
 
-    // LIFETIME
-    var min_val_lifetime = 1;
-    var max_val_lifetime = 750;
+    // SIMULATION SETTINGS SET BUTTON LISTENER
 
-    $("#btn_lifetime").on("click", function(e){
-        var int_val = parseInt($("#input_lifetime").val());
+    $("#container_simulationsettings_control").on("click", "button", function(e){
+        var elem = $(this);
+        var setting_key = elem.attr("data-settingkey");
+        console.log(setting_key);
+        var input = elem.parent().parent().find("input");
+
+        // konvertierung in den richtigen typ
+        var int_val = parseInt(input.val());
+        console.log(int_val);
         if (!isNaN(int_val)){
-            if (int_val>=min_val_lifetime && int_val<=max_val_lifetime){
-                simulation.setSettingsLifetime(int_val);
-            }
+            simulation.setSettingVal(setting_key.toUpperCase(), int_val);
         }
     });
 
-    // FOSSILTIME
-    var min_val_fossiltime = 0;
-    var max_val_fossiltime = 5000;
-
-    $("#btn_fossiltime").on("click", function(e){
-        var int_val = parseInt($("#input_fossiltime").val());
-        if (!isNaN(int_val)){
-            if (int_val>=min_val_fossiltime && int_val<=max_val_fossiltime){
-                simulation.setSettingsFossiltime(int_val);
-            }
-        }
-    });
-
-    // OBJECT_COUNT
-    var min_val_object_count = 50;
-    var max_val_object_count = 100000;
-
-    $("#btn_object_count").on("click", function(e){
-        var int_val = parseInt($("#input_object_count").val());
-        if (!isNaN(int_val)){
-            if (int_val>=min_val_object_count && int_val<=max_val_object_count){
-                simulation.setSettingsObjectCount(int_val);
-            }
-        }
-    });
+    // GLOBAL SETTINGS
 
     // SLEEP TIME
-    var min_val_sleeptime = 0;
-    var max_val_sleeptime = 1000;
 
     $("#btn_sleeptime").on("click", function(e){
         var int_val = parseInt($("#input_sleeptime").val());
         if (!isNaN(int_val)){
-            if (int_val>=min_val_sleeptime && int_val<=max_val_sleeptime){
-                GLOBAL_SETTINGS.SLEEPTIME = int_val;
-            }
+            GLOBAL_SETTINGS.SLEEPTIME = int_val;
         }
     });
 
-    // END INITIAL SETTINGS
+    // GLOBAL SETTINGS END
 
     init_global_settings();
     init_simulation_settings();
