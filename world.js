@@ -40,13 +40,6 @@ function World(s){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
         var energydiff = energycount_max - energy_count;
 
-        var energy_width = s.getWorldWidth()/4;//s.getSettings().ENERGY_WIDTH;
-        //if (energy_width=="MAX"){
-        //    energy_width = s.getWorldWidth();
-        //}else{
-        //    energy_width = parseInt(energy_width);
-        //}
-
         if (s.getSettings().KINDERGARTEN){
             for(var i=0;i<energydiff;i++){
 

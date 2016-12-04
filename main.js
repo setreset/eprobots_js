@@ -2,6 +2,12 @@ var simulation = null;
 
 $(document).ready(function() {
     console.log("ready");
+
+    // build up simulation setting controls
+    for (var key in INITIAL_SIMULATION_SETTINGS) {
+        //console.log(key + " " + INITIAL_SIMULATION_SETTINGS[key]);
+    }
+
     var simulation_canvas = document.getElementById('canvas');
 
     function toggleFullscreen() {
@@ -83,14 +89,14 @@ $(document).ready(function() {
 
     $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
 
-    // INITIAL_SIMULATION_SETTINGS
-    var init_controls = function(){
+    var init_global_settings = function(){
+        $("#input_sleeptime").val(GLOBAL_SETTINGS.SLEEPTIME);
+    }
+
+    var init_simulation_settings = function(){
         $("#input_lifetime").val(simulation.getSettings().LIFETIME);
         $("#input_fossiltime").val(simulation.getSettings().FOSSILTIME);
-        $("#input_energy_block_time").val(simulation.getSettings().ENERGY_BLOCK_TIME);
         $("#input_object_count").val(simulation.getSettings().OBJECT_COUNT);
-        $("#input_sleeptime").val(simulation.getSettings().SLEEPTIME);
-        $("#input_energy_width").val(simulation.getSettings().ENERGY_WIDTH);
     }
 
     // LIFETIME
@@ -140,23 +146,18 @@ $(document).ready(function() {
         var int_val = parseInt($("#input_sleeptime").val());
         if (!isNaN(int_val)){
             if (int_val>=min_val_sleeptime && int_val<=max_val_sleeptime){
-                simulation.setSettingsSleeptime(int_val);
+                GLOBAL_SETTINGS.SLEEPTIME = int_val;
             }
         }
     });
 
-    // ENERGY WIDTH
-    $("#btn_energy_width").on("click", function(e){
-        var val = $("#input_energy_width").val();
-        simulation.setSettingsEnergyWidth(val);
-    });
-
     // END INITIAL SETTINGS
 
-    init_controls();
+    init_global_settings();
+    init_simulation_settings();
 
     $("#btn_resetsettings").on("click", function(e){
         simulation.setSettings(INITIAL_SIMULATION_SETTINGS);
-        init_controls();
+        init_simulation_settings();
     });
 });

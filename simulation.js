@@ -69,7 +69,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
         }
 
-        if (running) setTimeout(simulationStep, settings.SLEEPTIME - frame_time);
+        if (running) setTimeout(simulationStep, GLOBAL_SETTINGS.SLEEPTIME - frame_time);
     }
 
     function processEprobots(kind){
@@ -259,21 +259,10 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         settings.FOSSILTIME = val;
     };
 
-    this.setSettingsEnergyBlockTime = function(val){
-        settings.ENERGY_BLOCK_TIME = val;
-    };
-
     this.setSettingsObjectCount = function(val){
         settings.OBJECT_COUNT = val;
     };
 
-    this.setSettingsSleeptime = function(val){
-        settings.SLEEPTIME = val;
-    };
-
-    this.setSettingsEnergyWidth = function(val){
-        settings.ENERGY_WIDTH = val;
-    };
 
     this.resizeCanvas = function(){
         console.log("resizeCanvas");
