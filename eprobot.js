@@ -74,7 +74,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                 var t_old = s.getWorld().getTerrain(x_pos, y_pos);
                 t_old.setSlotObject(null);
                 t_new.setSlotObject(this);
-                t_new.set_trace(this.getKind(), GLOBAL_SETTINGS.TRACETIME);
+                t_new.set_trace(this.getKind(), s.getSettings().TRACETIME);
                 this.setPos(coord__new[0],coord__new[1]);
             }
         }

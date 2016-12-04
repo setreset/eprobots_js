@@ -120,11 +120,28 @@ $(document).ready(function() {
         var input = elem.parent().parent().find("input");
 
         // konvertierung in den richtigen typ
-        var int_val = parseInt(input.val());
-        console.log(int_val);
-        if (!isNaN(int_val)){
-            simulation.setSettingVal(setting_key.toUpperCase(), int_val);
+        var val_str = input.val();
+        var settingtype = typeof INITIAL_SIMULATION_SETTINGS[setting_key.toUpperCase()];
+
+        if (settingtype == "number"){
+            console.log("number");
+            var int_val = parseInt(val_str);
+            console.log(int_val);
+            if (!isNaN(int_val)){
+                simulation.setSettingVal(setting_key.toUpperCase(), int_val);
+            }
+        }else if (settingtype == "boolean"){
+            console.log("boolean");
+            if (val_str == "true"){
+                simulation.setSettingVal(setting_key.toUpperCase(), true);
+            }else if (val_str == "false"){
+                simulation.setSettingVal(setting_key.toUpperCase(), false);
+            }
+        }else if (settingtype == "string"){
+            console.log("string");
+            simulation.setSettingVal(setting_key.toUpperCase(), val_str);
         }
+
     });
 
     // GLOBAL SETTINGS

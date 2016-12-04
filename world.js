@@ -40,7 +40,7 @@ function World(s){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
         var energydiff = energycount_max - energy_count;
 
-        if (GLOBAL_SETTINGS.KINDERGARTEN){
+        if (s.getSettings().KINDERGARTEN){
             for(var i=0;i<energydiff;i++){
 
                 // zufaellige stelle
