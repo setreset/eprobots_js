@@ -124,7 +124,7 @@ function World(s){
         var movechoice = DIRECTIONS[direction];
 
         var objectpos = object.getPos();
-        if (GLOBAL_SETTINGS.BORDERJUMP){
+        if (s.getSettingVal("BORDERJUMP")){
             var x_cand = borderjump_x(objectpos.x + movechoice.x, s.getWorldWidth());
             var y_cand = borderjump_y(objectpos.y + movechoice.y, s.getWorldHeight());
         }else{
@@ -140,7 +140,7 @@ function World(s){
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[tools_random(DIRECTIONS.length)];
-            if (GLOBAL_SETTINGS.BORDERJUMP){
+            if (s.getSettingVal("BORDERJUMP")){
                 var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
                 var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
             }else{
@@ -172,7 +172,7 @@ function World(s){
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
-            if (GLOBAL_SETTINGS.BORDERJUMP){
+            if (s.getSettingVal("BORDERJUMP")){
                 var x_cand = borderjump_x(x + movechoice.x, s.getWorldWidth());
                 var y_cand = borderjump_y(y + movechoice.y, s.getWorldHeight());
             }else{

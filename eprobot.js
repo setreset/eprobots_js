@@ -4,7 +4,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
         if (age < s.getSettings().LIFETIME){
             // set input
-            if (GLOBAL_SETTINGS.SENSE){
+            if (s.getSettings().SENSE){
                 this.set_input();
             }
 
@@ -62,20 +62,22 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             //}
         }else{
             var coord__new = s.getWorld().getCoordinates(this, move_action-1);
-            var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
-            var obj_on_candidate_field = t_new.getSlotObject();
+            if (coord__new){
+                var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
+                var obj_on_candidate_field = t_new.getSlotObject();
 
-            // ist da auch nichts?
-            if (this.canMoveToField(obj_on_candidate_field)){
-                this.preMove(obj_on_candidate_field);
+                // ist da auch nichts?
+                if (this.canMoveToField(obj_on_candidate_field)){
+                    this.preMove(obj_on_candidate_field);
 
-                // position verschieben
-                // alte position loeschen
-                var t_old = s.getWorld().getTerrain(x_pos, y_pos);
-                t_old.setSlotObject(null);
-                t_new.setSlotObject(this);
-                t_new.set_trace(this.getKind(), s.getSettings().TRACETIME);
-                this.setPos(coord__new[0],coord__new[1]);
+                    // position verschieben
+                    // alte position loeschen
+                    var t_old = s.getWorld().getTerrain(x_pos, y_pos);
+                    t_old.setSlotObject(null);
+                    t_new.setSlotObject(this);
+                    t_new.set_trace(this.getKind(), s.getSettings().TRACETIME);
+                    this.setPos(coord__new[0],coord__new[1]);
+                }
             }
         }
         return forked_ep
@@ -117,16 +119,17 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     this.set_input = function(){
         var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
         //console.log(inputval);
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-3] = inputval.local_energycount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-4] = inputval.local_eprobotcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-5] = inputval.local_fossilcount;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-6] = inputval.local_tracecount_0;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-7] = inputval.local_tracecount_1;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-8] = inputval.local_fruitfulness;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-9] = age;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-10] = energy;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-11] = x_pos;
-        working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-12] = y_pos;
+        var program_length = s.getSettings().PROGRAM_LENGTH;
+        working_programm[program_length-3] = inputval.local_energycount;
+        working_programm[program_length-4] = inputval.local_eprobotcount;
+        working_programm[program_length-5] = inputval.local_fossilcount;
+        working_programm[program_length-6] = inputval.local_tracecount_0;
+        working_programm[program_length-7] = inputval.local_tracecount_1;
+        working_programm[program_length-8] = inputval.local_fruitfulness;
+        working_programm[program_length-9] = age;
+        working_programm[program_length-10] = energy;
+        working_programm[program_length-11] = x_pos;
+        working_programm[program_length-12] = y_pos;
 
     }
 
@@ -142,7 +145,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         //return action;
 
         tools_compute(working_programm);
-        return [working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-1],working_programm[GLOBAL_SETTINGS.PROGRAM_LENGTH-2]];
+        return [working_programm[s.getSettings().PROGRAM_LENGTH-1],working_programm[s.getSettings().PROGRAM_LENGTH-2]];
     }
 
     this.get_local_partner = function(kind){

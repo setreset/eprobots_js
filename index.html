@@ -20,57 +20,73 @@
 		<div class="container">
 			<h2 id="dimensions_label">Eprobots (Dimensions: <span></span>)</h2>
 			<div class="row" style="margin-top:10px">
-				<div class="col-md-10">
+				<div class="col-md-9">
 					<canvas id="canvas" style="background-color:#ffffff; width:100%; height:375px;">
-						<p>Your browser does not support the canvas element.</p>
 					</canvas>
 					<div class="row" style="margin-top:10px">
 						<div class="col-md-12">
 							<button id="btn_start" class="btn btn-default">Start</button>
-							<button id="btn_reset" class="btn btn-default">Reset simulation</button>
 							<button id="btn_fullscreen" class="btn btn-default">Fullscreen</button>
+							<button id="btn_reset" class="btn btn-default">Reset simulation</button>
+						</div>
+					</div>
+
+					<div class="row" >
+						<div class="col-md-12">
+							<h3>Global settings</h3>
+						</div>
+					</div>
+
+					<div class="row" >
+						<div class="col-md-2">
+							<div class="row">
+								<div class="col-md-12">
+									<label id="slider_sleeptime_label">Sleeptime: <span></span></label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="row">
+										<div class="col-md-8">
+											<input class="form-control" id="input_sleeptime" type="number">
+										</div>
+										<div class="col-md-4">
+											<button id="btn_sleeptime" class="btn btn-default">Set</button>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="col-md-2">
+				<div class="col-md-3">
 
-					<div id="container_simulationsettings_control">
-
-					</div>
 					<div class="row" style="margin-top:10px">
 						<div class="col-md-12">
-							<button id="btn_resetsettings" class="btn btn-default">Reset settings</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row" >
-				<div class="col-md-12">
-					<h3>Global settings</h3>
-				</div>
-			</div>
-
-			<div class="row" >
-				<div class="col-md-2">
-					<div class="row">
-						<div class="col-md-12">
-							<label id="slider_sleeptime_label">Sleeptime: <span></span></label>
+							<label>Dimensions:</label>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
 							<div class="row">
-								<div class="col-md-8">
-									<input class="form-control" id="input_sleeptime" type="number">
+								<div class="col-md-6">
+									<input id="input_dimensions" class="form-control">
 								</div>
-								<div class="col-md-4">
-									<button id="btn_sleeptime" class="btn btn-default">Set</button>
+								<div class="col-md-6">
+									To change please click "Reset simulation"
 								</div>
 							</div>
 						</div>
 					</div>
+
+					<div id="container_simulationsettings_control">
+					</div>
+					<!--<div class="row" style="margin-top:10px">
+						<div class="col-md-12">
+							<button id="btn_resetsettings" class="btn btn-default">Reset settings</button>
+						</div>
+					</div>-->
 				</div>
 			</div>
 
@@ -89,10 +105,10 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-md-6">
 								<input id="input_TLP-SETTING-ID" class="form-control">
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-6">
 								<button id="btn_TLP-SETTING-ID" data-settingkey="TLP-SETTING-ID" class="btn btn-default">Set</button>
 							</div>
 						</div>

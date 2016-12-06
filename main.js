@@ -11,7 +11,7 @@ $(document).ready(function() {
         var tpl_str = $("#tpl_simulation_setting_control").html();
 
         // manipulation
-        var labeltext = key.toLowerCase().capitalize() + ":";
+        var labeltext = key.toLowerCase().capitalize() + " (Default: " + INITIAL_SIMULATION_SETTINGS[key] + "):";
         tpl_str = tpl_str.replaceAll("TLP-SETTING-LABEL", labeltext);
         tpl_str = tpl_str.replaceAll("TLP-SETTING-ID", key.toLowerCase());
 
@@ -51,12 +51,27 @@ $(document).ready(function() {
         if (simulation.getRunning()){
             simulation.stopSimulation();
             $("#btn_reset").removeAttr("disabled");
+            $("#btn_dimensions").removeAttr("disabled");
+
             $("#btn_start").text("Start");
         }else{
             simulation.startSimulation();
             $("#btn_reset").attr("disabled", "disabled");
+            $("#btn_dimensions").attr("disabled", "disabled");
+
             $("#btn_start").text("Stop");
         }
+    }
+
+    function getDimensions(){
+        var new_dimensions_arr = $("#input_dimensions").val().split("x");
+        var new_width = parseInt(new_dimensions_arr[0]);
+        var new_height = parseInt(new_dimensions_arr[1]);
+        if (isNaN(new_width) || isNaN((new_height))){
+            new_width = INITIAL_WORLD_WIDTH;
+            new_height = INITIAL_WORLD_HEIGHT;
+        }
+        return [new_width, new_height];
     }
 
     simulation_canvas.addEventListener("click", toggleRun);
@@ -70,29 +85,15 @@ $(document).ready(function() {
     document.addEventListener('webkitfullscreenchange', on_fullscreen_change);
 
     simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
-    var last_world_width = INITIAL_WORLD_WIDTH;
-    var last_world_height = INITIAL_WORLD_HEIGHT;
 
     $("#btn_start").on("click", toggleRun);
 
     $("#btn_reset").on("click", function(e){
         if (!simulation.getRunning()){
-            var new_dimensions_string = prompt("Insert new world dimensions",last_world_width + "x" + last_world_height);
-            if (new_dimensions_string != null){
-                simulation.getContext2D().clearRect(0, 0, simulation_canvas.width, simulation_canvas.height);
-                var new_dimensions_arr = new_dimensions_string.split("x");
-                var new_width = parseInt(new_dimensions_arr[0]);
-                var new_height = parseInt(new_dimensions_arr[1]);
-                if (isNaN(new_width) || isNaN((new_height))){
-                    new_width = last_world_width;
-                    new_height = last_world_height;
-                }
-
-                simulation = new Simulation(simulation_canvas, simulation.getSettings(), new_width, new_height);
-                last_world_width = new_width;
-                last_world_height = new_height;
-                $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
-            }
+            simulation.getContext2D().clearRect(0, 0, simulation_canvas.width, simulation_canvas.height);
+            var dimensions = getDimensions();
+            simulation = new Simulation(simulation_canvas, simulation.getSettings(), dimensions[0], dimensions[1]);
+            $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
         }
     });
 
@@ -105,6 +106,8 @@ $(document).ready(function() {
     }
 
     var init_simulation_settings = function(){
+        $("#input_dimensions").val(INITIAL_WORLD_WIDTH+"x"+INITIAL_WORLD_HEIGHT);
+
         for (var key in INITIAL_SIMULATION_SETTINGS) {
             var identifier = "#input_"+ key.toLowerCase();
             $(identifier).val(simulation.getSettingVal(key));
@@ -160,8 +163,8 @@ $(document).ready(function() {
     init_global_settings();
     init_simulation_settings();
 
-    $("#btn_resetsettings").on("click", function(e){
-        simulation.setSettings(INITIAL_SIMULATION_SETTINGS);
-        init_simulation_settings();
-    });
+    //$("#btn_resetsettings").on("click", function(e){
+    //    simulation.setSettings(INITIAL_SIMULATION_SETTINGS);
+    //    init_simulation_settings();
+    //});
 });

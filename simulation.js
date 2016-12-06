@@ -224,8 +224,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 //console.log(x_pos, y_pos)
 
                 program = [];
-                for (var i = 0; i < GLOBAL_SETTINGS.PROGRAM_LENGTH; i++) {
-                    var val = tools_random(GLOBAL_SETTINGS.PROGRAM_LENGTH*10)-GLOBAL_SETTINGS.PROGRAM_LENGTH;
+                for (var i = 0; i < settings.PROGRAM_LENGTH; i++) {
+                    var val = tools_random(settings.PROGRAM_LENGTH*10) - settings.PROGRAM_LENGTH;
                     program.push(val);
                 }
 

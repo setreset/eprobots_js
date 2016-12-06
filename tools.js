@@ -67,10 +67,10 @@ function tools_mutate(memory) {
 }
 
 function tools_recombine(memory1, memory2) {
-    var crossover_at = tools_random(GLOBAL_SETTINGS.PROGRAM_LENGTH);
+    var crossover_at = tools_random(memory1.length);
 
     var new_memory = [];
-    for (var i=0;i<GLOBAL_SETTINGS.PROGRAM_LENGTH;i++){
+    for (var i=0;i<memory1.length;i++){
         if (i < crossover_at){
             var copyval = memory1[i];
         }else{
