@@ -51,13 +51,15 @@ $(document).ready(function() {
         if (simulation.getRunning()){
             simulation.stopSimulation();
             $("#btn_reset").removeAttr("disabled");
-            $("#btn_dimensions").removeAttr("disabled");
+            $("#btn_load").removeAttr("disabled");
+            $("#btn_save").removeAttr("disabled");
 
             $("#btn_start").text("Start");
         }else{
             simulation.startSimulation();
             $("#btn_reset").attr("disabled", "disabled");
-            $("#btn_dimensions").attr("disabled", "disabled");
+            $("#btn_load").attr("disabled", "disabled");
+            $("#btn_save").attr("disabled", "disabled");
 
             $("#btn_start").text("Stop");
         }
