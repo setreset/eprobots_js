@@ -8,6 +8,17 @@ function Energy(s, x_pos, y_pos){
         return creation_time;
     }
 
+    this.toJSON = function() {
+        return {
+            id: this.getId(),
+            creation_time: this.getCreationTime()
+        };
+    };
+
+    this.loadState = function(energystate) {
+        creation_time = energystate.creation_time;
+    };
+
     // init
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);

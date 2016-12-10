@@ -211,14 +211,41 @@ function World(s){
         energy_count--;
     };
 
-    // init
-    var worldarr = new Array(s.getWorldWidth());
-    for (var x=0;x<s.getWorldWidth();x++){
-        worldarr[x] = new Array(s.getWorldHeight());
-        for (var y=0;y<s.getWorldHeight();y++){
-            worldarr[x][y] = new Terrain();
+    this.toJSON = function() {
+        return {
+            energy_count: energy_count,
+            worldarr: worldarr
+        };
+    };
+
+    this.loadState = function(worldstate){
+        //console.log(worldstate);
+        energy_count = worldstate.energy_count;
+        //console.log(worldstate.worldarr[0][0]);
+
+        worldarr = new Array(s.getWorldWidth());
+        for (var x=0;x<s.getWorldWidth();x++){
+            worldarr[x] = new Array(s.getWorldHeight());
+            for (var y=0;y<s.getWorldHeight();y++){
+                var t = new Terrain();
+                worldarr[x][y] = t;
+                t.loadState(s, x, y, worldstate.worldarr[x][y]);
+            }
         }
     }
+
+    this.init = function(){
+        // init
+        worldarr = new Array(s.getWorldWidth());
+        for (var x=0;x<s.getWorldWidth();x++){
+            worldarr[x] = new Array(s.getWorldHeight());
+            for (var y=0;y<s.getWorldHeight();y++){
+                worldarr[x][y] = new Terrain();
+            }
+        }
+    }
+
+    var worldarr = null;
 
     var energy_factor = 9; //40
     var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / energy_factor, 10);

@@ -42,4 +42,37 @@ function Terrain(){
     this.setSlotObject = function(val){
         slot_object = val;
     }
+
+    this.toJSON = function() {
+        var slotObject = this.getSlotObject();
+        if (slotObject != null){
+            if (slotObject.getId() == OBJECTTYPES.EPROBOT){
+                slotObject = {
+                    id: OBJECTTYPES.EPROBOT
+                }
+            }
+        }
+        return {
+            slotObject: slotObject,
+            fruitfulness: this.getFruitfulness(),
+            trace: this.get_trace(0)
+        };
+    }
+
+    this.loadState = function(s, x, y, terrainstate){
+        //console.log(terrainstate);
+        fruitfulness = terrainstate.fruitfulness;
+        traces[0] = terrainstate.trace;
+
+        var slot = terrainstate.slotObject;
+        if (slot){
+            if (slot.id == OBJECTTYPES.ENERGY){
+                var e = new Energy(s, x, y);
+                e.loadState(slot);
+            }else if (slot.id == OBJECTTYPES.FOSSIL){
+                var f = new Fossil(s, 0, x, y);
+                f.loadState(slot);
+            }
+        }
+    }
 }

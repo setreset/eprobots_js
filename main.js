@@ -78,28 +78,55 @@ $(document).ready(function() {
 
     simulation_canvas.addEventListener("click", toggleRun);
 
-    function on_fullscreen_change() {
-        simulation.resizeCanvas();
-    }
-
     document.addEventListener('fullscreenchange', on_fullscreen_change);
     document.addEventListener('mozfullscreenchange', on_fullscreen_change);
     document.addEventListener('webkitfullscreenchange', on_fullscreen_change);
 
+    function on_fullscreen_change() {
+        console.log("fullscreen change");
+        simulation.resizeCanvas();
+    }
+
     simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
+    simulation.init();
 
     $("#btn_start").on("click", toggleRun);
 
     $("#btn_reset").on("click", function(e){
         if (!simulation.getRunning()){
-            simulation.getContext2D().clearRect(0, 0, simulation_canvas.width, simulation_canvas.height);
+            var old_settings = simulation.getSettings();
             var dimensions = getDimensions();
-            simulation = new Simulation(simulation_canvas, simulation.getSettings(), dimensions[0], dimensions[1]);
+
+            simulation = new Simulation(simulation_canvas, old_settings, dimensions[0], dimensions[1]);
+            simulation.init();
+
             $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
         }
     });
 
     $("#btn_fullscreen").on("click", toggleFullscreen);
+
+    $("#btn_load").on("click", function(e){
+        var simsavestate = $("#simsavestate").val();
+        var simsavestateobj = JSON.parse(simsavestate);
+
+        // neue simulation initialisieren
+        var sim_width = simsavestateobj.settings.INITIAL_WORLD_WIDTH;
+        var sim_height = simsavestateobj.settings.INITIAL_WORLD_HEIGHT;
+        var simsettings = simsavestateobj.settings.simsettings;
+
+        simulation = new Simulation(simulation_canvas, simsettings, sim_width, sim_height);
+        simulation.loadState(simsavestateobj);
+
+        $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
+        init_simulation_settings();
+    });
+
+    $("#btn_save").on("click", function(e){
+        var simsavestate = JSON.stringify(simulation);
+        //var simsavestate = JSON.stringify(simulation, null, '  ');
+        $("#simsavestate").val(simsavestate);
+    });
 
     $("#dimensions_label span").text(simulation.getWorldWidth()+" x "+simulation.getWorldHeight());
 
@@ -108,9 +135,9 @@ $(document).ready(function() {
     }
 
     var init_simulation_settings = function(){
-        $("#input_dimensions").val(INITIAL_WORLD_WIDTH+"x"+INITIAL_WORLD_HEIGHT);
+        $("#input_dimensions").val(simulation.getWorldWidth() + "x" + simulation.getWorldHeight());
 
-        for (var key in INITIAL_SIMULATION_SETTINGS) {
+        for (var key in simulation.getSettings()) {
             var identifier = "#input_"+ key.toLowerCase();
             $(identifier).val(simulation.getSettingVal(key));
         }

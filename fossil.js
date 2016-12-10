@@ -21,6 +21,17 @@ function Fossil(s, kind, x_pos, y_pos){
         return kind;
     };
 
+    this.toJSON = function() {
+        return {
+            id: this.getId(),
+            creation_time: this.getCreationTime()
+        };
+    };
+
+    this.loadState = function(fossilstate) {
+        creation_time = fossilstate.creation_time;
+    };
+
     // init
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);

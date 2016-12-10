@@ -4,7 +4,6 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         console.log("start simulation");
         running = true;
 
-        //draw();
         simulationStep();
     }
 
@@ -37,16 +36,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         return world_height;
     }
 
-    this.getContext2D = function(){
-        return context2D;
-    }
-
     function simulationStep(){
         t_start = new Date().getTime();
 
         world.seedEnergy();
         //world.seedEnergy_tile();
-        draw();
+        draw(true);
 
         for (var i=0; i<eprobots.length;i++){
             if (eprobots[i].length==0){
@@ -103,7 +98,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         eprobots[kind] = eprobots_next;
     }
 
-    function draw(){
+    function draw(change){
         //context2D.fillStyle = "rgb(255, 255, 255)";
         context2D.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -199,9 +194,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 }
 
 
-                t.decr_trace(0);
-                //t.decr_trace(1);
-                t.decrFruitfulness();
+                if (change){
+                    t.decr_trace(0);
+                    //t.decr_trace(1);
+                    t.decrFruitfulness();
+                }
             }
         }
     }
@@ -259,7 +256,6 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         settings[setting_id] = val;
     };
 
-
     this.resizeCanvas = function(){
         console.log("resizeCanvas");
         var rect = canvas.getBoundingClientRect();
@@ -272,6 +268,46 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         y_step = c_h / world_height;
     }
 
+    this.init = function(){
+        world = new World(this);
+        world.init();
+
+        eprobots = [[]];
+        //var eprobots = [[],[]];
+
+        draw(false);
+    }
+
+    this.toJSON = function() {
+        return {
+            stepcounter: stepcounter,
+            settings: {
+                INITIAL_WORLD_WIDTH: initial_world_width,
+                INITIAL_WORLD_HEIGHT: initial_world_height,
+                simsettings: settings
+            },
+            eprobots: eprobots,
+            world: world
+        };
+    };
+
+    this.loadState = function(simstate){
+        stepcounter = simstate.stepcounter;
+        world = new World(this);
+        world.loadState(simstate.world);
+
+        eprobots = [[]];
+
+        for (var i = 0; i< simstate.eprobots[0].length; i++){
+            var e_state = simstate.eprobots[0][i];
+            var e = new Eprobot(sim, 0, e_state.x_pos, e_state.y_pos, e_state.working_programm);
+            e.loadState(e_state);
+            eprobots[0].push(e);
+        }
+
+        draw(false);
+    }
+
     // init
     var context2D = canvas.getContext('2d');
     var world_width = initial_world_width;
@@ -282,16 +318,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var t_start = null;
     var t_max = 0;
     var t_count = 0;
+
     var running = false;
     var stepcounter = 0;
 
     var x_step, y_step;
     this.resizeCanvas();
 
-    var world = new World(this);
-
-    var eprobots = [[]];
-    //var eprobots = [[],[]];
-
+    var world = null;
+    var eprobots = null;
     var sim = this;
 }

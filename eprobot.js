@@ -230,6 +230,21 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         return program;
     }
 
+    this.toJSON = function() {
+        return {
+            id: this.getId(),
+            age: age,
+            energy: energy,
+            x_pos: x_pos,
+            y_pos: y_pos,
+            working_programm: working_programm
+        };
+    };
+
+    this.loadState = function(e_state) {
+        age = e_state.age;
+        energy = e_state.energy;
+    };
 
     // init
     var t = s.getWorld().getTerrain(x_pos, y_pos);
