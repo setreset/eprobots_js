@@ -41,7 +41,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         world.seedEnergy();
         //world.seedEnergy_tile();
-        draw(true);
+        sim.draw(true);
 
         for (var i=0; i<eprobots.length;i++){
             if (eprobots[i].length==0){
@@ -98,7 +98,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         eprobots[kind] = eprobots_next;
     }
 
-    function draw(change){
+    this.draw = function(change){
         //context2D.fillStyle = "rgb(255, 255, 255)";
         context2D.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -275,7 +275,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         eprobots = [[]];
         //var eprobots = [[],[]];
 
-        draw(false);
+        this.draw(false);
     }
 
     this.toJSON = function() {
@@ -305,7 +305,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             eprobots[0].push(e);
         }
 
-        draw(false);
+        this.draw(false);
     }
 
     // init

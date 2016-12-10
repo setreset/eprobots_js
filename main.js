@@ -85,6 +85,7 @@ $(document).ready(function() {
     function on_fullscreen_change() {
         console.log("fullscreen change");
         simulation.resizeCanvas();
+        simulation.draw();
     }
 
     simulation = new Simulation(simulation_canvas, INITIAL_SIMULATION_SETTINGS, INITIAL_WORLD_WIDTH, INITIAL_WORLD_HEIGHT);
