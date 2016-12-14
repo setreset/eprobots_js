@@ -158,11 +158,22 @@ $(document).ready(function() {
 
         if (settingtype == "number"){
             console.log("number");
-            var int_val = parseInt(val_str);
-            console.log(int_val);
-            if (!isNaN(int_val)){
-                simulation.setSettingVal(setting_key.toUpperCase(), int_val);
+            if (val_str.indexOf('.') > -1){
+                // float
+                var float_val = parseFloat(val_str);
+                console.log(float_val);
+                if (!isNaN(float_val)){
+                    simulation.setSettingVal(setting_key.toUpperCase(), float_val);
+                }
+            }else{
+                // int
+                var int_val = parseInt(val_str);
+                console.log(int_val);
+                if (!isNaN(int_val)){
+                    simulation.setSettingVal(setting_key.toUpperCase(), int_val);
+                }
             }
+
         }else if (settingtype == "boolean"){
             console.log("boolean");
             if (val_str == "true"){

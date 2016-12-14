@@ -10,9 +10,10 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
             var control_vals = this.get_move();
             var control_val = control_vals[0];
+
             //var control_val = this.get_move_random();
             if (isFinite(control_val)){
-                var move_action = Math.abs(control_val % DIRECTIONS.length+1);
+                var move_action = Math.abs(control_val % (DIRECTIONS.length+1));
             }else{
                 console.log("Infinite: "+control_val);
                 var move_action = 0; // do nothing
@@ -190,10 +191,10 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                     var new_dna = tools_recombine(program, partner.getInitialProgram());
                 }else{
                     //console.log("recombine fail");
-                    var new_dna = tools_mutate(program);
+                    var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"), program);
                 }
             }else{
-                var new_dna = tools_mutate(program)
+                var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"),program)
             }
 
             var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);

@@ -54,15 +54,24 @@ function tools_compute(memory) {
     }
 }
 
-function tools_mutate(memory) {
+function tools_mutate(mutate_possibility, mutate_strength, memory) {
     var new_memory = [];
     for (var i=0;i<memory.length;i++){
-        var copyval = memory[i];
-        if (Math.random()<0.01){
-            copyval = copyval + (tools_random(400)-200);
+        if (i < memory.length - 20){
+            var copyval = memory[i];
+            if (Math.random() < mutate_possibility) {
+                copyval = copyval + tools_random(mutate_strength) - (mutate_strength / 2);
+            }
+            new_memory.push(copyval);
+        }else{
+            new_memory.push(0);
         }
-        new_memory.push(copyval);
     }
+
+    // control_vals
+    //new_memory[memory.length-1] = tools_random(10);
+    //new_memory[memory.length-2] = tools_random(2);
+
     return new_memory;
 }
 
