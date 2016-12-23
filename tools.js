@@ -57,14 +57,14 @@ function tools_compute(memory) {
 function tools_mutate(mutate_possibility, mutate_strength, memory) {
     var new_memory = [];
     for (var i=0;i<memory.length;i++){
-        if (i < memory.length - 20){
+        if (i < (memory.length - 2)){
             var copyval = memory[i];
             if (Math.random() < mutate_possibility) {
                 copyval = copyval + tools_random(mutate_strength) - (mutate_strength / 2);
             }
             new_memory.push(copyval);
         }else{
-            new_memory.push(0);
+            new_memory.push(memory[i]);
         }
     }
 
