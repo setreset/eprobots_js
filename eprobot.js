@@ -16,7 +16,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                 var move_action = Math.abs(control_val % (DIRECTIONS.length+1));
             }else{
                 console.log("Infinite: "+control_val);
-                var move_action = 0; // do nothing
+                var move_action = tools_random(9); // random
             }
 
             var rep_val = control_vals[1];
@@ -55,13 +55,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             }
         }
 
-        if (move_action == 0){ // do nothing
-            //if (energy > 0){
-            //    if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
-            //        forked_ep = this.fork();
-            //    }
-            //}
-        }else{
+        if (move_action > 0){
             var coord__new = s.getWorld().getCoordinates(this, move_action-1);
             if (coord__new){
                 var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
@@ -80,6 +74,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                     this.setPos(coord__new[0],coord__new[1]);
                 }
             }
+        }else{ // do nothing
         }
         return forked_ep
     };
