@@ -49,7 +49,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
         }
 
         if (energy > 0){
-            if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
+            if (s.get_eprobots_count() < s.getSettings().EPROBOTS_MAX) {
                 forked_ep = this.fork();
                 //age++;
             }
@@ -89,13 +89,13 @@ function Eprobot(s, kind, x_pos, y_pos, program){
                 energy++;
             }
         }else if(kind==1){
-            if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
-                obj_on_candidate_field.kill();
-                // neuer eprobot...
-                if (s.get_eprobots_count() < s.getSettings().OBJECT_COUNT) {
-                    forked_ep = this.fork();
-                }
-            }
+            //if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
+            //    obj_on_candidate_field.kill();
+            //    // neuer eprobot...
+            //    if (s.get_eprobots_count() < s.getSettings().EPROBOTS_MAX) {
+            //        forked_ep = this.fork();
+            //    }
+            //}
         }
     };
 
