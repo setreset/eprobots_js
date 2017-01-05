@@ -20,14 +20,13 @@ function tools_random(max){
     return Math.floor(Math.random()*max);
 }
 
+// subleq: https://en.wikipedia.org/wiki/One_instruction_set_computer
 function tools_compute(memory) {
     var program_counter = 0;
     var step_counter = 0;
     var a, b, c;
 
-    //console.log("compute");
     while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 100) {
-        //console.log(program_counter);
         a = memory[program_counter];
         b = memory[program_counter + 1];
         c = memory[program_counter + 2];
@@ -47,11 +46,14 @@ function tools_compute(memory) {
             if (memory[b] > 0) {
                 program_counter = program_counter + 3;
             } else {
+                //c = memory[program_counter + 2];
+                //c = c % memory.length;
                 program_counter = c;
             }
         }
         step_counter++;
     }
+    //console.log(step_counter);
 }
 
 function tools_mutate(mutate_possibility, mutate_strength, memory) {

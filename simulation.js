@@ -300,7 +300,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         for (var i = 0; i< simstate.eprobots[0].length; i++){
             var e_state = simstate.eprobots[0][i];
-            var e = new Eprobot(sim, 0, e_state.x_pos, e_state.y_pos, e_state.working_programm);
+            var e = new Eprobot(sim, 0, e_state.x_pos, e_state.y_pos, e_state.init_programm);
             e.loadState(e_state);
             eprobots[0].push(e);
         }

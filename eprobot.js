@@ -1,4 +1,4 @@
-function Eprobot(s, kind, x_pos, y_pos, program){
+function Eprobot(s, kind, x_pos, y_pos, init_programm){
     this.newStep = function(){
         var forked_ep = null;
 
@@ -183,13 +183,13 @@ function Eprobot(s, kind, x_pos, y_pos, program){
 
                 if (partner){
                     //console.log("recombine");
-                    var new_dna = tools_recombine(program, partner.getInitialProgram());
+                    var new_dna = tools_recombine(init_programm, partner.getInitialProgram());
                 }else{
                     //console.log("recombine fail");
-                    var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"), program);
+                    var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"), init_programm);
                 }
             }else{
-                var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"),program)
+                var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"),init_programm)
             }
 
             var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);
@@ -223,7 +223,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     }
 
     this.getInitialProgram = function(){
-        return program;
+        return init_programm;
     }
 
     this.toJSON = function() {
@@ -233,6 +233,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
             energy: energy,
             x_pos: x_pos,
             y_pos: y_pos,
+            init_programm: init_programm,
             working_programm: working_programm
         };
     };
@@ -240,6 +241,7 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     this.loadState = function(e_state) {
         age = e_state.age;
         energy = e_state.energy;
+        working_programm = e_state.working_programm;
     };
 
     // init
@@ -248,5 +250,5 @@ function Eprobot(s, kind, x_pos, y_pos, program){
     var age = 0;
     var energy = 0;
 
-    var working_programm = program.slice();
+    var working_programm = init_programm.slice(0);
 }
