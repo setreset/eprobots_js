@@ -29,11 +29,11 @@ function tools_compute(memory) {
     while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 100) {
         a = memory[program_counter];
         b = memory[program_counter + 1];
-        //c = memory[program_counter + 2];
+        c = memory[program_counter + 2];
 
         a = a % memory.length;
         b = b % memory.length;
-        //c = c % memory.length;
+        c = c % memory.length;
 
         //a = Math.abs(a % memory.length);
         //b = Math.abs(b % memory.length);
@@ -46,8 +46,8 @@ function tools_compute(memory) {
             if (memory[b] > 0) {
                 program_counter = program_counter + 3;
             } else {
-                c = memory[program_counter + 2];
-                c = c % memory.length;
+                //c = memory[program_counter + 2];
+                //c = c % memory.length;
                 program_counter = c;
             }
         }
