@@ -1,8 +1,9 @@
 function Eprobot(s, kind, x_pos, y_pos, init_programm){
+
     this.newStep = function(){
         var forked_ep = null;
 
-        if (age < s.getSettings().LIFETIME){
+        if (age < s.getSettings().LIFETIME_MAX){
             // set input
             if (s.getSettings().SENSE){
                 this.set_input();
@@ -13,7 +14,7 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
 
             //var control_val = this.get_move_random();
             if (isFinite(control_val)){
-                var move_action = Math.abs(control_val % (DIRECTIONS.length+1));
+                var move_action = Math.abs(control_val) % 9;
             }else{
                 console.log("Infinite: "+control_val);
                 var move_action = tools_random(9); // random
@@ -21,34 +22,31 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
 
             var rep_val = control_vals[1];
             if (isFinite(rep_val)){
-                var rep_action = Math.abs(rep_val % 2);
+                var rep_action = Math.abs(rep_val) % 2;
             }else{
+                console.log("Infinite: "+rep_val);
                 var rep_action = 0; // do nothing
             }
 
             forked_ep = this.processAction(move_action, rep_action);
+
+
+            age++;
+            this.addEnergy(-1);
         }
 
-        age++;
         return forked_ep;
     }
 
     this.processAction = function(move_action, rep_action){
         var forked_ep = null;
-        if (rep_action==1) {
-            //if (energy > 0) {
-                var t = s.getWorld().getTerrain(x_pos, y_pos);
-                t.addFruitfulness(500);
-                age+=4;
-                //energy--;
-                //age++;
-                //age++;
-                //age++;
-                //age++;
-            //}
+        if (rep_action==1 && energy >= s.getSettings().ENERGYCOST_SEED) {
+            var t = s.getWorld().getTerrain(x_pos, y_pos);
+            t.addFruitfulness(500);
+            this.addEnergy(-s.getSettings().ENERGYCOST_SEED);
         }
 
-        if (energy > 0){
+        if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
             if (s.get_eprobots_count() < s.getSettings().EPROBOTS_MAX) {
                 forked_ep = this.fork();
                 //age++;
@@ -80,13 +78,13 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
     };
 
     this.preMove = function(obj_on_candidate_field){
-
+        // FRESSEN
         if (kind==0){
             if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
                 // "eat energy"
-                s.getWorld().decr_energycount();
+                s.getWorld().decr_foodcount();
                 // neuer eprobot...
-                energy++;
+                this.addEnergy(s.getSettings().FOOD_ENERGY);
             }
         }else if(kind==1){
             //if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
@@ -100,13 +98,13 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
     };
 
     this.kill = function(){
-        age = s.getSettings().LIFETIME;
+        age = s.getSettings().LIFETIME_MAX;
     }
 
     this.canMoveToField = function(obj_on_candidate_field){
-
         if (kind==0){
             return obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY;
+
         }else if(kind==1){
             return obj_on_candidate_field == null || (obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0);
         }
@@ -193,7 +191,7 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
             }
 
             var forked_ep = new Eprobot(s, kind, point.x, point.y, new_dna);
-            energy--;
+            this.addEnergy(-s.getSettings().ENERGYCOST_FORK);
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -203,6 +201,17 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
 
     this.getAge = function(){
         return age;
+    }
+
+    this.addEnergy = function (number) {
+        energy += number;
+        if (energy < 0){
+            energy = 0;
+        }
+    };
+
+    this.getEnergy = function(){
+        return energy;
     }
 
     this.getPos = function(){
@@ -248,7 +257,7 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
     var t = s.getWorld().getTerrain(x_pos, y_pos);
     t.setSlotObject(this);
     var age = 0;
-    var energy = 0;
+    var energy = s.getSettings().CHILDHOOD;
 
     var working_programm = init_programm.slice(0);
 }

@@ -6,7 +6,7 @@ function World(s){
 
     this.seedEnergy_new = function(){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
-        var energydiff = 500 - energy_count;
+        var energydiff = 500 - food_count;
         var energy_height = 10;
 
         for(var i=0;i<energydiff;i++){
@@ -17,7 +17,7 @@ function World(s){
             if (t.getSlotObject() == null){
                 // neues energyobject
                 new Energy(s, x, y);
-                energy_count++;
+                food_count++;
             }
         }
 
@@ -31,14 +31,14 @@ function World(s){
             if (t.getSlotObject() == null && t.getFruitfulness()>0){
                 // neues energyobject
                 new Energy(s, x, y);
-                energy_count++;
+                food_count++;
             }
         }
     };
 
     this.seedEnergy = function(){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
-        var energydiff = energycount_max - energy_count;
+        var energydiff = energycount_max - food_count;
 
         if (s.getSettings().KINDERGARTEN){
             for(var i=0;i<energydiff;i++){
@@ -51,7 +51,7 @@ function World(s){
                 if (t.getSlotObject() == null){
                     // neues energyobject
                     new Energy(s, x, y);
-                    energy_count++;
+                    food_count++;
                 }
 
             }
@@ -67,7 +67,7 @@ function World(s){
             if (t.getSlotObject() == null && t.getFruitfulness()>0){
                 // neues energyobject
                 new Energy(s, x, y);
-                energy_count++;
+                food_count++;
             }
         }
     }
@@ -81,13 +81,13 @@ function World(s){
             }
         }
         if (s.getStepCounter()%250==0){
-            console.log("get_tiles")
+            console.log("get_tiles");
             tiles = this.get_tiles();
         }
     };
 
     this.seedEnergy_one_tile = function(tile_x, tile_y){
-        var energydiff = energycount_max - energy_count
+        var energydiff = energycount_max - food_count;
         var energydiff_one_tile = energydiff/(tile_count*tile_count*0.5);
 
         //koordinaten errechnen
@@ -104,7 +104,7 @@ function World(s){
             if (t.getSlotObject() == null){
                 // neues energyobject
                 new Energy(s, x, y);
-                energy_count++;
+                food_count++;
             }
         }
     }
@@ -122,6 +122,7 @@ function World(s){
 
     this.getCoordinates = function(object, direction){
         var movechoice = DIRECTIONS[direction];
+
 
         var objectpos = object.getPos();
         if (s.getSettingVal("BORDERJUMP")){
@@ -207,20 +208,20 @@ function World(s){
         };
     };
 
-    this.decr_energycount = function(){
-        energy_count--;
+    this.decr_foodcount = function(){
+        food_count--;
     };
 
     this.toJSON = function() {
         return {
-            energy_count: energy_count,
+            energy_count: food_count,
             worldarr: worldarr
         };
     };
 
     this.loadState = function(worldstate){
         //console.log(worldstate);
-        energy_count = worldstate.energy_count;
+        food_count = worldstate.energy_count;
         //console.log(worldstate.worldarr[0][0]);
 
         worldarr = new Array(s.getWorldWidth());
@@ -251,7 +252,7 @@ function World(s){
     var energycount_max = parseInt((s.getWorldWidth()* s.getWorldHeight()) / energy_factor, 10);
 
     console.log("energycount_max: "+ energycount_max);
-    var energy_count = 0;
+    var food_count = 0;
 
     //var tile_count = 3;
     //var tiles = this.get_tiles();
