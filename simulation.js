@@ -76,7 +76,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         for (var i=0;i<ep.length;i++){
             var eprobot = ep[i];
             // Leben
-            if (eprobot.getAge() < settings.LIFETIME_MIN || (eprobot.getAge() < settings.LIFETIME_MAX && (eprobot.getEnergy() > 0))){
+            if (kind == 0){
+                var life_condition = eprobot.getAge() < settings.LIFETIME_MIN || (eprobot.getAge() < settings.LIFETIME_MAX && (eprobot.getEnergy() > 0));
+            }else{
+                var life_condition = eprobot.getAge() < 200;
+            }
+            if (life_condition){
 
                 var forked_ep = eprobot.newStep();
                 if (forked_ep != null){
@@ -123,14 +128,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     }else if (t_object.getId()==OBJECTTYPES.EPROBOT){
                         var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, settings.LIFETIME_MAX, 255, 100));
 
-                        //if (t_object.getKind()==0){
+                        if (t_object.getKind()==0){
                             context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
                             //context2D.fillStyle = "rgb(255, 0, 0)";
                             context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        //}else if(t_object.getKind()==1){
-                        //    context2D.fillStyle = "rgb(0, 0, 255)";
-                        //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        //}
+                        }else if(t_object.getKind()==1){
+                            context2D.fillStyle = "rgb(0, 0, "+ c_fac +")";
+                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                        }
 
 
                     }else if (t_object.getId()==OBJECTTYPES.FOSSIL){
@@ -277,7 +282,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         world.init();
 
         eprobots = [[]];
-        //var eprobots = [[],[]];
+        //eprobots = [[],[]];
 
         this.draw(false);
     }

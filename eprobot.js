@@ -32,7 +32,14 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
 
 
             age++;
-            this.addEnergy(-1);
+            if (age < s.getSettings().CHILDHOOD){
+                this.addEnergy(-1);
+            }else{
+                if (kind==0 && age > s.getSettings().LIFETIME_MIN){
+                    this.addEnergy(-1);
+                }
+            }
+
         }
 
         return forked_ep;
@@ -87,13 +94,12 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
                 this.addEnergy(s.getSettings().FOOD_ENERGY);
             }
         }else if(kind==1){
-            //if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
-            //    obj_on_candidate_field.kill();
-            //    // neuer eprobot...
-            //    if (s.get_eprobots_count() < s.getSettings().EPROBOTS_MAX) {
-            //        forked_ep = this.fork();
-            //    }
-            //}
+            if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT && obj_on_candidate_field.getKind()==0) {
+                // "eat"
+                obj_on_candidate_field.kill();
+                // neuer eprobot...
+                this.addEnergy(s.getSettings().FOOD_ENERGY);
+            }
         }
     };
 
