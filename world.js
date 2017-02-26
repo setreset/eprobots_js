@@ -159,8 +159,9 @@ function World(s){
     };
 
     this.get_environment_val = function(x,y) {
-        var local_energycount = 0;
-        var local_eprobotcount = 0;
+        var local_foodcount = 0;
+        var local_eprobotcount_0 = 0;
+        var local_eprobotcount_1 = 0;
         var local_fossilcount = 0;
         var local_tracecount_0 = 0;
         var local_tracecount_1 = 0;
@@ -189,9 +190,14 @@ function World(s){
 
             if (t.getSlotObject()!=null){
                 if (t.getSlotObject().getId()==OBJECTTYPES.ENERGY){
-                    local_energycount++;
+                    local_foodcount++;
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.EPROBOT){
-                    local_eprobotcount++;
+                    if (t.getSlotObject().getKind()==0){
+                        local_eprobotcount_0++;
+                    }else{
+                        local_eprobotcount_1++;
+                    }
+
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.FOSSIL){
                     local_fossilcount++;
                 }
@@ -199,8 +205,9 @@ function World(s){
         }
 
         return {
-            local_energycount: local_energycount,
-            local_eprobotcount: local_eprobotcount,
+            local_foodcount: local_foodcount,
+            local_eprobotcount_0: local_eprobotcount_0,
+            local_eprobotcount_1: local_eprobotcount_1,
             local_fossilcount: local_fossilcount,
             local_tracecount_0: local_tracecount_0,
             local_tracecount_1: local_tracecount_1,
@@ -228,7 +235,7 @@ function World(s){
         for (var x=0;x<s.getWorldWidth();x++){
             worldarr[x] = new Array(s.getWorldHeight());
             for (var y=0;y<s.getWorldHeight();y++){
-                var t = new Terrain();
+                var t = new Terrain(s);
                 worldarr[x][y] = t;
                 t.loadState(s, x, y, worldstate.worldarr[x][y]);
             }
@@ -241,7 +248,7 @@ function World(s){
         for (var x=0;x<s.getWorldWidth();x++){
             worldarr[x] = new Array(s.getWorldHeight());
             for (var y=0;y<s.getWorldHeight();y++){
-                worldarr[x][y] = new Terrain();
+                worldarr[x][y] = new Terrain(s);
             }
         }
     }

@@ -9,7 +9,7 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
                 this.set_input();
             }
 
-            var control_vals = this.get_move();
+            var control_vals = this.get_control_vals();
             var control_val = control_vals[0];
 
             //var control_val = this.get_move_random();
@@ -28,7 +28,15 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
                 var rep_action = 0; // do nothing
             }
 
-            forked_ep = this.processAction(move_action, rep_action);
+            var ocstacle_val = control_vals[2];
+            if (isFinite(ocstacle_val)){
+                var obstacle_action = Math.abs(ocstacle_val) % 9;
+            }else{
+                console.log("Infinite: "+ocstacle_val);
+                var obstacle_action = 0; // do nothing
+            }
+
+            forked_ep = this.processAction(move_action, rep_action, obstacle_action);
 
 
             age++;
@@ -45,16 +53,35 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
         return forked_ep;
     }
 
-    this.processAction = function(move_action, rep_action){
+    this.processAction = function(move_action, rep_action, obstacle_action){
         var forked_ep = null;
+
         if (rep_action==1 && energy >= s.getSettings().ENERGYCOST_SEED) {
             var t = s.getWorld().getTerrain(x_pos, y_pos);
-            t.addFruitfulness(500);
+            t.addFruitfulness(s.getSettings().SEED_POWER);
             this.addEnergy(-s.getSettings().ENERGYCOST_SEED);
         }
 
+        if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_SEED) {
+            var coord__obstacle = s.getWorld().getCoordinates(this, obstacle_action-1)
+            if (coord__obstacle){
+                var t_obst = s.getWorld().getTerrain(coord__obstacle[0],coord__obstacle[1]);
+                var obj_on_candidate_field = t_obst.getSlotObject();
+
+                if (obj_on_candidate_field == null){
+                    t_obst.setSlotObject(new Fossil(s, this.getKind(), coord__obstacle[0],coord__obstacle[1]));
+                }
+                this.addEnergy(-s.getSettings().ENERGYCOST_SEED);
+            }
+        }
+
         if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
-            if (s.get_eprobots_count() < s.getSettings().EPROBOTS_MAX) {
+            if (kind==0){
+                var cond = s.getEprobots(0).length < s.getSettings().EPROBOTS_MAX;
+            }else{
+                var cond = s.getEprobots(1).length < 100;
+            }
+            if (cond) {
                 forked_ep = this.fork();
                 //age++;
             }
@@ -120,16 +147,19 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
         var inputval = s.getWorld().get_environment_val(x_pos,y_pos);
         //console.log(inputval);
         var program_length = s.getSettings().PROGRAM_LENGTH;
-        working_programm[program_length-3] = inputval.local_energycount;
-        working_programm[program_length-4] = inputval.local_eprobotcount;
-        working_programm[program_length-5] = inputval.local_fossilcount;
-        working_programm[program_length-6] = inputval.local_tracecount_0;
-        working_programm[program_length-7] = inputval.local_tracecount_1;
-        working_programm[program_length-8] = inputval.local_fruitfulness;
-        working_programm[program_length-9] = age;
-        working_programm[program_length-10] = energy;
-        working_programm[program_length-11] = x_pos;
-        working_programm[program_length-12] = y_pos;
+
+        working_programm[program_length-4] = inputval.local_foodcount;
+        working_programm[program_length-5] = inputval.local_eprobotcount_0;
+        working_programm[program_length-6] = inputval.local_eprobotcount_1;
+        working_programm[program_length-7] = inputval.local_fossilcount;
+        working_programm[program_length-8] = inputval.local_tracecount_0;
+        working_programm[program_length-9] = inputval.local_tracecount_1;
+        working_programm[program_length-10] = inputval.local_fruitfulness;
+
+        working_programm[program_length-11] = age;
+        working_programm[program_length-12] = energy;
+        working_programm[program_length-13] = x_pos;
+        working_programm[program_length-14] = y_pos;
 
     }
 
@@ -139,13 +169,16 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
         return action;
     }
 
-    this.get_move = function(){
+    this.get_control_vals = function(){
         //var action = tools_random(DIRECTIONS.length+1); // move directions + nothing
         //var action = 6;
         //return action;
 
         tools_compute(working_programm);
-        return [working_programm[s.getSettings().PROGRAM_LENGTH-1],working_programm[s.getSettings().PROGRAM_LENGTH-2]];
+        return [
+            working_programm[s.getSettings().PROGRAM_LENGTH-1],
+            working_programm[s.getSettings().PROGRAM_LENGTH-2],
+            working_programm[s.getSettings().PROGRAM_LENGTH-3]];
     }
 
     this.get_local_partner = function(kind){

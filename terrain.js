@@ -1,4 +1,4 @@
-function Terrain(){
+function Terrain(s){
     var slot_object = null;
     var traces = [0,0];
     var fruitfulness = 0;
@@ -20,13 +20,13 @@ function Terrain(){
     this.addFruitfulness = function(val){
         fruitfulness += val;
 
-        if (fruitfulness > 1000){
-            fruitfulness = 1000;
+        if (fruitfulness > s.getSettings().SEED_MAX){
+            fruitfulness = s.getSettings().SEED_MAX;
         }
     }
 
     this.decrFruitfulness = function(){
-        if (fruitfulness>0){
+        if (fruitfulness > 0){
             fruitfulness--;
         }
     }

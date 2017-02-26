@@ -43,14 +43,19 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         //world.seedEnergy_tile();
         sim.draw(true);
 
-        for (var i=0; i<eprobots.length;i++){
-            if (eprobots[i].length==0){
-                beep();
-                initEprobots(i);
-            }
-
-            processEprobots(i);
+        if (eprobots[0].length==0){
+            beep(2020);
+            initEprobots(0);
         }
+
+        processEprobots(0);
+
+        if (eprobots[0].length > 100 && eprobots[1].length==0){
+            beep(3020);
+            initEprobots(1);
+        }
+
+        processEprobots(1);
 
         stepcounter++;
 
@@ -79,7 +84,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             if (kind == 0){
                 var life_condition = eprobot.getAge() < settings.LIFETIME_MIN || (eprobot.getAge() < settings.LIFETIME_MAX && (eprobot.getEnergy() > 0));
             }else{
-                var life_condition = eprobot.getAge() < 200;
+                var life_condition = eprobot.getAge() < 300;
             }
             if (life_condition){
 
@@ -158,7 +163,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     //if (c_green<100) c_green=100;
 
                     var trace_val_0 = t.get_trace(0);
-                    //var trace_val_1 = t.get_trace(1);
+                    var trace_val_1 = t.get_trace(1);
                     var fruitfulness = t.getFruitfulness();
 
                     //if (trace_val_0 > 0 && trace_val_1 == 0) {
@@ -188,24 +193,33 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     //    context2D.fillStyle = "rgb("+rgb_all[0]+", "+rgb_all[1]+", "+rgb_all[2]+")";
                     //    context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     //}
+
+
+                    if (trace_val_1 > 0) {
+                        var l_val = Math.round(tools_map_range(trace_val_1, 0, settings.TRACETIME, 90, 50));
+                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        context2D.fillStyle = "hsl(177, 100%, " + l_val + "%)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }
+                    if (trace_val_0 > 0) {
+                        var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
+                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                        context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }
                     if(fruitfulness > 0){
                         var l_val = Math.round(tools_map_range(fruitfulness, 0, 1000, 100, 20));
                         //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
                         context2D.fillStyle = "hsl(29, 100%, " + l_val + "%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
-                    else if (trace_val_0 > 0) {
-                        var l_val = Math.round(tools_map_range(trace_val_0, 0, settings.TRACETIME, 90, 60));
-                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
-                        context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
-                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    }//}else if (trace_val_1 > 0 && trace_val_0 == 0) {
+
                 }
 
 
                 if (change){
                     t.decr_trace(0);
-                    //t.decr_trace(1);
+                    t.decr_trace(1);
                     t.decrFruitfulness();
                 }
             }
@@ -217,7 +231,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         console.log("init eprobots: " + currentdate);
         var program;
 
-        for (var loop=0;loop<25;loop++){
+
+        for (var loop=0;loop<50;loop++){
             var x_pos, y_pos;
             x_pos = tools_random(world_width);
             y_pos = tools_random(world_height);
@@ -281,8 +296,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         world = new World(this);
         world.init();
 
-        eprobots = [[]];
-        //eprobots = [[],[]];
+        //eprobots = [[]];
+        eprobots = [[],[]];
 
         this.draw(false);
     }
