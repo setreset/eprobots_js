@@ -169,6 +169,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     this.init = function(){
         world = new World(this);
         world.init();
+        drawer = new Drawer(this, canvas);
 
         //eprobots = [[]];
         eprobots = [[],[]];
@@ -224,8 +225,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var stepcounter = 0;
 
     var world = null;
+    var drawer = null;
     var eprobots = null;
     var sim = this;
-
-    var drawer = new Drawer(sim, canvas);
 }
