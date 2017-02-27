@@ -55,14 +55,16 @@ function Terrain(s){
         return {
             slotObject: slotObject,
             fruitfulness: this.getFruitfulness(),
-            trace: this.get_trace(0)
+            trace_0: this.get_trace(0),
+            trace_1: this.get_trace(1)
         };
     }
 
     this.loadState = function(s, x, y, terrainstate){
         //console.log(terrainstate);
         fruitfulness = terrainstate.fruitfulness;
-        traces[0] = terrainstate.trace;
+        traces[0] = terrainstate.trace_0;
+        traces[1] = terrainstate.trace_1;
 
         var slot = terrainstate.slotObject;
         if (slot){

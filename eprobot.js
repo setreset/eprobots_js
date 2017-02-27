@@ -134,6 +134,16 @@ function Eprobot(s, kind, x_pos, y_pos, init_programm){
         age = s.getSettings().LIFETIME_MAX;
     }
 
+    this.isAlive = function(){
+        if (kind == 0){
+            var life_condition = age < s.getSettings().LIFETIME_MIN || (age < s.getSettings().LIFETIME_MAX && (energy > 0));
+        }else{
+            var life_condition = age < 300;
+        }
+
+        return life_condition;
+    }
+
     this.canMoveToField = function(obj_on_candidate_field){
         if (kind==0){
             return obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY;

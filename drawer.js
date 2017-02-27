@@ -7,6 +7,13 @@ function Drawer(s, canvas){
         for (var x=0;x< s.getWorldWidth();x++){
             for (var y=0;y< s.getWorldHeight();y++){
                 var t = s.getWorld().getTerrain(x,y);
+
+                if (change){
+                    t.decr_trace(0);
+                    t.decr_trace(1);
+                    t.decrFruitfulness();
+                }
+
                 var t_object = t.getSlotObject();
 
                 if (t_object != null){
@@ -102,13 +109,6 @@ function Drawer(s, canvas){
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }
 
-                }
-
-
-                if (change){
-                    t.decr_trace(0);
-                    t.decr_trace(1);
-                    t.decrFruitfulness();
                 }
             }
         }

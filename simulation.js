@@ -17,15 +17,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     }
 
     this.getEprobots = function(kind){
-        return eprobots[kind];
-    }
-
-    this.get_eprobots_count = function(){
-        var sum = 0;
-        for (var i=0;i<eprobots.length;i++){
-            sum += eprobots[i].length;
+        if (kind==0){
+            return eprobots_h;
+        }else if(kind==1){
+            return eprobots_c;
         }
-        return sum;
     }
 
     this.getWorldWidth = function(){
@@ -41,26 +37,25 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         world.seedEnergy();
         //world.seedEnergy_tile();
-        drawer.draw(true);
 
-        if (eprobots[0].length==0){
+        if (eprobots_h.length==0){
             beep(2020);
             initEprobots(0);
         }
 
-        processEprobots(0);
-
-        if (eprobots[0].length > 100 && eprobots[1].length==0){
+        if (eprobots_h.length > 100 && eprobots_c.length==0){
             beep(3020);
             initEprobots(1);
         }
 
-        processEprobots(1);
+        eprobots_h = processEprobots(eprobots_h);
+        eprobots_c = processEprobots(eprobots_c);
 
         stepcounter++;
 
         var t_end = new Date().getTime();
         var frame_time = t_end-t_start;
+
         if (GLOBAL_SETTINGS.LOG_STATS){
             if (frame_time>t_max) t_max = frame_time;
             t_count = t_count + frame_time;
@@ -69,24 +64,19 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             console.log("step: "+stepcounter+" time: "+frame_time+" mean: "+mean+" max: "+t_max);
         }
 
+        drawer.draw(true);
+
         if (running) setTimeout(simulationStep, GLOBAL_SETTINGS.SLEEPTIME - frame_time);
     }
 
-    function processEprobots(kind){
+    function processEprobots(ep){
         var eprobots_next = [];
-
-        var ep = eprobots[kind];
 
         // processing
         for (var i=0;i<ep.length;i++){
             var eprobot = ep[i];
             // Leben
-            if (kind == 0){
-                var life_condition = eprobot.getAge() < settings.LIFETIME_MIN || (eprobot.getAge() < settings.LIFETIME_MAX && (eprobot.getEnergy() > 0));
-            }else{
-                var life_condition = eprobot.getAge() < 300;
-            }
-            if (life_condition){
+            if (eprobot.isAlive()){
 
                 var forked_ep = eprobot.newStep();
                 if (forked_ep != null){
@@ -109,7 +99,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             }
         }
 
-        eprobots[kind] = eprobots_next;
+        return eprobots_next;
     }
 
     function initEprobots(kind){
@@ -137,7 +127,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 }
 
                 var newep = new Eprobot(sim, kind, x_pos, y_pos, program);
-                eprobots[kind].push(newep);
+                if (kind == 0){
+                    eprobots_h.push(newep);
+                }else if(kind == 1){
+                    eprobots_c.push(newep);
+                }
             }
         }
     }
@@ -169,10 +163,9 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     this.init = function(){
         world = new World(this);
         world.init();
-        drawer = new Drawer(this, canvas);
 
-        //eprobots = [[]];
-        eprobots = [[],[]];
+        eprobots_h = [];
+        eprobots_c = [];
 
         drawer.draw(false);
     }
@@ -185,7 +178,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 INITIAL_WORLD_HEIGHT: initial_world_height,
                 simsettings: settings
             },
-            eprobots: eprobots,
+            eprobots_h: eprobots_h,
+            eprobots_c: eprobots_c,
             world: world
         };
     };
@@ -195,13 +189,21 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         world = new World(this);
         world.loadState(simstate.world);
 
-        eprobots = [[]];
+        eprobots_h = [];
+        eprobots_c = [];
 
-        for (var i = 0; i< simstate.eprobots[0].length; i++){
-            var e_state = simstate.eprobots[0][i];
+        for (var i = 0; i< simstate.eprobots_h.length; i++){
+            var e_state = simstate.eprobots_h[i];
             var e = new Eprobot(sim, 0, e_state.x_pos, e_state.y_pos, e_state.init_programm);
             e.loadState(e_state);
-            eprobots[0].push(e);
+            eprobots_h.push(e);
+        }
+
+        for (var i = 0; i< simstate.eprobots_c.length; i++){
+            var e_state = simstate.eprobots_c[i];
+            var e = new Eprobot(sim, 1, e_state.x_pos, e_state.y_pos, e_state.init_programm);
+            e.loadState(e_state);
+            eprobots_c.push(e);
         }
 
         drawer.draw(false);
@@ -225,7 +227,8 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
     var stepcounter = 0;
 
     var world = null;
-    var drawer = null;
-    var eprobots = null;
+    var drawer = new Drawer(this, canvas);
+    var eprobots_h = null;
+    var eprobots_c = null;
     var sim = this;
 }
