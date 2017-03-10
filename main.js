@@ -208,4 +208,14 @@ $(document).ready(function() {
     //    simulation.setSettings(INITIAL_SIMULATION_SETTINGS);
     //    init_simulation_settings();
     //});
+
+    // http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html
+    if (typeof Math.seedrandom === "function") {
+        console.log("Math.seedrandom vorhanden");
+        var seed = makeid(8);
+        console.log("seedRandom: "+ seed);
+        Math.seedrandom(seed);
+    }else{
+        console.log("Math.seedrandom nicht vorhanden");
+    }
 });
