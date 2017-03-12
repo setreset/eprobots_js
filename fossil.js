@@ -1,4 +1,4 @@
-function Fossil(s, kind, x_pos, y_pos){
+function Fossil(s, x_pos, y_pos){
 
     this.getId = function(){
         return OBJECTTYPES.FOSSIL;
@@ -15,10 +15,6 @@ function Fossil(s, kind, x_pos, y_pos){
     this.setPos = function(new_x_pos, new_y_pos){
         x_pos = new_x_pos;
         y_pos = new_y_pos;
-    };
-
-    this.getKind = function(){
-        return kind;
     };
 
     this.toJSON = function() {

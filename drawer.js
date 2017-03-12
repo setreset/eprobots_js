@@ -17,7 +17,7 @@ function Drawer(s, canvas){
                 var t_object = t.getSlotObject();
 
                 if (t_object != null){
-                    if (t_object.getId()==OBJECTTYPES.ENERGY){
+                    if (t_object.getId()==OBJECTTYPES.FOOD){
                         var age = s.getStepCounter() - t_object.getCreationTime();
                         var c_green = 256 - age;
                         if (c_green<100) c_green=100;
@@ -25,19 +25,17 @@ function Drawer(s, canvas){
                         //context2D.fillStyle = "rgb(0, 255, 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
 
-                    }else if (t_object.getId()==OBJECTTYPES.EPROBOT){
+                    }else if (t_object.getId()==OBJECTTYPES.EPROBOT_H){
                         var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX, 255, 100));
 
-                        if (t_object.getKind()==0){
-                            context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
-                            //context2D.fillStyle = "rgb(255, 0, 0)";
-                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        }else if(t_object.getKind()==1){
-                            context2D.fillStyle = "rgb(0, 0, "+ c_fac +")";
-                            context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                        }
+                        context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
+                        //context2D.fillStyle = "rgb(255, 0, 0)";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                    }else if (t_object.getId()==OBJECTTYPES.EPROBOT_C){
+                        var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX, 255, 100));
 
-
+                        context2D.fillStyle = "rgb(0, 0, "+ c_fac +")";
+                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==OBJECTTYPES.FOSSIL){
                         var fossil_age = s.getStepCounter() - t_object.getCreationTime();
                         var c_fac = Math.round(tools_map_range(fossil_age, 0, s.getSettings().FOSSILTIME, 360, 0));

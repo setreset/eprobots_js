@@ -10,8 +10,9 @@ var DIRECTIONS = [
 ];
 
 var OBJECTTYPES = {
-    ENERGY: 1,
-    EPROBOT: 2,
+    FOOD: 1,
+    EPROBOT_H: 10,
+    EPROBOT_C: 11,
     FOSSIL: 3
 }
 

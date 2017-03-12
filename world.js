@@ -16,7 +16,7 @@ function World(s){
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null){
                 // neues energyobject
-                new Energy(s, x, y);
+                new Food(s, x, y);
                 food_count++;
             }
         }
@@ -30,7 +30,7 @@ function World(s){
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null && t.getFruitfulness()>0){
                 // neues energyobject
-                new Energy(s, x, y);
+                new Food(s, x, y);
                 food_count++;
             }
         }
@@ -50,7 +50,7 @@ function World(s){
                 var t = this.getTerrain(x,y);
                 if (t.getSlotObject() == null){
                     // neues energyobject
-                    new Energy(s, x, y);
+                    new Food(s, x, y);
                     food_count++;
                 }
 
@@ -64,9 +64,9 @@ function World(s){
             var y = tools_random(s.getWorldHeight());
             // ist sie frei?
             var t = this.getTerrain(x,y);
-            if (t.getSlotObject() == null && t.getFruitfulness()>0){
+            if (t.getSlotObject() == null /*&& t.getFruitfulness()>0*/){
                 // neues energyobject
-                new Energy(s, x, y);
+                new Food(s, x, y);
                 food_count++;
             }
         }
@@ -103,7 +103,7 @@ function World(s){
             var t = this.getTerrain(x,y);
             if (t.getSlotObject() == null){
                 // neues energyobject
-                new Energy(s, x, y);
+                new Food(s, x, y);
                 food_count++;
             }
         }
@@ -189,15 +189,12 @@ function World(s){
             local_fruitfulness += t.getFruitfulness();
 
             if (t.getSlotObject()!=null){
-                if (t.getSlotObject().getId()==OBJECTTYPES.ENERGY){
+                if (t.getSlotObject().getId()==OBJECTTYPES.FOOD){
                     local_foodcount++;
-                }else if (t.getSlotObject().getId()==OBJECTTYPES.EPROBOT){
-                    if (t.getSlotObject().getKind()==0){
-                        local_eprobotcount_0++;
-                    }else{
-                        local_eprobotcount_1++;
-                    }
-
+                }else if (t.getSlotObject().getId()==OBJECTTYPES.EPROBOT_H){
+                    local_eprobotcount_0++;
+                }else if (t.getSlotObject().getId()==OBJECTTYPES.EPROBOT_C){
+                    local_eprobotcount_1++;
                 }else if (t.getSlotObject().getId()==OBJECTTYPES.FOSSIL){
                     local_fossilcount++;
                 }
@@ -221,14 +218,14 @@ function World(s){
 
     this.toJSON = function() {
         return {
-            energy_count: food_count,
+            food_count: food_count,
             worldarr: worldarr
         };
     };
 
     this.loadState = function(worldstate){
         //console.log(worldstate);
-        food_count = worldstate.energy_count;
+        food_count = worldstate.food_count;
         //console.log(worldstate.worldarr[0][0]);
 
         worldarr = new Array(s.getWorldWidth());

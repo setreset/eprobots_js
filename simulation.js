@@ -91,7 +91,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 var e_pos = eprobot.getPos();
 
                 if (settings.FOSSILTIME > 0){
-                    new Fossil(sim, eprobot.getKind(), e_pos.x, e_pos.y);
+                    new Fossil(sim, e_pos.x, e_pos.y);
                 }else{
                     var t = world.getTerrain(e_pos.x, e_pos.y);
                     t.setSlotObject(null);
@@ -117,7 +117,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
             var obj_on_candidate_field = t_new.getSlotObject();
 
             // ist da auch nichts?
-            if (obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY) {
+            if (obj_on_candidate_field == null) {
                 //console.log(x_pos, y_pos)
 
                 program = [];
@@ -126,10 +126,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     program.push(val);
                 }
 
-                var newep = new Eprobot(sim, kind, x_pos, y_pos, program);
                 if (kind == 0){
+                    var newep = new Herbivore(sim, x_pos, y_pos, program);
                     eprobots_h.push(newep);
                 }else if(kind == 1){
+                    var newep = new Carnivore(sim, x_pos, y_pos, program);
                     eprobots_c.push(newep);
                 }
             }
@@ -194,14 +195,14 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         for (var i = 0; i< simstate.eprobots_h.length; i++){
             var e_state = simstate.eprobots_h[i];
-            var e = new Eprobot(sim, 0, e_state.x_pos, e_state.y_pos, e_state.init_programm);
+            var e = new Herbivore(sim, e_state.x_pos, e_state.y_pos, e_state.init_programm);
             e.loadState(e_state);
             eprobots_h.push(e);
         }
 
         for (var i = 0; i< simstate.eprobots_c.length; i++){
             var e_state = simstate.eprobots_c[i];
-            var e = new Eprobot(sim, 1, e_state.x_pos, e_state.y_pos, e_state.init_programm);
+            var e = new Carnivore(sim, e_state.x_pos, e_state.y_pos, e_state.init_programm);
             e.loadState(e_state);
             eprobots_c.push(e);
         }

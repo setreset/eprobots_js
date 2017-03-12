@@ -13,7 +13,12 @@ function Terrain(s){
         return traces[kind];
     };
 
-    this.set_trace = function(kind, val){
+    this.set_trace = function(o_id, val){
+        if (o_id==OBJECTTYPES.EPROBOT_H){
+            var kind = 0;
+        }else if (o_id==OBJECTTYPES.EPROBOT_C){
+            var kind = 1;
+        }
         traces[kind] = val;
     };
 
@@ -46,9 +51,9 @@ function Terrain(s){
     this.toJSON = function() {
         var slotObject = this.getSlotObject();
         if (slotObject != null){
-            if (slotObject.getId() == OBJECTTYPES.EPROBOT){
+            if (slotObject.getId() == OBJECTTYPES.EPROBOT_H || slotObject.getId() == OBJECTTYPES.EPROBOT_C){
                 slotObject = {
-                    id: OBJECTTYPES.EPROBOT
+                    id: slotObject.getId()
                 }
             }
         }
@@ -68,11 +73,11 @@ function Terrain(s){
 
         var slot = terrainstate.slotObject;
         if (slot){
-            if (slot.id == OBJECTTYPES.ENERGY){
-                var e = new Energy(s, x, y);
+            if (slot.id == OBJECTTYPES.FOOD){
+                var e = new Food(s, x, y);
                 e.loadState(slot);
             }else if (slot.id == OBJECTTYPES.FOSSIL){
-                var f = new Fossil(s, 0, x, y);
+                var f = new Fossil(s, x, y);
                 f.loadState(slot);
             }
         }

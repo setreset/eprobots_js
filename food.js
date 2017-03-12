@@ -1,7 +1,7 @@
-function Energy(s, x_pos, y_pos){
+function Food(s, x_pos, y_pos){
 
     this.getId = function(){
-        return OBJECTTYPES.ENERGY;
+        return OBJECTTYPES.FOOD;
     }
 
     this.getCreationTime = function(){
