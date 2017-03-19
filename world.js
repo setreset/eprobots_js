@@ -64,7 +64,7 @@ function World(s){
             var y = tools_random(s.getWorldHeight());
             // ist sie frei?
             var t = this.getTerrain(x,y);
-            if (t.getSlotObject() == null /*&& t.getFruitfulness()>0*/){
+            if (t.getSlotObject() == null && t.getObstacle()==0 /*&& t.getFruitfulness()>0*/){
                 // neues energyobject
                 new Food(s, x, y);
                 food_count++;

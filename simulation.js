@@ -90,11 +90,11 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                 // aus map entfernen
                 var e_pos = eprobot.getPos();
 
+                var t = world.getTerrain(e_pos.x, e_pos.y);
+                t.setSlotObject(null);
+
                 if (settings.FOSSILTIME > 0){
-                    new Fossil(sim, e_pos.x, e_pos.y);
-                }else{
-                    var t = world.getTerrain(e_pos.x, e_pos.y);
-                    t.setSlotObject(null);
+                    t.setObstacle(settings.FOSSILTIME);
                 }
             }
         }

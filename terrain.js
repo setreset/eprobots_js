@@ -2,6 +2,7 @@ function Terrain(s){
     var slot_object = null;
     var traces = [0,0];
     var fruitfulness = 0;
+    var obstacle = 0;
 
     this.decr_trace = function(kind){
         if (traces[kind]>0){
@@ -40,12 +41,26 @@ function Terrain(s){
         return fruitfulness;
     }
 
+    this.decrObstacle = function(){
+        if (obstacle > 0){
+            obstacle--;
+        }
+    }
+
+    this.getObstacle = function(){
+        return obstacle;
+    }
+
     this.getSlotObject = function(){
         return slot_object;
     };
 
     this.setSlotObject = function(val){
         slot_object = val;
+    }
+
+    this.setObstacle = function(val){
+        obstacle = val;
     }
 
     this.toJSON = function() {
@@ -61,7 +76,8 @@ function Terrain(s){
             slotObject: slotObject,
             fruitfulness: this.getFruitfulness(),
             trace_0: this.get_trace(0),
-            trace_1: this.get_trace(1)
+            trace_1: this.get_trace(1),
+            obstacle: obstacle
         };
     }
 
@@ -70,15 +86,13 @@ function Terrain(s){
         fruitfulness = terrainstate.fruitfulness;
         traces[0] = terrainstate.trace_0;
         traces[1] = terrainstate.trace_1;
+        obstacle = terrainstate.obstacle;
 
         var slot = terrainstate.slotObject;
         if (slot){
             if (slot.id == OBJECTTYPES.FOOD){
                 var e = new Food(s, x, y);
                 e.loadState(slot);
-            }else if (slot.id == OBJECTTYPES.FOSSIL){
-                var f = new Fossil(s, x, y);
-                f.loadState(slot);
             }
         }
     }

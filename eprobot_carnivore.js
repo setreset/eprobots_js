@@ -22,7 +22,7 @@ function Carnivore(s, x_pos, y_pos, init_programm){
 
             var ocstacle_val = control_vals[2];
             if (isFinite(ocstacle_val)){
-                var obstacle_action = Math.abs(ocstacle_val) % 9;
+                var obstacle_action = Math.abs(ocstacle_val) % 2;
             }else{
                 console.log("Infinite: "+ocstacle_val);
                 var obstacle_action = 0; // do nothing
@@ -39,18 +39,18 @@ function Carnivore(s, x_pos, y_pos, init_programm){
     this.processAction = function(move_action, obstacle_action){
         var forked_ep = null;
 
-        if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_OBSTACLE_C) {
-            var coord__obstacle = s.getWorld().getCoordinates(this, obstacle_action-1);
-            if (coord__obstacle){
-                var t_obst = s.getWorld().getTerrain(coord__obstacle[0],coord__obstacle[1]);
-                var obj_on_candidate_field = t_obst.getSlotObject();
-
-                if (obj_on_candidate_field == null){
-                    t_obst.setSlotObject(new Fossil(s, coord__obstacle[0],coord__obstacle[1]));
-                }
-                this.addEnergy(-s.getSettings().ENERGYCOST_OBSTACLE_C);
-            }
-        }
+        //if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_OBSTACLE_C) {
+        //    var coord__obstacle = s.getWorld().getCoordinates(this, obstacle_action-1);
+        //    if (coord__obstacle){
+        //        var t_obst = s.getWorld().getTerrain(coord__obstacle[0],coord__obstacle[1]);
+        //        var obj_on_candidate_field = t_obst.getSlotObject();
+        //
+        //        if (obj_on_candidate_field == null){
+        //            t_obst.setSlotObject(new Fossil(s, coord__obstacle[0],coord__obstacle[1]));
+        //        }
+        //        this.addEnergy(-s.getSettings().ENERGYCOST_OBSTACLE_C);
+        //    }
+        //}
 
         if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
             if (this.getForkCondition()) {
@@ -62,11 +62,10 @@ function Carnivore(s, x_pos, y_pos, init_programm){
             var coord__new = s.getWorld().getCoordinates(this, move_action-1);
             if (coord__new){
                 var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
-                var obj_on_candidate_field = t_new.getSlotObject();
 
                 // ist da auch nichts?
-                if (this.canMoveToField(obj_on_candidate_field)){
-                    this.preMove(obj_on_candidate_field);
+                if (this.canMoveToField(t_new)){
+                    this.preMove(t_new);
 
                     // position verschieben
                     // alte position loeschen
@@ -123,7 +122,11 @@ function Carnivore(s, x_pos, y_pos, init_programm){
 
     // HELP-Methods
 
-    this.canMoveToField = function(obj_on_candidate_field){
+    this.canMoveToField = function(t_new){
+        if (t_new.getObstacle()>0){
+            return false;
+        }
+        var obj_on_candidate_field = t_new.getSlotObject();
         return obj_on_candidate_field == null || (obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H);
     };
 
@@ -135,7 +138,8 @@ function Carnivore(s, x_pos, y_pos, init_programm){
         return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
     };
 
-    this.preMove = function(obj_on_candidate_field){
+    this.preMove = function(t_new){
+        var obj_on_candidate_field = t_new.getSlotObject();
         if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
             // "eat"
             //if (obj_on_candidate_field.getEnergy()<(this.getEnergy()+50)){
