@@ -1,81 +1,246 @@
-function Carnivore(s, x_pos, y_pos, init_programm) {
-    // Call the parent constructor, making sure (using Function#call)
-    // that "this" is set correctly during the call
-    Eprobot.call(this, s, x_pos, y_pos, init_programm);
+function Carnivore(s, x_pos, y_pos, init_programm){
 
-    // Initialize our Student-specific properties
-    //this.subject = subject;
-    this.setEnergy(0);
-}
+    this.newStep = function(){
+        var forked_ep = null;
 
-// Erstellt ein Student.prototype Objekt das von Person.prototype erbt.
-// Hinweis: Ein häufiger Fehler ist der Einsatz von "new Person()" beim erstellen vomeines
-// Student.prototype. Das ist falsch aus einigen Gründen, nicht nur
-// das wir keinen Parameter der Person für "firstName" mitgeben können.
-// Der korrekte Ort für den Aufruf von Person ist oben, wo wir es
-// von Student aufrufen.
-Carnivore.prototype = Object.create(Eprobot.prototype); // See note below
+        if (age < s.getSettings().LIFETIME_MAX){
+            // set input
+            if (s.getSettings().SENSE){
+                this.set_input();
+            }
 
-// Setzt die "constructor" Eigenschaft um auf Student zu referenzieren.
-Carnivore.prototype.constructor = Carnivore;
+            var control_vals = this.get_control_vals();
+            var control_val = control_vals[0];
 
-Carnivore.prototype.canMoveToField = function(obj_on_candidate_field){
-    return obj_on_candidate_field == null || (obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H);
-};
+            //var control_val = this.get_move_random();
+            if (isFinite(control_val)){
+                var move_action = Math.abs(control_val) % 9;
+            }else{
+                console.log("Infinite: "+control_val);
+                var move_action = tools_random(9); // random
+            }
 
-Carnivore.prototype.getId = function(){
-    return OBJECTTYPES.EPROBOT_C;
-};
+            var ocstacle_val = control_vals[2];
+            if (isFinite(ocstacle_val)){
+                var obstacle_action = Math.abs(ocstacle_val) % 9;
+            }else{
+                console.log("Infinite: "+ocstacle_val);
+                var obstacle_action = 0; // do nothing
+            }
 
-Carnivore.prototype.isAlive = function(){
-    return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
-};
+            forked_ep = this.processAction(move_action, obstacle_action);
 
-Carnivore.prototype.preMove = function(obj_on_candidate_field){
-    if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
-        // "eat"
-        if (/*obj_on_candidate_field.getAge()<150 && */obj_on_candidate_field.getEnergy()<(this.getEnergy()+50)){
-            obj_on_candidate_field.kill();
-            // neuer eprobot...
-            this.addEnergy(this.s.getSettings().FOOD_ENERGY);
-        }
-    }
-};
-
-Carnivore.prototype.getForkCondition = function(){
-    return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
-};
-
-Carnivore.prototype.fork = function(){
-    // freie stelle suchen
-    var point = this.s.getWorld().getFreeSpace(this.x_pos, this.y_pos);
-    // nachwuchs erzeugen und an freie stelle setzen
-    if (point != null){
-        // sexuelle fortpflanzung?
-        if (Math.random()<0.5 && false){
-            //var partner = this.get_local_partner(kind);
-            //
-            //if (partner){
-            //    //console.log("recombine");
-            //    var new_dna = tools_recombine(init_programm, partner.getInitialProgram());
-            //}else{
-            //    //console.log("recombine fail");
-            //    var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"), init_programm);
-            //}
-        }else{
-            var new_dna = tools_mutate(this.s.getSettingVal("MUTATE_POSSIBILITY"),this.s.getSettingVal("MUTATE_STRENGTH"),this.getInitialProgram())
+            this.doAge();
         }
 
-        //console.log("Carnivore fork");
-        var forked_ep = new Carnivore(this.s, point.x, point.y, new_dna);
-        this.addEnergy(-this.s.getSettings().ENERGYCOST_FORK);
-        // nachwuchs anmelden
         return forked_ep;
-    }else{
-        return null;
     }
-};
 
-Carnivore.prototype.doAge = function(){
-    this.incrAge();
-};
+    this.processAction = function(move_action, obstacle_action){
+        var forked_ep = null;
+
+        if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_OBSTACLE_C) {
+            var coord__obstacle = s.getWorld().getCoordinates(this, obstacle_action-1);
+            if (coord__obstacle){
+                var t_obst = s.getWorld().getTerrain(coord__obstacle[0],coord__obstacle[1]);
+                var obj_on_candidate_field = t_obst.getSlotObject();
+
+                if (obj_on_candidate_field == null){
+                    t_obst.setSlotObject(new Fossil(s, coord__obstacle[0],coord__obstacle[1]));
+                }
+                this.addEnergy(-s.getSettings().ENERGYCOST_OBSTACLE_C);
+            }
+        }
+
+        if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
+            if (this.getForkCondition()) {
+                forked_ep = this.fork();
+            }
+        }
+
+        if (move_action > 0){
+            var coord__new = s.getWorld().getCoordinates(this, move_action-1);
+            if (coord__new){
+                var t_new = s.getWorld().getTerrain(coord__new[0],coord__new[1]);
+                var obj_on_candidate_field = t_new.getSlotObject();
+
+                // ist da auch nichts?
+                if (this.canMoveToField(obj_on_candidate_field)){
+                    this.preMove(obj_on_candidate_field);
+
+                    // position verschieben
+                    // alte position loeschen
+                    var t_old = s.getWorld().getTerrain(this.x_pos, this.y_pos);
+                    t_old.setSlotObject(null);
+                    t_new.setSlotObject(this);
+                    t_new.set_trace(this.getId(), s.getSettings().TRACETIME);
+                    this.setPos(coord__new[0],coord__new[1]);
+                }
+            }
+        }
+        return forked_ep
+    };
+
+    this.set_input = function(){
+        var inputval = s.getWorld().get_environment_val(this.x_pos,this.y_pos);
+        //console.log(inputval);
+        var program_length = s.getSettings().PROGRAM_LENGTH;
+
+        working_programm[program_length-4] = inputval.local_foodcount;
+
+        working_programm[program_length-5] = inputval.local_eprobotcount_0;
+        working_programm[program_length-6] = inputval.local_tracecount_0;
+
+        working_programm[program_length-7] = inputval.local_eprobotcount_1;
+        working_programm[program_length-8] = inputval.local_tracecount_1;
+
+        working_programm[program_length-9] = inputval.local_fossilcount;
+
+        working_programm[program_length-10] = inputval.local_fruitfulness;
+
+        working_programm[program_length-11] = age;
+        working_programm[program_length-12] = energy;
+        working_programm[program_length-13] = this.x_pos;
+        working_programm[program_length-14] = this.y_pos;
+
+    }
+
+    this.get_control_vals = function(){
+
+        var stepcounter = tools_compute(working_programm);
+        if (stepcounter>20){
+            //var penalty = parseInt((stepcounter-20)/10);
+            var penalty = stepcounter;
+            this.addEnergy(-penalty);
+        }
+
+        return [
+            working_programm[s.getSettings().PROGRAM_LENGTH-1],
+            working_programm[s.getSettings().PROGRAM_LENGTH-2],
+            working_programm[s.getSettings().PROGRAM_LENGTH-3]
+        ];
+    }
+
+    // HELP-Methods
+
+    this.canMoveToField = function(obj_on_candidate_field){
+        return obj_on_candidate_field == null || (obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H);
+    };
+
+    this.getId = function(){
+        return OBJECTTYPES.EPROBOT_C;
+    };
+
+    this.isAlive = function(){
+        return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
+    };
+
+    this.preMove = function(obj_on_candidate_field){
+        if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
+            // "eat"
+            //if (obj_on_candidate_field.getEnergy()<(this.getEnergy()+50)){
+                obj_on_candidate_field.kill();
+                // neuer eprobot...
+                this.addEnergy(this.s.getSettings().FOOD_ENERGY);
+            //}
+        }
+    };
+
+    this.getForkCondition = function(){
+        return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
+    };
+
+    this.fork = function(){
+        // freie stelle suchen
+        var point = this.s.getWorld().getFreeSpace(this.x_pos, this.y_pos);
+        // nachwuchs erzeugen und an freie stelle setzen
+        if (point != null){
+            var new_dna = tools_mutate(this.s.getSettingVal("MUTATE_POSSIBILITY"),this.s.getSettingVal("MUTATE_STRENGTH"),this.getInitialProgram());
+
+            //console.log("Carnivore fork");
+            var forked_ep = new Carnivore(this.s, point.x, point.y, new_dna);
+            this.addEnergy(-this.s.getSettings().ENERGYCOST_FORK);
+            // nachwuchs anmelden
+            return forked_ep;
+        }else{
+            return null;
+        }
+    };
+
+    this.doAge = function(){
+        this.incrAge();
+    };
+
+    // GETTER / SETTER
+
+    this.getAge = function(){
+        return age;
+    }
+
+    this.setAge = function(new_age){
+        age = new_age;
+    }
+
+    this.incrAge = function(){
+        age++;
+    }
+
+    this.addEnergy = function (number) {
+        energy += number;
+        if (energy < 0){
+            energy = 0;
+        }
+    };
+
+    this.getEnergy = function(){
+        return energy;
+    }
+
+    this.setEnergy = function(new_energy){
+        energy = new_energy;
+    }
+
+    this.getPos = function(){
+        return {"x": this.x_pos, "y": this.y_pos}
+    }
+
+    this.setPos = function(new_x_pos, new_y_pos){
+        this.x_pos = new_x_pos;
+        this.y_pos = new_y_pos;
+    }
+
+    this.getInitialProgram = function(){
+        return init_programm;
+    }
+
+    this.toJSON = function() {
+        return {
+            id: this.getId(),
+            age: age,
+            energy: energy,
+            x_pos: this.x_pos,
+            y_pos: this.y_pos,
+            init_programm: init_programm,
+            working_programm: working_programm
+        };
+    };
+
+    this.loadState = function(e_state) {
+        age = e_state.age;
+        energy = e_state.energy;
+        working_programm = e_state.working_programm;
+    };
+
+    // init
+    var t = s.getWorld().getTerrain(x_pos, y_pos);
+    t.setSlotObject(this);
+
+    var age = 0;
+    var energy = 0;
+
+    this.s = s;
+    this.x_pos = x_pos;
+    this.y_pos = y_pos;
+
+    var working_programm = init_programm.slice(0);
+}
