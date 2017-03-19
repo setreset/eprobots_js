@@ -5,7 +5,8 @@ function Herbivore(s, x_pos, y_pos, init_programm) {
 
     // Initialize our Student-specific properties
     //this.subject = subject;
-};
+    this.setEnergy(s.getSettings().CHILDHOOD);
+}
 
 // Erstellt ein Student.prototype Objekt das von Person.prototype erbt.
 // Hinweis: Ein häufiger Fehler ist der Einsatz von "new Person()" beim erstellen vomeines
@@ -18,28 +19,17 @@ Herbivore.prototype = Object.create(Eprobot.prototype); // See note below
 // Setzt die "constructor" Eigenschaft um auf Student zu referenzieren.
 Herbivore.prototype.constructor = Herbivore;
 
-//// Ersetzt die "sayHello" Methode
-//Student.prototype.sayHello = function(){
-//    console.log("Hello, I'm " + this.firstName + ". I'm studying "
-//        + this.subject + ".");
-//};
-//
-//// Fügt die "sayGoodBye" Methode hinzu
-//Student.prototype.sayGoodBye = function(){
-//    console.log("Goodbye!");
-//};
-
 Herbivore.prototype.canMoveToField = function(obj_on_candidate_field){
     return obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.FOOD;
-}
+};
 
 Herbivore.prototype.getId = function(){
     return OBJECTTYPES.EPROBOT_H;
-}
+};
 
 Herbivore.prototype.isAlive = function(){
     return this.getAge() < this.s.getSettings().LIFETIME_MIN || (this.getAge() < this.s.getSettings().LIFETIME_MAX && (this.getEnergy() > 0));
-}
+};
 
 Herbivore.prototype.preMove = function(obj_on_candidate_field){
     if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.FOOD) {
@@ -48,16 +38,16 @@ Herbivore.prototype.preMove = function(obj_on_candidate_field){
         // neuer eprobot...
         this.addEnergy(this.s.getSettings().FOOD_ENERGY);
     }
-}
+};
 
 Herbivore.prototype.kill = function(){
     //console.log("Herbivore kill");
     this.setAge(this.s.getSettings().LIFETIME_MAX);
-}
+};
 
 Herbivore.prototype.getForkCondition = function(){
-    return this.s.getEprobots(0).length < this.s.getSettings().EPROBOTS_MAX;
-}
+    return this.s.getEprobots_h().length < this.s.getSettings().EPROBOTS_MAX;
+};
 
 Herbivore.prototype.fork = function(){
     // freie stelle suchen
@@ -87,4 +77,16 @@ Herbivore.prototype.fork = function(){
     }else{
         return null;
     }
-}
+};
+
+Herbivore.prototype.doAge = function(){
+    this.incrAge();
+
+    if (this.getAge() < this.s.getSettings().CHILDHOOD){
+        this.addEnergy(-1);
+    }else{
+        if (this.getAge() > this.s.getSettings().LIFETIME_MIN){
+            this.addEnergy(-1);
+        }
+    }
+};

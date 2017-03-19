@@ -32,7 +32,7 @@ function Drawer(s, canvas){
                         //context2D.fillStyle = "rgb(255, 0, 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==OBJECTTYPES.EPROBOT_C){
-                        var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX, 255, 100));
+                        var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX_C, 255, 100));
 
                         context2D.fillStyle = "rgb(0, 0, "+ c_fac +")";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);

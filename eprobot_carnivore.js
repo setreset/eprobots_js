@@ -5,7 +5,8 @@ function Carnivore(s, x_pos, y_pos, init_programm) {
 
     // Initialize our Student-specific properties
     //this.subject = subject;
-};
+    this.setEnergy(0);
+}
 
 // Erstellt ein Student.prototype Objekt das von Person.prototype erbt.
 // Hinweis: Ein häufiger Fehler ist der Einsatz von "new Person()" beim erstellen vomeines
@@ -18,41 +19,32 @@ Carnivore.prototype = Object.create(Eprobot.prototype); // See note below
 // Setzt die "constructor" Eigenschaft um auf Student zu referenzieren.
 Carnivore.prototype.constructor = Carnivore;
 
-//// Ersetzt die "sayHello" Methode
-//Student.prototype.sayHello = function(){
-//    console.log("Hello, I'm " + this.firstName + ". I'm studying "
-//        + this.subject + ".");
-//};
-//
-//// Fügt die "sayGoodBye" Methode hinzu
-//Student.prototype.sayGoodBye = function(){
-//    console.log("Goodbye!");
-//};
-
 Carnivore.prototype.canMoveToField = function(obj_on_candidate_field){
     return obj_on_candidate_field == null || (obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H);
-}
+};
 
 Carnivore.prototype.getId = function(){
     return OBJECTTYPES.EPROBOT_C;
-}
+};
 
 Carnivore.prototype.isAlive = function(){
-    return this.getAge() < 300;
-}
+    return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
+};
 
 Carnivore.prototype.preMove = function(obj_on_candidate_field){
     if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
         // "eat"
-        obj_on_candidate_field.kill();
-        // neuer eprobot...
-        this.addEnergy(this.s.getSettings().FOOD_ENERGY);
+        if (/*obj_on_candidate_field.getAge()<150 && */obj_on_candidate_field.getEnergy()<(this.getEnergy()+50)){
+            obj_on_candidate_field.kill();
+            // neuer eprobot...
+            this.addEnergy(this.s.getSettings().FOOD_ENERGY);
+        }
     }
-}
+};
 
 Carnivore.prototype.getForkCondition = function(){
-    return this.s.getEprobots(1).length < this.s.getEprobots(0).length;
-}
+    return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
+};
 
 Carnivore.prototype.fork = function(){
     // freie stelle suchen
@@ -82,4 +74,8 @@ Carnivore.prototype.fork = function(){
     }else{
         return null;
     }
-}
+};
+
+Carnivore.prototype.doAge = function(){
+    this.incrAge();
+};

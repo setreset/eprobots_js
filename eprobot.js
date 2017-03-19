@@ -38,16 +38,7 @@ function Eprobot(s, x_pos, y_pos, init_programm){
 
             forked_ep = this.processAction(move_action, rep_action, obstacle_action);
 
-
-            age++;
-            if (age < s.getSettings().CHILDHOOD){
-                this.addEnergy(-1);
-            }else{
-                if (this.getId()==OBJECTTYPES.EPROBOT_H && age > s.getSettings().LIFETIME_MIN){
-                    this.addEnergy(-1);
-                }
-            }
-
+            this.doAge();
         }
 
         return forked_ep;
@@ -105,46 +96,6 @@ function Eprobot(s, x_pos, y_pos, init_programm){
         return forked_ep
     };
 
-    //this.preMove = function(obj_on_candidate_field){
-    //    // FRESSEN
-    //    if (kind==0){
-    //        if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.FOOD) {
-    //            // "eat energy"
-    //            s.getWorld().decr_foodcount();
-    //            // neuer eprobot...
-    //            this.addEnergy(s.getSettings().FOOD_ENERGY);
-    //        }
-    //    }else if(kind==1){
-    //        if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
-    //            // "eat"
-    //            obj_on_candidate_field.kill();
-    //            // neuer eprobot...
-    //            this.addEnergy(s.getSettings().FOOD_ENERGY);
-    //        }
-    //    }
-    //};
-
-    //this.kill = function(){
-    //    age = s.getSettings().LIFETIME_MAX;
-    //}
-
-    //this.isAlive = function(){
-    //    if (kind == 0){
-    //        var life_condition = age < s.getSettings().LIFETIME_MIN || (age < s.getSettings().LIFETIME_MAX && (energy > 0));
-    //    }else{
-    //        var life_condition = age < 300;
-    //    }
-    //
-    //    return life_condition;
-    //}
-
-    //this.canMoveToField = function(obj_on_candidate_field){
-    //    if (kind==0){
-    //        return obj_on_candidate_field == null || obj_on_candidate_field.getId() == OBJECTTYPES.ENERGY;
-    //
-    //    }
-    //};
-
     this.set_input = function(){
         var inputval = s.getWorld().get_environment_val(this.x_pos,this.y_pos);
         //console.log(inputval);
@@ -183,61 +134,32 @@ function Eprobot(s, x_pos, y_pos, init_programm){
             working_programm[s.getSettings().PROGRAM_LENGTH-3]];
     }
 
-    this.get_local_partner = function(kind){
-        var eprobots = s.getEprobots(kind);
-        var smallest_dist = s.getWorldWidth()/2;
-        var cand = null;
-        if (eprobots.length>0){
-            for (var t=0;t<10;t++){
-                var p = eprobots[tools_random(eprobots.length)];
-                var p_pos = p.getPos();
-
-                var dist_x = Math.abs(p_pos.x-this.x_pos);
-                if (dist_x > s.getWorldWidth()/2){
-                    dist_x= s.getWorldWidth()-dist_x;
-                }
-
-                var dist_y = Math.abs(p_pos.y-y_pos);
-                if (dist_y > s.getWorldHeight()/2){
-                    dist_y= s.getWorldHeight()-dist_y;
-                }
-                var dist = Math.sqrt(dist_x*dist_x+dist_y*dist_y);
-                if (dist<smallest_dist){
-                    smallest_dist = dist;
-                    cand = p;
-                }
-            }
-        }
-        return cand;
-    }
-
-    //this.fork = function(){
-    //    // freie stelle suchen
-    //    var point = s.getWorld().getFreeSpace(x_pos,y_pos);
-    //    // nachwuchs erzeugen und an freie stelle setzen
-    //    if (point != null){
-    //        // sexuelle fortpflanzung?
-    //        if (Math.random()<0.5 && false){
-    //            //var partner = this.get_local_partner(kind);
-    //            //
-    //            //if (partner){
-    //            //    //console.log("recombine");
-    //            //    var new_dna = tools_recombine(init_programm, partner.getInitialProgram());
-    //            //}else{
-    //            //    //console.log("recombine fail");
-    //            //    var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"), init_programm);
-    //            //}
-    //        }else{
-    //            var new_dna = tools_mutate(s.getSettingVal("MUTATE_POSSIBILITY"),s.getSettingVal("MUTATE_STRENGTH"),init_programm)
-    //        }
+    //this.get_local_partner = function(kind){
+    //    var eprobots = s.getEprobots(kind);
+    //    var smallest_dist = s.getWorldWidth()/2;
+    //    var cand = null;
+    //    if (eprobots.length>0){
+    //        for (var t=0;t<10;t++){
+    //            var p = eprobots[tools_random(eprobots.length)];
+    //            var p_pos = p.getPos();
     //
-    //        var forked_ep = new Herbivore(s, point.x, point.y, new_dna);
-    //        this.addEnergy(-s.getSettings().ENERGYCOST_FORK);
-    //        // nachwuchs anmelden
-    //        return forked_ep;
-    //    }else{
-    //        return null;
+    //            var dist_x = Math.abs(p_pos.x-this.x_pos);
+    //            if (dist_x > s.getWorldWidth()/2){
+    //                dist_x= s.getWorldWidth()-dist_x;
+    //            }
+    //
+    //            var dist_y = Math.abs(p_pos.y-y_pos);
+    //            if (dist_y > s.getWorldHeight()/2){
+    //                dist_y= s.getWorldHeight()-dist_y;
+    //            }
+    //            var dist = Math.sqrt(dist_x*dist_x+dist_y*dist_y);
+    //            if (dist<smallest_dist){
+    //                smallest_dist = dist;
+    //                cand = p;
+    //            }
+    //        }
     //    }
+    //    return cand;
     //}
 
     this.getAge = function(){
@@ -246,6 +168,10 @@ function Eprobot(s, x_pos, y_pos, init_programm){
 
     this.setAge = function(new_age){
         age = new_age;
+    }
+
+    this.incrAge = function(){
+        age++;
     }
 
     this.addEnergy = function (number) {
@@ -259,6 +185,10 @@ function Eprobot(s, x_pos, y_pos, init_programm){
         return energy;
     }
 
+    this.setEnergy = function(new_energy){
+        energy = new_energy;
+    }
+
     this.getPos = function(){
         return {"x": this.x_pos, "y": this.y_pos}
     }
@@ -267,14 +197,6 @@ function Eprobot(s, x_pos, y_pos, init_programm){
         this.x_pos = new_x_pos;
         this.y_pos = new_y_pos;
     }
-
-    //this.getId = function(){
-    //    return OBJECTTYPES.EPROBOT;
-    //}
-
-    //this.getKind = function(){
-    //    return kind;
-    //}
 
     this.getInitialProgram = function(){
         return init_programm;
@@ -303,7 +225,7 @@ function Eprobot(s, x_pos, y_pos, init_programm){
     t.setSlotObject(this);
 
     var age = 0;
-    var energy = s.getSettings().CHILDHOOD;
+    var energy = null;
 
     this.s = s;
     this.x_pos = x_pos;
@@ -311,3 +233,5 @@ function Eprobot(s, x_pos, y_pos, init_programm){
 
     var working_programm = init_programm.slice(0);
 }
+
+// https://developer.mozilla.org/de/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript

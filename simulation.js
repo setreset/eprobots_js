@@ -16,12 +16,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
         return running;
     }
 
-    this.getEprobots = function(kind){
-        if (kind==0){
-            return eprobots_h;
-        }else if(kind==1){
-            return eprobots_c;
-        }
+    this.getEprobots_h = function(){
+        return eprobots_h;
+    }
+
+    this.getEprobots_c = function(){
+        return eprobots_c;
     }
 
     this.getWorldWidth = function(){
@@ -40,12 +40,12 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
         if (eprobots_h.length==0){
             beep(2020);
-            initEprobots(0);
+            initEprobots(OBJECTTYPES.EPROBOT_H);
         }
 
         if (eprobots_h.length > 100 && eprobots_c.length==0){
             beep(3020);
-            initEprobots(1);
+            initEprobots(OBJECTTYPES.EPROBOT_C);
         }
 
         eprobots_h = processEprobots(eprobots_h);
@@ -126,10 +126,10 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     program.push(val);
                 }
 
-                if (kind == 0){
+                if (kind == OBJECTTYPES.EPROBOT_H){
                     var newep = new Herbivore(sim, x_pos, y_pos, program);
                     eprobots_h.push(newep);
-                }else if(kind == 1){
+                }else if(kind == OBJECTTYPES.EPROBOT_C){
                     var newep = new Carnivore(sim, x_pos, y_pos, program);
                     eprobots_c.push(newep);
                 }
