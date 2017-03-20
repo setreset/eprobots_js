@@ -30,39 +30,24 @@ function Drawer(s, canvas){
                         var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX, 255, 100));
 
                         context2D.fillStyle = "rgb("+c_fac+", 0, 0)";
-                        //context2D.fillStyle = "rgb(255, 0, 0)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else if (t_object.getId()==OBJECTTYPES.EPROBOT_C){
                         var c_fac = Math.round(tools_map_range(t_object.getAge(), 0, s.getSettings().LIFETIME_MAX_C, 255, 100));
 
                         context2D.fillStyle = "rgb(0, 0, "+ c_fac +")";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-                    }else if (t_object.getId()==OBJECTTYPES.FOSSIL){
-                        var fossil_age = s.getStepCounter() - t_object.getCreationTime();
-                        var c_fac = Math.round(tools_map_range(fossil_age, 0, s.getSettings().FOSSILTIME, 360, 0));
-                        var l_fac = Math.round(tools_map_range(fossil_age, 0, s.getSettings().FOSSILTIME, 0, 90));
-                        context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
-                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
-
-                        if (fossil_age > s.getSettings().FOSSILTIME){
-                            //var f_pos = t_object.getPos();
-                            //var t = world.getTerrain(f_pos.x, f_pos.y);
-                            t.setSlotObject(null);
-                        }
-
                     }
                 }else{
 
                     var trace_val_0 = t.get_trace(0);
                     var trace_val_1 = t.get_trace(1);
                     var fruitfulness = t.getFruitfulness();
-                    var obstacle = t.getObstacle();
+                    var obstacle_val = t.getObstacle();
 
-
-                    if (obstacle > 0){
-                        var fossil_age = s.getSettings().FOSSILTIME-obstacle; //s.getStepCounter() - t_object.getCreationTime();
-                        var c_fac = Math.round(tools_map_range(fossil_age, 0, s.getSettings().FOSSILTIME, 360, 0));
-                        var l_fac = Math.round(tools_map_range(fossil_age, 0, s.getSettings().FOSSILTIME, 0, 90));
+                    if (obstacle_val > 0){
+                        var obstacle_age = s.getSettings().OBSTACLETIME-obstacle_val; //s.getStepCounter() - t_object.getCreationTime();
+                        var c_fac = Math.round(tools_map_range(obstacle_age, 0, s.getSettings().OBSTACLETIME, 360, 0));
+                        var l_fac = Math.round(tools_map_range(obstacle_age, 0, s.getSettings().OBSTACLETIME, 0, 90));
 
                         context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);

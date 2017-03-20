@@ -83,6 +83,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
                     eprobots_next.push(forked_ep);
                 }
 
+                eprobot.doAge();
                 eprobots_next.push(eprobot);
             }
             // Sterben

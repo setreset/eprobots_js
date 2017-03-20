@@ -3,60 +3,37 @@ function Carnivore(s, x_pos, y_pos, init_programm){
     this.newStep = function(){
         var forked_ep = null;
 
-        if (age < s.getSettings().LIFETIME_MAX){
-            // set input
-            if (s.getSettings().SENSE){
-                this.set_input();
-            }
-
-            var control_vals = this.get_control_vals();
-            var control_val = control_vals[0];
-
-            //var control_val = this.get_move_random();
-            if (isFinite(control_val)){
-                var move_action = Math.abs(control_val) % 9;
-            }else{
-                console.log("Infinite: "+control_val);
-                var move_action = tools_random(9); // random
-            }
-
-            var ocstacle_val = control_vals[2];
-            if (isFinite(ocstacle_val)){
-                var obstacle_action = Math.abs(ocstacle_val) % 2;
-            }else{
-                console.log("Infinite: "+ocstacle_val);
-                var obstacle_action = 0; // do nothing
-            }
-
-            forked_ep = this.processAction(move_action, obstacle_action);
-
-            this.doAge();
+        // set input
+        if (s.getSettings().SENSE){
+            this.set_input();
         }
+
+        var control_vals = this.get_control_vals();
+        var control_val = control_vals[0];
+
+        //var control_val = this.get_move_random();
+        if (isFinite(control_val)){
+            var move_action = Math.abs(control_val) % 9;
+        }else{
+            console.log("Infinite: "+control_val);
+            var move_action = tools_random(9); // random
+        }
+
+        var ocstacle_val = control_vals[2];
+        if (isFinite(ocstacle_val)){
+            var obstacle_action = Math.abs(ocstacle_val) % 2;
+        }else{
+            console.log("Infinite: "+ocstacle_val);
+            var obstacle_action = 0; // do nothing
+        }
+
+        forked_ep = this.processAction(move_action, obstacle_action);
 
         return forked_ep;
     }
 
     this.processAction = function(move_action, obstacle_action){
         var forked_ep = null;
-
-        //if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_OBSTACLE_C) {
-        //    var coord__obstacle = s.getWorld().getCoordinates(this, obstacle_action-1);
-        //    if (coord__obstacle){
-        //        var t_obst = s.getWorld().getTerrain(coord__obstacle[0],coord__obstacle[1]);
-        //        var obj_on_candidate_field = t_obst.getSlotObject();
-        //
-        //        if (obj_on_candidate_field == null){
-        //            t_obst.setSlotObject(new Fossil(s, coord__obstacle[0],coord__obstacle[1]));
-        //        }
-        //        this.addEnergy(-s.getSettings().ENERGYCOST_OBSTACLE_C);
-        //    }
-        //}
-
-        if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
-            if (this.getForkCondition()) {
-                forked_ep = this.fork();
-            }
-        }
 
         if (move_action > 0){
             var coord__new = s.getWorld().getCoordinates(this, move_action-1);
@@ -77,48 +54,21 @@ function Carnivore(s, x_pos, y_pos, init_programm){
                 }
             }
         }
-        return forked_ep
-    };
 
-    this.set_input = function(){
-        var inputval = s.getWorld().get_environment_val(this.x_pos,this.y_pos);
-        //console.log(inputval);
-        var program_length = s.getSettings().PROGRAM_LENGTH;
-
-        working_programm[program_length-4] = inputval.local_foodcount;
-
-        working_programm[program_length-5] = inputval.local_eprobotcount_0;
-        working_programm[program_length-6] = inputval.local_tracecount_0;
-
-        working_programm[program_length-7] = inputval.local_eprobotcount_1;
-        working_programm[program_length-8] = inputval.local_tracecount_1;
-
-        working_programm[program_length-9] = inputval.local_fossilcount;
-
-        working_programm[program_length-10] = inputval.local_fruitfulness;
-
-        working_programm[program_length-11] = age;
-        working_programm[program_length-12] = energy;
-        working_programm[program_length-13] = this.x_pos;
-        working_programm[program_length-14] = this.y_pos;
-
-    }
-
-    this.get_control_vals = function(){
-
-        var stepcounter = tools_compute(working_programm);
-        if (stepcounter>20){
-            //var penalty = parseInt((stepcounter-20)/10);
-            var penalty = stepcounter;
-            this.addEnergy(-penalty);
+        if (obstacle_action > 0 && energy >= s.getSettings().ENERGYCOST_OBSTACLE_C) {
+            var my_t = s.getWorld().getTerrain(this.x_pos,this.y_pos);
+            my_t.setObstacle(s.getSettings().OBSTACLETIME);
+            this.addEnergy(-s.getSettings().ENERGYCOST_OBSTACLE_C);
         }
 
-        return [
-            working_programm[s.getSettings().PROGRAM_LENGTH-1],
-            working_programm[s.getSettings().PROGRAM_LENGTH-2],
-            working_programm[s.getSettings().PROGRAM_LENGTH-3]
-        ];
-    }
+        if (energy >= s.getSettings().ENERGYCOST_FORK && age > s.getSettings().CHILDHOOD){
+            if (this.getForkCondition()) {
+                forked_ep = this.fork();
+            }
+        }
+
+        return forked_ep
+    };
 
     // HELP-Methods
 
@@ -215,6 +165,10 @@ function Carnivore(s, x_pos, y_pos, init_programm){
 
     this.getInitialProgram = function(){
         return init_programm;
+    }
+
+    this.getWorkingProgram = function(){
+        return working_programm;
     }
 
     this.toJSON = function() {
