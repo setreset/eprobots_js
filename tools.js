@@ -27,7 +27,7 @@ function tools_compute(memory) {
     var step_counter = 0;
     var a, b, c;
 
-    while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 200) {
+    while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 100) {
         a = memory[program_counter];
         b = memory[program_counter + 1];
         c = memory[program_counter + 2];
@@ -54,7 +54,7 @@ function tools_compute(memory) {
         }
         step_counter++;
     }
-    if (step_counter>=200){
+    if (step_counter>=100){
         console.log("high stepcounter: " + step_counter);
     }
     return step_counter;
