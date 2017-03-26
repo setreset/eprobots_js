@@ -1,17 +1,24 @@
 var serializationFns = {
-    area: function() {
-        return Math.PI * this.radius * this.radius;
+    toJson: function() {
+        return {
+            id: this.getId(),
+            age: this.getAge(),
+            energy: this.getEnergy(),
+            x_pos: this.x_pos,
+            y_pos: this.y_pos,
+            init_programm: this.getInitialProgram(),
+            working_programm: this.getWorkingProgram()
+        };
     },
-    grow: function() {
-        this.radius++;
-    },
-    shrink: function() {
-        this.radius--;
+    loadState: function(e_state) {
+        this.setAge(e_state.age);
+        this.setEnergy(e_state.energy);
+        this.setWorkingProgramm(e_state.working_programm);
     }
 };
 
-extend(Herbivore.prototype, serializationFns);
-extend(Carnivore.prototype, serializationFns);
+//Object.assign(Herbivore.prototype, serializationFns);
+//Object.assign(Carnivore.prototype, serializationFns);
 
 var inputoutpuFns = {
     set_input: function() {
@@ -54,5 +61,7 @@ var inputoutpuFns = {
     }
 };
 
-extend(Herbivore.prototype, inputoutpuFns);
-extend(Carnivore.prototype, inputoutpuFns);
+//Object.assign(Herbivore.prototype, inputoutpuFns);
+//Object.assign(Carnivore.prototype, inputoutpuFns);
+
+// https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
