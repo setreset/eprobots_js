@@ -1,4 +1,4 @@
-function Eprobot(s, x_pos, y_pos, init_programm){
+function EprobotOld(s, x_pos, y_pos, init_programm){
 
     this.newStep = function(){
         var forked_ep = null;

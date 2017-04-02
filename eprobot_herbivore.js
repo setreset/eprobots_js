@@ -1,9 +1,4 @@
 class Herbivore extends Eprobot {
-    constructor(s, x_pos, y_pos, init_programm) {
-        // init
-        super(s, x_pos, y_pos, init_programm);
-        this.energy = s.getSettings().CHILDHOOD;
-    }
 
     getId(){
         return OBJECTTYPES.EPROBOT_H;
@@ -141,18 +136,6 @@ class Herbivore extends Eprobot {
     };
 
     isAlive(){
-        return this.getAge() < this.s.getSettings().LIFETIME_MIN || (this.getAge() < this.s.getSettings().LIFETIME_MAX && (this.getEnergy() > 0));
+        return this.getAge() < this.s.getSettings().LIFETIME_MAX;
     }
-
-    doAge(){
-        this.incrAge();
-
-        if (this.getAge() < this.s.getSettings().CHILDHOOD){
-            this.addEnergy(-1);
-        }else{
-            if (this.getAge() > this.s.getSettings().LIFETIME_MIN){
-                this.addEnergy(-1);
-            }
-        }
-    };
 }

@@ -6,6 +6,7 @@ class Eprobot {
         t.setSlotObject(this);
 
         this.age = 0;
+        this.energy = 0;
 
         this.s = s;
         this.x_pos = x_pos;
@@ -72,6 +73,12 @@ class Eprobot {
             working_programm[this.s.getSettings().PROGRAM_LENGTH-3]
         ];
     }
+
+    // MISC
+
+    doAge(){
+        this.incrAge();
+    };
 
     // GETTER / SETTER
 

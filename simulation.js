@@ -105,7 +105,7 @@ function Simulation(canvas, initial_settings, initial_world_width, initial_world
 
     function initEprobots(kind){
         var currentdate = new Date();
-        console.log("init eprobots: " + currentdate);
+        console.log("init eprobots (" + kind + "): " + currentdate);
         var program;
 
 

@@ -1,9 +1,4 @@
 class Carnivore extends Eprobot{
-    constructor(s, x_pos, y_pos, init_programm) {
-        // init
-        super(s, x_pos, y_pos, init_programm);
-        this.energy = 0;
-    }
 
     getId(){
         return OBJECTTYPES.EPROBOT_C;
@@ -102,7 +97,8 @@ class Carnivore extends Eprobot{
     }
 
     getForkCondition(){
-        return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
+        //return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
+        return true;
     }
 
     fork(){
@@ -125,9 +121,5 @@ class Carnivore extends Eprobot{
     isAlive(){
         return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
     }
-
-    doAge(){
-        this.incrAge();
-    };
 }
 
