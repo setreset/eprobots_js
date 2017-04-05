@@ -38,24 +38,27 @@ function World(s){
 
     this.seedEnergy = function(){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
-        var energydiff = energycount_max - food_count;
 
         if (s.getSettings().KINDERGARTEN){
-            for(var i=0;i<energydiff;i++){
+            if (Math.random()<0.2){
+                for(var i=0;i<10;i++){
 
-                // zufaellige stelle
-                var x = tools_random(s.getWorldWidth()/8);
-                var y = tools_random(s.getWorldHeight());
-                // ist sie frei?
-                var t = this.getTerrain(x,y);
-                if (t.getSlotObject() == null){
-                    // neues energyobject
-                    new Food(s, x, y);
-                    food_count++;
+                    // zufaellige stelle
+                    var x = tools_random(s.getWorldWidth()/8);
+                    var y = tools_random(s.getWorldHeight());
+                    // ist sie frei?
+                    var t = this.getTerrain(x,y);
+                    if (t.getSlotObject() == null){
+                        // neues energyobject
+                        new Food(s, x, y);
+                        food_count++;
+                    }
+
                 }
-
             }
         }
+
+        var energydiff = energycount_max - food_count;
 
         for(var i=0;i<energydiff;i++){
 
@@ -64,7 +67,7 @@ function World(s){
             var y = tools_random(s.getWorldHeight());
             // ist sie frei?
             var t = this.getTerrain(x,y);
-            if (t.getSlotObject() == null && t.getObstacle()==0 /*&& t.getFruitfulness()>0*/){
+            if (t.getSlotObject() == null && t.getObstacle() == 0 && t.getFruitfulness() > 0){
                 // neues energyobject
                 new Food(s, x, y);
                 food_count++;
@@ -166,11 +169,13 @@ function World(s){
         var local_tracecount_0 = 0;
         var local_tracecount_1 = 0;
         var local_fruitfulness = 0;
+        var local_toxin = 0;
 
         var t = this.getTerrain(x,y);
-        local_tracecount_0 += t.get_trace(0);
-        local_tracecount_1 += t.get_trace(1);
-        local_fruitfulness += t.getFruitfulness();
+        local_tracecount_0 += t.get_trace(0)*2;
+        local_tracecount_1 += t.get_trace(1)*2;
+        local_fruitfulness += t.getFruitfulness()*2;
+        local_toxin += t.getToxin()*2;
 
         for (var i=0;i<DIRECTIONS.length;i++){
             var movechoice = DIRECTIONS[i];
@@ -187,6 +192,7 @@ function World(s){
             local_tracecount_0 += t.get_trace(0);
             local_tracecount_1 += t.get_trace(1);
             local_fruitfulness += t.getFruitfulness();
+            local_toxin += t.getToxin();
 
             if (t.getSlotObject()!=null){
                 if (t.getSlotObject().getId()==OBJECTTYPES.FOOD){
@@ -208,7 +214,8 @@ function World(s){
             local_fossilcount: local_fossilcount,
             local_tracecount_0: local_tracecount_0,
             local_tracecount_1: local_tracecount_1,
-            local_fruitfulness: local_fruitfulness
+            local_fruitfulness: local_fruitfulness,
+            local_toxin: local_toxin
         };
     };
 

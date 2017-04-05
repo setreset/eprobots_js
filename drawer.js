@@ -12,6 +12,7 @@ function Drawer(s, canvas){
                     t.decr_trace(0);
                     t.decr_trace(1);
                     t.decrFruitfulness();
+                    t.decrToxin();
                     t.decrObstacle();
                 }
 
@@ -43,6 +44,7 @@ function Drawer(s, canvas){
                     var trace_val_1 = t.get_trace(1);
                     var fruitfulness = t.getFruitfulness();
                     var obstacle_val = t.getObstacle();
+                    var toxin = t.getToxin();
 
                     if (obstacle_val > 0){
                         var obstacle_age = s.getSettings().OBSTACLETIME-obstacle_val; //s.getStepCounter() - t_object.getCreationTime();
@@ -52,23 +54,32 @@ function Drawer(s, canvas){
                         context2D.fillStyle = "hsl("+c_fac+", 0%, "+l_fac+"%)";
                         context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                     }else{
-                        if(fruitfulness > 0){
-                            var l_val = Math.round(tools_map_range(fruitfulness, 0, 1000, 100, 20));
+                        if (toxin > 0){
+                            //hsla(301, 100%, 50%, 1)
+                            var l_val = Math.round(tools_map_range(toxin, s.getSettings().TOXIN_MAX, 90, 50));
                             //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
-                            context2D.fillStyle = "hsl(29, 100%, " + l_val + "%)";
+                            //context2D.fillStyle = "hsl(301, 100%, " + l_val + "%)";
+                            context2D.fillStyle = "hsl(301, 100%, 90%)";
                             context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                         }else{
-                            if (trace_val_0 > 0) {
-                                var l_val = Math.round(tools_map_range(trace_val_0, 0, s.getSettings().TRACETIME, 90, 60));
+                            if(fruitfulness > 0){
+                                var l_val = Math.round(tools_map_range(fruitfulness, 0, s.getSettings().SEED_MAX, 100, 20));
                                 //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
-                                context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
+                                context2D.fillStyle = "hsl(29, 100%, " + l_val + "%)";
                                 context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
                             }else{
-                                if (trace_val_1 > 0) {
-                                    var l_val = Math.round(tools_map_range(trace_val_1, 0, s.getSettings().TRACETIME, 90, 50));
+                                if (trace_val_0 > 0) {
+                                    var l_val = Math.round(tools_map_range(trace_val_0, 0, s.getSettings().TRACETIME, 90, 60));
                                     //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
-                                    context2D.fillStyle = "hsl(177, 100%, " + l_val + "%)";
+                                    context2D.fillStyle = "hsl(60, 100%, " + l_val + "%)";
                                     context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                                }else{
+                                    if (trace_val_1 > 0) {
+                                        var l_val = Math.round(tools_map_range(trace_val_1, 0, s.getSettings().TRACETIME, 90, 50));
+                                        //context2D.fillStyle = "hsl(0, 52%, " + l_val + "%)";
+                                        context2D.fillStyle = "hsl(177, 100%, " + l_val + "%)";
+                                        context2D.fillRect(x * x_step, y * y_step, x_step, y_step);
+                                    }
                                 }
                             }
                         }

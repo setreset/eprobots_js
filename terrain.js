@@ -3,6 +3,7 @@ function Terrain(s){
     var traces = [0,0];
     var fruitfulness = 0;
     var obstacle = 0;
+    var toxin = 0;
 
     this.decr_trace = function(kind){
         if (traces[kind]>0){
@@ -63,6 +64,28 @@ function Terrain(s){
         obstacle = val;
     }
 
+    this.getToxin = function(){
+        return toxin;
+    }
+
+    this.setToxin = function(val){
+        toxin = val;
+    }
+
+    this.addToxin = function(val){
+        toxin += val;
+
+        if (toxin > s.getSettings().TOXIN_MAX){
+            toxin = s.getSettings().TOXIN_MAX;
+        }
+    }
+
+    this.decrToxin = function(){
+        if (toxin > 0){
+            toxin--;
+        }
+    }
+
     this.toJSON = function() {
         var slotObject = this.getSlotObject();
         if (slotObject != null){
@@ -77,7 +100,8 @@ function Terrain(s){
             fruitfulness: this.getFruitfulness(),
             trace_0: this.get_trace(0),
             trace_1: this.get_trace(1),
-            obstacle: obstacle
+            obstacle: obstacle,
+            toxin: toxin
         };
     }
 
@@ -87,6 +111,7 @@ function Terrain(s){
         traces[0] = terrainstate.trace_0;
         traces[1] = terrainstate.trace_1;
         obstacle = terrainstate.obstacle;
+        toxin = terrainstate.toxin;
 
         var slot = terrainstate.slotObject;
         if (slot){

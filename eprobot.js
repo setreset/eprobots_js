@@ -40,22 +40,23 @@ class Eprobot {
         var program_length = this.s.getSettings().PROGRAM_LENGTH;
 
         var working_programm = this.working_programm;
-        working_programm[program_length-4] = inputval.local_foodcount;
+        working_programm[program_length-5] = inputval.local_foodcount;
 
-        working_programm[program_length-5] = inputval.local_eprobotcount_0;
-        working_programm[program_length-6] = inputval.local_tracecount_0;
+        working_programm[program_length-6] = inputval.local_eprobotcount_0;
+        working_programm[program_length-7] = inputval.local_tracecount_0;
 
-        working_programm[program_length-7] = inputval.local_eprobotcount_1;
-        working_programm[program_length-8] = inputval.local_tracecount_1;
+        working_programm[program_length-8] = inputval.local_eprobotcount_1;
+        working_programm[program_length-9] = inputval.local_tracecount_1;
 
-        working_programm[program_length-9] = inputval.local_fossilcount;
+        working_programm[program_length-10] = inputval.local_fossilcount;
 
-        working_programm[program_length-10] = inputval.local_fruitfulness;
+        working_programm[program_length-11] = inputval.local_fruitfulness;
+        working_programm[program_length-12] = inputval.local_toxin;
 
-        working_programm[program_length-11] = this.getAge();
-        working_programm[program_length-12] = this.getEnergy();
-        working_programm[program_length-13] = this.x_pos;
-        working_programm[program_length-14] = this.y_pos;
+        working_programm[program_length-13] = this.getAge();
+        working_programm[program_length-14] = this.getEnergy();
+        working_programm[program_length-15] = this.x_pos;
+        working_programm[program_length-16] = this.y_pos;
     }
 
     get_control_vals() {
@@ -70,7 +71,8 @@ class Eprobot {
         return [
             working_programm[this.s.getSettings().PROGRAM_LENGTH-1],
             working_programm[this.s.getSettings().PROGRAM_LENGTH-2],
-            working_programm[this.s.getSettings().PROGRAM_LENGTH-3]
+            working_programm[this.s.getSettings().PROGRAM_LENGTH-3],
+            working_programm[this.s.getSettings().PROGRAM_LENGTH-4]
         ];
     }
 

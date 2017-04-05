@@ -55,6 +55,10 @@ class Carnivore extends Eprobot{
                     t_new.setSlotObject(this);
                     t_new.set_trace(this.getId(), this.s.getSettings().TRACETIME);
                     this.setPos(coord__new[0],coord__new[1]);
+
+                    if (t_new.getToxin()>0){
+                        this.setAge(this.s.getSettings().LIFETIME_MAX_C);
+                    }
                 }
             }
         }
@@ -98,7 +102,8 @@ class Carnivore extends Eprobot{
 
     getForkCondition(){
         //return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
-        return true;
+        return this.s.getEprobots_c().length < this.s.getSettings().EPROBOTS_MAX;
+        //return true;
     }
 
     fork(){

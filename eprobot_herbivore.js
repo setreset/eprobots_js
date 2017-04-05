@@ -13,8 +13,8 @@ class Herbivore extends Eprobot {
         }
 
         var control_vals = this.get_control_vals();
-        var control_val = control_vals[0];
 
+        var control_val = control_vals[0];
         //var control_val = this.get_move_random();
         if (isFinite(control_val)){
             var move_action = Math.abs(control_val) % 9;
@@ -31,7 +31,15 @@ class Herbivore extends Eprobot {
             var rep_action = 0; // do nothing
         }
 
-        var ocstacle_val = control_vals[2];
+        var toxin_val = control_vals[2];
+        if (isFinite(toxin_val)){
+            var tox_action = Math.abs(toxin_val) % 2;
+        }else{
+            console.log("Infinite: "+toxin_val);
+            var tox_action = 0; // do nothing
+        }
+
+        var ocstacle_val = control_vals[3];
         if (isFinite(ocstacle_val)){
             var obstacle_action = Math.abs(ocstacle_val) % 2;
         }else{
@@ -39,13 +47,13 @@ class Herbivore extends Eprobot {
             var obstacle_action = 0; // do nothing
         }
 
-        forked_ep = this.processAction(move_action, rep_action, obstacle_action);
+        forked_ep = this.processAction(move_action, rep_action, tox_action, obstacle_action);
 
         return forked_ep;
     }
 
 
-    processAction(move_action, rep_action, obstacle_action){
+    processAction(move_action, rep_action, toxin_action, obstacle_action){
         var forked_ep = null;
 
         if (move_action > 0){
@@ -78,6 +86,12 @@ class Herbivore extends Eprobot {
             var t = this.s.getWorld().getTerrain(this.x_pos, this.y_pos);
             t.addFruitfulness(this.s.getSettings().SEED_POWER);
             this.addEnergy(-this.s.getSettings().ENERGYCOST_SEED);
+        }
+
+        if (toxin_action==1 && this.energy >= this.s.getSettings().ENERGYCOST_TOXIN) {
+            var t = this.s.getWorld().getTerrain(this.x_pos, this.y_pos);
+            t.addToxin(this.s.getSettings().TOXIN_POWER);
+            this.addEnergy(-this.s.getSettings().ENERGYCOST_TOXIN);
         }
 
         if (this.energy >= this.s.getSettings().ENERGYCOST_FORK && this.age > this.s.getSettings().CHILDHOOD){
