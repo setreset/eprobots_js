@@ -40,11 +40,11 @@ function World(s){
         //var energydiff = s.getSettings().OBJECT_COUNT - (s.getEprobots().length + energy_count);
 
         if (s.getSettings().KINDERGARTEN){
-            if (Math.random()<0.2){
+            if (Math.random()<0.1){
                 for(var i=0;i<10;i++){
 
                     // zufaellige stelle
-                    var x = tools_random(s.getWorldWidth()/8);
+                    var x = tools_random(s.getWorldWidth());
                     var y = tools_random(s.getWorldHeight());
                     // ist sie frei?
                     var t = this.getTerrain(x,y);
