@@ -22,19 +22,22 @@ function tools_random(max){
 }
 
 // subleq: https://en.wikipedia.org/wiki/One_instruction_set_computer
-function tools_compute(memory) {
+function tools_compute(memory, s) {
     var program_counter = 0;
     var step_counter = 0;
     var a, b, c;
 
-    while (program_counter >= 0 && (program_counter + 2) < memory.length && step_counter < 100) {
+    var PL = s.getSettingVal("PROGRAM_LENGTH");
+    var PS = s.getSettingVal("PROGRAM_STEPS");
+
+    while (program_counter >= 0 && (program_counter + 2) < PL && step_counter < PS) {
         a = memory[program_counter];
         b = memory[program_counter + 1];
         c = memory[program_counter + 2];
 
-        a = a % memory.length;
-        b = b % memory.length;
-        c = c % memory.length;
+        a = a % PL;
+        b = b % PL;
+        c = c % PL;
 
         //a = Math.abs(a % memory.length);
         //b = Math.abs(b % memory.length);
@@ -54,7 +57,7 @@ function tools_compute(memory) {
         }
         step_counter++;
     }
-    if (step_counter>=100){
+    if (step_counter>=PS){
         console.log("high stepcounter: " + step_counter);
     }
     return step_counter;

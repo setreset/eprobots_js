@@ -4,80 +4,6 @@ class Carnivore extends Eprobot{
         return OBJECTTYPES.EPROBOT_C;
     }
 
-    newStep(){
-        var forked_ep = null;
-
-        // set input
-        if (this.s.getSettings().SENSE){
-            this.set_input();
-        }
-
-        var control_vals = this.get_control_vals();
-        var control_val = control_vals[0];
-
-        //var control_val = this.get_move_random();
-        if (isFinite(control_val)){
-            var move_action = Math.abs(control_val) % 9;
-        }else{
-            console.log("Infinite: "+control_val);
-            var move_action = tools_random(9); // random
-        }
-
-        var ocstacle_val = control_vals[2];
-        if (isFinite(ocstacle_val)){
-            var obstacle_action = Math.abs(ocstacle_val) % 2;
-        }else{
-            console.log("Infinite: "+ocstacle_val);
-            var obstacle_action = 0; // do nothing
-        }
-
-        forked_ep = this.processAction(move_action, obstacle_action);
-
-        return forked_ep;
-    }
-
-    processAction(move_action, obstacle_action){
-        var forked_ep = null;
-
-        if (move_action > 0){
-            var coord__new = this.s.getWorld().getCoordinates(this, move_action-1);
-            if (coord__new){
-                var t_new = this.s.getWorld().getTerrain(coord__new[0],coord__new[1]);
-
-                // ist da auch nichts?
-                if (this.canMoveToField(t_new)){
-                    this.preMove(t_new);
-
-                    // position verschieben
-                    // alte position loeschen
-                    var t_old = this.s.getWorld().getTerrain(this.x_pos, this.y_pos);
-                    t_old.setSlotObject(null);
-                    t_new.setSlotObject(this);
-                    t_new.set_trace(this.getId(), this.s.getSettings().TRACETIME);
-                    this.setPos(coord__new[0],coord__new[1]);
-
-                    if (t_new.getToxin()>0){
-                        this.setAge(this.s.getSettings().LIFETIME_MAX_C);
-                    }
-                }
-            }
-        }
-
-        if (obstacle_action > 0 && this.energy >= this.s.getSettings().ENERGYCOST_OBSTACLE_C) {
-            var my_t = this.s.getWorld().getTerrain(this.x_pos,this.y_pos);
-            my_t.setObstacle(this.s.getSettings().OBSTACLETIME);
-            this.addEnergy(-this.s.getSettings().ENERGYCOST_OBSTACLE_C);
-        }
-
-        if (this.energy >= this.s.getSettings().ENERGYCOST_FORK && this.age > this.s.getSettings().CHILDHOOD){
-            if (this.getForkCondition()) {
-                forked_ep = this.fork();
-            }
-        }
-
-        return forked_ep
-    }
-
     // HELP-Methods
 
     canMoveToField(t_new){
@@ -97,7 +23,16 @@ class Carnivore extends Eprobot{
             // neuer eprobot...
             this.addEnergy(this.s.getSettings().FOOD_ENERGY);
             //}
+        }else{
+            if (t_new.getToxin()>0){
+                this.kill()
+            }
         }
+    }
+
+    kill(){
+        //console.log("Carnivore kill");
+        this.setAge(this.s.getSettings().LIFETIME_MAX_C);
     }
 
     getForkCondition(){
