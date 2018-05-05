@@ -6,7 +6,6 @@ class Eprobot {
         t.setSlotObject(this);
 
         this.age = 0;
-        this.energy = 0;
 
         this.s = s;
         this.x_pos = x_pos;
@@ -107,10 +106,8 @@ class Eprobot {
             this.addEnergy(-this.s.getSettings().ENERGYCOST_TOXIN);
         }
 
-        if (this.energy >= this.s.getSettings().ENERGYCOST_FORK && this.age > this.s.getSettings().CHILDHOOD){
-            if (this.getForkCondition()) {
-                forked_ep = this.fork();
-            }
+        if (this.getForkCondition()){
+            forked_ep = this.fork();
         }
 
         return forked_ep
@@ -163,6 +160,7 @@ class Eprobot {
     // MISC
 
     doAge(){
+        this.addEnergy(-1);
         this.incrAge();
     };
 

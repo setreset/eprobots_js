@@ -1,5 +1,10 @@
 class Carnivore extends Eprobot{
 
+    constructor(s, x_pos, y_pos, init_programm) {
+        super(s, x_pos, y_pos, init_programm);
+        this.energy = s.getSettings().START_ENERGY_C;
+    }
+
     getId(){
         return OBJECTTYPES.EPROBOT_C;
     }
@@ -19,25 +24,20 @@ class Carnivore extends Eprobot{
         if (obj_on_candidate_field != null && obj_on_candidate_field.getId() == OBJECTTYPES.EPROBOT_H) {
             // "eat"
             //if (obj_on_candidate_field.getEnergy()<(this.getEnergy()+50)){
-            obj_on_candidate_field.kill();
+            obj_on_candidate_field.setEnergy(0);
             // neuer eprobot...
-            this.addEnergy(this.s.getSettings().FOOD_ENERGY);
+            this.addEnergy(this.s.getSettings().FOOD_ENERGY_C);
             //}
         }else{
             if (t_new.getToxin()>0){
-                this.kill()
+                this.addEnergy(-50);
             }
         }
     }
 
-    kill(){
-        //console.log("Carnivore kill");
-        this.setAge(this.s.getSettings().LIFETIME_MAX_C);
-    }
-
     getForkCondition(){
         //return this.s.getEprobots_c().length < this.s.getEprobots_h().length;
-        return this.s.getEprobots_c().length < this.s.getSettings().EPROBOTS_MAX;
+        return this.energy >= this.s.getSettings().ENERGYCOST_FORK_C && this.s.getEprobots_c().length < this.s.getSettings().EPROBOTS_MAX;
         //return true;
     }
 
@@ -50,7 +50,7 @@ class Carnivore extends Eprobot{
 
             //console.log("Carnivore fork");
             var forked_ep = new Carnivore(this.s, point.x, point.y, new_dna);
-            this.addEnergy(-this.s.getSettings().ENERGYCOST_FORK);
+            this.addEnergy(-this.s.getSettings().ENERGYCOST_FORK_C);
             // nachwuchs anmelden
             return forked_ep;
         }else{
@@ -59,7 +59,7 @@ class Carnivore extends Eprobot{
     }
 
     isAlive(){
-        return this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
+        return this.getEnergy() > 0 && this.getAge() < this.s.getSettings().LIFETIME_MAX_C;
     }
 }
 

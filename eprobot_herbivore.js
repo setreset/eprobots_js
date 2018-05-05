@@ -1,5 +1,10 @@
 class Herbivore extends Eprobot {
 
+    constructor(s, x_pos, y_pos, init_programm) {
+        super(s, x_pos, y_pos, init_programm);
+        this.energy = s.getSettings().START_ENERGY;
+    }
+
     getId(){
         return OBJECTTYPES.EPROBOT_H;
     }
@@ -24,13 +29,8 @@ class Herbivore extends Eprobot {
         }
     }
 
-    kill(){
-        //console.log("Herbivore kill");
-        this.setAge(this.s.getSettings().LIFETIME_MAX);
-    }
-
     getForkCondition(){
-        return this.s.getEprobots_h().length < this.s.getSettings().EPROBOTS_MAX;
+        return this.energy >= this.s.getSettings().ENERGYCOST_FORK && this.s.getEprobots_h().length < this.s.getSettings().EPROBOTS_MAX;
     }
 
     fork(){
@@ -51,6 +51,6 @@ class Herbivore extends Eprobot {
     };
 
     isAlive(){
-        return this.getAge() < this.s.getSettings().LIFETIME_MAX;
+        return this.getEnergy() > 0 && this.getAge() < this.s.getSettings().LIFETIME_MAX;
     }
 }
